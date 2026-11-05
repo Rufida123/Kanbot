@@ -4,3 +4,4 @@ export { AuthBootstrap } from './components/AuthBootstrap';
 export { GuestOnly } from './components/GuestOnly';
 export { RequireAuth } from './components/RequireAuth';
 export { UserMenu } from './components/UserMenu';
+export { applyFieldErrors } from './utils/applyFieldErrors';
