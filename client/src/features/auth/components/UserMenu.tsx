@@ -13,8 +13,13 @@ import { signOut } from '@/features/auth/utils/signOut';
 import { getInitials } from '@/features/auth/utils/getInitials';
 import { useSessionStore } from '@/shared/stores/sessionStore';
 
+type UserMenuProps = {
+  /** `top-start`: full-width button whose menu opens upwards (bottom of the sidebar). */
+  placement?: 'bottom-end' | 'top-start';
+};
+
 /** Account button + menu with the logout action (AUTH-4). */
-export function UserMenu() {
+export function UserMenu({ placement = 'bottom-end' }: UserMenuProps) {
   const user = useSessionStore((state) => state.user);
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const id = useId();
@@ -24,6 +29,7 @@ export function UserMenu() {
   if (!user) return null;
 
   const isOpen = anchor !== null;
+  const isSidebar = placement === 'top-start';
   const close = () => setAnchor(null);
 
   return (
@@ -52,7 +58,11 @@ export function UserMenu() {
           </Avatar>
         }
         endIcon={<ExpandMoreIcon aria-hidden="true" />}
-        sx={{ maxWidth: '14rem' }}
+        sx={{
+          maxWidth: isSidebar ? undefined : '14rem',
+          width: isSidebar ? '100%' : undefined,
+          justifyContent: isSidebar ? 'flex-start' : undefined,
+        }}
       >
         <Box
           component="span"
@@ -67,8 +77,16 @@ export function UserMenu() {
         open={isOpen}
         onClose={close}
         slotProps={{ list: { 'aria-labelledby': buttonId } }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={
+          isSidebar
+            ? { vertical: 'top', horizontal: 'left' }
+            : { vertical: 'bottom', horizontal: 'right' }
+        }
+        transformOrigin={
+          isSidebar
+            ? { vertical: 'bottom', horizontal: 'left' }
+            : { vertical: 'top', horizontal: 'right' }
+        }
       >
         <Box sx={{ paddingInline: 2, paddingBlock: 1, maxWidth: '16rem' }}>
           <Typography variant="subtitle2" sx={{ overflowWrap: 'anywhere' }}>

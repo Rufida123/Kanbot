@@ -1,11 +1,20 @@
 import { queryClient } from '@/shared/lib/queryClient';
 import { useSessionStore } from '@/shared/stores/sessionStore';
 import type { SignOutReason } from '@/shared/stores/sessionStore';
+import { useToastStore } from '@/shared/stores/toastStore';
+import { useUiStore } from '@/shared/stores/uiStore';
+import { useProjectDialogStore } from '@/features/projects/store/projectDialogStore';
 
-/** Clears the token, the user and every cached query. The route guards then show /login. */
+/**
+ * Clears the token, the user, every cached query and the client stores (UI state, toasts,
+ * open project dialogs). The route guards then show /login.
+ */
 export function signOut(reason: SignOutReason | null): void {
   useSessionStore.getState().endSession(reason);
   queryClient.clear();
+  useUiStore.getState().reset();
+  useToastStore.getState().reset();
+  useProjectDialogStore.getState().reset();
 }
 
 /**
