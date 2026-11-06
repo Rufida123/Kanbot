@@ -4,11 +4,13 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
 import { ProjectDialogsHost, useRemoveDeletedProjectCaches } from '@/features/projects';
+import { TodoDetailsHost } from '@/features/todos';
 import { ToastHost } from '@/shared/components/ToastHost';
 import { AssistantDrawer } from '@/shared/layout/AssistantDrawer';
 import { DESKTOP_MEDIA_QUERY, SIDEBAR_WIDTH_REM } from '@/shared/layout/layout';
 import { Sidebar } from '@/shared/layout/Sidebar';
 import { TopBar } from '@/shared/layout/TopBar';
+import { pageEnterSx } from '@/shared/theme/motion';
 import { useUiStore } from '@/shared/stores/uiStore';
 import { LoadingScreen } from '@/shared/components/LoadingScreen';
 
@@ -50,14 +52,19 @@ export function AppShell() {
       <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
         <TopBar isDesktop={isDesktop} />
         <Box component="main" sx={{ flex: 1, minWidth: 0, overflow: 'auto', padding: { xs: 2, md: 3 } }}>
-          <Suspense fallback={<LoadingScreen />}>
-            <Outlet />
-          </Suspense>
+          {/* `key`: each page fades in when the route changes. */}
+          <Box key={pathname} sx={pageEnterSx}>
+            <Suspense fallback={<LoadingScreen />}>
+              <Outlet />
+            </Suspense>
+          </Box>
+
         </Box>
       </Box>
       <AssistantDrawer />
       <ProjectDialogsHost />
-      <ToastHost />
+      <TodoDetailsHost />
+
     </Box>
   );
 }

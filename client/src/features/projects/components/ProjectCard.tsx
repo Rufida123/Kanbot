@@ -39,7 +39,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
         position: 'relative',
         display: 'flex',
         minWidth: 0,
-        '&:hover': { borderColor: 'primary.main' },
+        transition: (theme) => theme.transitions.create(['border-color', 'background-color']),
+        '&:hover': { borderColor: 'primary.main', backgroundColor: 'action.hover' },
+
       }}
     >
       <Box

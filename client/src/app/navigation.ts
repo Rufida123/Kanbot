@@ -34,3 +34,13 @@ export const paths = {
 
 /** Query parameter that carries the page to return to after logging in. */
 export const REDIRECT_PARAM = 'redirect';
+
+/** Query parameter that holds the id of the todo whose details dialog is open. */
+export const TODO_PARAM = 'todo';
+
+/** Query parameters of the backlog filters. They share one query string with `TODO_PARAM`. */
+export const FILTER_PARAMS = {
+  search: 'q',
+  priority: 'priority',
+  type: 'type',
+} as const;

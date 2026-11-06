@@ -5,3 +5,6 @@ export const ASSISTANT_DRAWER_WIDTH_REM = 24;
 
 /** From this width the sidebar is permanent; below it, a drawer opened by a burger button. */
 export const DESKTOP_MEDIA_QUERY = '(min-width: 64rem)';
+/** Below this width dialogs use the whole screen (MUI's `sm` breakpoint is 600px). */
+export const SMALL_SCREEN_MEDIA_QUERY = '(max-width: 37.4375rem)';
+

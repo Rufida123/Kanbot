@@ -1,17 +1,11 @@
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
-import { EmptyState } from '@/shared/components/EmptyState';
 
-/** Placeholder until Sprint 3 builds the real page. */
+import { useParams } from 'react-router';
+import { PROJECT_ID_PARAM } from '@/app/navigation';
+import { BacklogView } from '@/features/backlog/components/BacklogView';
+
+/** `/projects/:projectId/backlog`. The page only composes; `ProjectGuard` guarantees the project exists. */
 export default function BacklogPage() {
-  return (
-    <>
-      <title>Backlog · Kanbot</title>
-      <EmptyState
-        headingComponent="h1"
-        icon={<ConstructionOutlinedIcon fontSize="large" />}
-        title="Backlog: coming in Sprint 3"
-        message="Your backlog and todo details will live here."
-      />
-    </>
-  );
+  const projectId = useParams()[PROJECT_ID_PARAM];
+  if (projectId === undefined) return null;
+  return <BacklogView projectId={projectId} />;
 }

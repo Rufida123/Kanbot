@@ -8,6 +8,7 @@ import {
   grey,
   radius,
   shadow,
+  motion,
   spacingStepRem,
 } from './tokens';
 import type { SchemeTokens } from './tokens';
@@ -49,27 +50,37 @@ export const theme: Theme = createTheme({
   },
   spacing: (factor: number) => `${spacingStepRem * factor}rem`,
   shape: { borderRadius: radius.control },
+  transitions: {
+    easing: { easeInOut: motion.easing, easeOut: motion.easing },
+    duration: {
+      shortest: motion.durationMs.fast,
+      shorter: motion.durationMs.fast,
+      short: motion.durationMs.base,
+      standard: motion.durationMs.base,
+      enteringScreen: motion.durationMs.base,
+      leavingScreen: motion.durationMs.fast,
+    },
+  },
   shadows,
   typography: {
     fontFamily,
-    fontWeightLight: fontWeight.light,
     fontWeightRegular: fontWeight.regular,
     fontWeightMedium: fontWeight.medium,
     fontWeightBold: fontWeight.bold,
     h1: {
       fontSize: '2rem',
       lineHeight: 1.25,
-      fontWeight: fontWeight.bold,
-      letterSpacing: '-0.01em',
+      fontWeight: fontWeight.semibold,
+      letterSpacing: '-0.02em',
     },
     h2: {
       fontSize: '1.5rem',
       lineHeight: 1.3,
-      fontWeight: fontWeight.bold,
-      letterSpacing: '-0.005em',
+      fontWeight: fontWeight.semibold,
+      letterSpacing: '-0.015em',
     },
-    h3: { fontSize: '1.25rem', lineHeight: 1.35, fontWeight: fontWeight.medium },
-    h4: { fontSize: '1.125rem', lineHeight: 1.4, fontWeight: fontWeight.medium },
+    h3: { fontSize: '1.25rem', lineHeight: 1.35, fontWeight: fontWeight.semibold, letterSpacing: '-0.01em' },
+    h4: { fontSize: '1.125rem', lineHeight: 1.4, fontWeight: fontWeight.semibold, letterSpacing: '-0.005em' },
     h5: { fontSize: '1rem', lineHeight: 1.5, fontWeight: fontWeight.medium },
     h6: { fontSize: '0.875rem', lineHeight: 1.5, fontWeight: fontWeight.medium },
     subtitle1: { fontSize: '1rem', lineHeight: 1.5, fontWeight: fontWeight.medium },
@@ -89,7 +100,21 @@ export const theme: Theme = createTheme({
       styleOverrides: (theme) => ({
         '*, *::before, *::after': { margin: 0, padding: 0, boxSizing: 'border-box' },
         'html, body, #root': { minHeight: '100%' },
-        body: { overflowWrap: 'break-word' },
+        html: { scrollbarWidth: 'thin', scrollbarColor: `${theme.vars.palette.grey[500]} transparent` },
+        body: {
+          overflowWrap: 'break-word',
+          fontFeatureSettings: '"cv11", "ss03"',
+          textRendering: 'optimizeLegibility',
+        },
+        // Calm UI for people who ask for less motion: transitions and animations are cut short.
+        '@media (prefers-reduced-motion: reduce)': {
+          '*, *::before, *::after': {
+            animationDuration: '0.01ms !important',
+            animationIterationCount: '1 !important',
+            transitionDuration: '0.01ms !important',
+            scrollBehavior: 'auto !important',
+          },
+        },
         ':focus-visible': {
           outline: `2px solid ${theme.vars.palette.focusRing}`,
           outlineOffset: '2px',
@@ -130,6 +155,31 @@ export const theme: Theme = createTheme({
             theme.applyStyles('dark', { color: theme.vars.palette.primary.light })),
         }),
         sizeLarge: { minHeight: '2.75rem', fontSize: '0.9375rem' },
+      },
+    },
+    MuiTooltip: {
+      defaultProps: { arrow: true, enterDelay: 500, enterNextDelay: 200 },
+    },
+    MuiSkeleton: {
+      defaultProps: { animation: 'wave' },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create(['background-color', 'color']),
+        }),
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: ({ theme }) => ({
+          transition: theme.transitions.create('background-color'),
+        }),
+      },
+    },
+    MuiChip: {
+      styleOverrides: {
+        root: { fontWeight: fontWeight.medium },
       },
     },
     MuiLink: {

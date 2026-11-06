@@ -4,3 +4,5 @@ export { ProjectDialogsHost } from './components/ProjectDialogsHost';
 export { ProjectSwitcher } from './components/ProjectSwitcher';
 export { useProject } from './hooks/useProject';
 export { useRemoveDeletedProjectCaches } from './hooks/useRemoveDeletedProjectCaches';
+export { projectKeys } from './api/keys';
+

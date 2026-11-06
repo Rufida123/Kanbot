@@ -17,7 +17,7 @@ export type FormTextFieldProps = {
   /** Shown under the input while there is no error. */
   hint?: string;
   isRequired?: boolean;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'date';
   autoComplete?: string;
   placeholder?: string;
   autoFocus?: boolean;

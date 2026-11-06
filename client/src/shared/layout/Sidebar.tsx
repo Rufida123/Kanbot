@@ -41,8 +41,21 @@ export function Sidebar() {
                 to={item.getPath(projectId)}
                 sx={{
                   borderRadius: 1,
+                  position: 'relative',
                   '&.active': {
                     backgroundColor: 'action.selected',
+                    // Accent bar: the active page is not shown by background colour alone.
+                    '&::before': {
+                      content: '""',
+                      position: 'absolute',
+                      insetInlineStart: 0,
+                      top: '22%',
+                      bottom: '22%',
+                      width: '0.1875rem',
+                      borderRadius: '0.125rem',
+                      backgroundColor: 'primary.main',
+                    },
+
                     '& .MuiListItemText-primary': { fontWeight: 'fontWeightMedium' },
                   },
                 }}
