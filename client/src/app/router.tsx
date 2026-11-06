@@ -5,6 +5,7 @@ import { paths } from '@/app/navigation';
 import { authRoutes, GuestOnly, RequireAuth } from '@/features/auth';
 import { projectsRoutes } from '@/features/projects';
 import { LoadingScreen } from '@/shared/components/LoadingScreen';
+import { AppShell } from '@/shared/layout/AppShell';
 
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -14,7 +15,7 @@ const routes: RouteObject[] = [
     element: <RequireAuth />,
     children: [
       { path: paths.root, element: <Navigate to={paths.projects} replace /> },
-      ...projectsRoutes,
+      { element: <AppShell />, children: projectsRoutes },
     ],
   },
   { path: '*', Component: NotFoundPage },

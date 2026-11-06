@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
@@ -16,11 +17,17 @@ export type FormTextFieldProps = {
   /** Shown under the input while there is no error. */
   hint?: string;
   isRequired?: boolean;
-  type?: 'text' | 'email' | 'password';
+  type?: 'text' | 'email' | 'password' | 'date';
   autoComplete?: string;
   placeholder?: string;
   autoFocus?: boolean;
   endAdornment?: OutlinedInputProps['endAdornment'];
+  /** Multi-line textarea (descriptions). */
+  isMultiline?: boolean;
+  minRows?: number;
+  maxLength?: number;
+  /** Small text on the right under the input, for example "12/500". */
+  counter?: string;
 };
 
 /** Label above the input (as in the wireframes), error and hint below. */
@@ -35,6 +42,10 @@ export function FormTextField({
   placeholder,
   autoFocus,
   endAdornment,
+  isMultiline = false,
+  minRows,
+  maxLength,
+  counter,
 }: FormTextFieldProps) {
   const id = useId();
   const helperId = `${id}-helper`;
@@ -55,14 +66,23 @@ export function FormTextField({
         placeholder={placeholder}
         autoFocus={autoFocus}
         endAdornment={endAdornment}
+        multiline={isMultiline}
+        minRows={minRows}
         // `required` marks the label only: validation messages come from Zod (form uses noValidate).
-        inputProps={{ 'aria-describedby': helperText ? helperId : undefined }}
+        inputProps={{ 'aria-describedby': helperText ? helperId : undefined, maxLength }}
       />
       {/* The slot is always rendered so an error appearing on blur never shifts the layout
           (a shift between mouse-down and mouse-up would swallow clicks on links below). */}
-      <FormHelperText id={helperText ? helperId : undefined} sx={HELPER_SLOT_SX}>
-        {helperText}
-      </FormHelperText>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+        <FormHelperText id={helperText ? helperId : undefined} sx={HELPER_SLOT_SX}>
+          {helperText}
+        </FormHelperText>
+        {counter ? (
+          <FormHelperText aria-hidden="true" sx={{ ...HELPER_SLOT_SX, flexShrink: 0 }}>
+            {counter}
+          </FormHelperText>
+        ) : null}
+      </Box>
     </FormControl>
   );
 }

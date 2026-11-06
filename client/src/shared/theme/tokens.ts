@@ -7,9 +7,12 @@
  * Every text/surface pair was checked for WCAG AA contrast (see client/README.md).
  */
 
-export const fontFamily = '"Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif';
+/** Inter (latin subset, self-hosted by @fontsource). Fallbacks cover the time before it loads. */
+export const fontFamily =
+  '"Inter", "Roboto", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif';
 
-export const fontWeight = { light: 300, regular: 400, medium: 500, bold: 700 } as const;
+/** Only these four weights are loaded (main.tsx). */
+export const fontWeight = { regular: 400, medium: 500, semibold: 600, bold: 700 } as const;
 
 /** Spacing step in rem: theme.spacing(2) = 1rem (8px grid). */
 export const spacingStepRem = 0.5;
@@ -28,6 +31,12 @@ export const grey = {
   700: '#374151',
   800: '#1F2937',
   900: '#111827',
+} as const;
+
+/** Motion tokens: short, calm transitions. `prefers-reduced-motion` switches them off (theme.ts). */
+export const motion = {
+  durationMs: { fast: 120, base: 200, slow: 320 },
+  easing: 'cubic-bezier(0.2, 0, 0, 1)',
 } as const;
 
 export const shadow = {
