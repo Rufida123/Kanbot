@@ -8,7 +8,8 @@ const DATE_FORMAT = new Intl.DateTimeFormat(DATE_LOCALE, {
 
 const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-function parseDateOnly(value: string): Date | null {
+/** A local `Date` (midnight) from `YYYY-MM-DD`, or `null` when it is not a real calendar date. */
+export function parseDateOnly(value: string): Date | null {
   const match = DATE_ONLY_PATTERN.exec(value);
   if (!match) return null;
   const [, year, month, day] = match;
@@ -37,4 +38,46 @@ export function formatDateOnly(value: string): string {
 export function formatTimestamp(value: string): string {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? '' : DATE_FORMAT.format(date);
+}
+
+/** `YYYY-MM-DD` from a local date (never `toISOString`, which converts to UTC and can shift the day). */
+export function toDateOnly(date: Date): string {
+  const year = String(date.getFullYear()).padStart(4, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/** Today in local time as `YYYY-MM-DD`. */
+export function getTodayDateOnly(): string {
+  return toDateOnly(new Date());
+}
+
+/** `value` plus `days` calendar days (local time). Returns the input when it is not a valid date. */
+export function addDaysToDateOnly(value: string, days: number): string {
+  const date = parseDateOnly(value);
+  if (date === null) return value;
+  const shifted = new Date(date);
+  shifted.setDate(shifted.getDate() + days);
+  return toDateOnly(shifted);
+}
+
+const DAY_FORMAT = new Intl.DateTimeFormat(DATE_LOCALE, { month: 'short', day: 'numeric' });
+
+/**
+ * "Oct 20 – Nov 2". The year is added only when a date is not in the current year.
+ * One date missing: the other one is shown alone. Both missing: an empty string.
+ */
+export function formatDateRange(startDate: string | null, endDate: string | null): string {
+  const currentYear = new Date().getFullYear();
+  const formatOne = (value: string | null): string => {
+    if (value === null) return '';
+    const date = parseDateOnly(value);
+    if (date === null) return value;
+    return date.getFullYear() === currentYear ? DAY_FORMAT.format(date) : DATE_FORMAT.format(date);
+  };
+  const start = formatOne(startDate);
+  const end = formatOne(endDate);
+  if (start !== '' && end !== '') return `${start} – ${end}`;
+  return start !== '' ? start : end;
 }

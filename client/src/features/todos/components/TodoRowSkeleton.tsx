@@ -1,14 +1,20 @@
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
-const SKELETON_COUNT = 6;
-const SKELETON_KEYS = Array.from({ length: SKELETON_COUNT }, (_, index) => `skeleton-${index}`);
+const DEFAULT_SKELETON_COUNT = 6;
 
-/** Placeholder rows with the footprint of `TodoRow`, shown while the backlog loads. */
-export function TodoRowSkeleton() {
+type TodoRowSkeletonProps = {
+  /** Accessible name, for example "Loading Sprint 2". */
+  label?: string;
+  count?: number;
+};
+
+/** Placeholder rows with the footprint of `TodoRow`, shown while a list loads. */
+export function TodoRowSkeleton({ label = 'Loading backlog', count = DEFAULT_SKELETON_COUNT }: TodoRowSkeletonProps) {
+  const skeletonKeys = Array.from({ length: count }, (_, index) => `skeleton-${index}`);
   return (
-    <Box component="ul" aria-busy="true" aria-label="Loading backlog" sx={{ listStyle: 'none' }}>
-      {SKELETON_KEYS.map((key) => (
+    <Box component="ul" aria-busy="true" aria-label={label} sx={{ listStyle: 'none' }}>
+      {skeletonKeys.map((key) => (
         <Box
           component="li"
           key={key}

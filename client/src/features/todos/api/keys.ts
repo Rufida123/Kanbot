@@ -2,7 +2,7 @@ import type { TodoPriority, TodoType } from '@/shared/types/api';
 
 /** Every parameter that changes the response is part of the key (AI_RULES §7). */
 export type TodoListFilters = {
-  /** `'backlog'` or a sprint id (sprint lists arrive in Sprint 4). */
+  /** `'backlog'` or a sprint id. */
   sprintId: string;
   q: string;
   priority: TodoPriority | null;
@@ -23,4 +23,5 @@ export const todoMutationKeys = {
   create: (projectId: string) => ['todo', 'create', projectId] as const,
   update: ['todo', 'update'] as const,
   delete: ['todo', 'delete'] as const,
+  move: ['todo', 'move'] as const,
 };

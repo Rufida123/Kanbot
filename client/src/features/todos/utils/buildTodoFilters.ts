@@ -33,3 +33,13 @@ export function toTodoListQuery(filters: TodoListFilters): TodoListQuery {
 export function hasTodoFilters(filters: TodoListFilters): boolean {
   return filters.q !== '' || filters.priority !== null || filters.type !== null;
 }
+
+/** The filters of a planned sprint's list: its own id, never narrowed by the backlog filters. */
+export function buildSprintListFilters(sprintId: string): TodoListFilters {
+  return { sprintId, q: '', priority: null, type: null };
+}
+
+/** The unfiltered backlog: the only backlog list whose array index is the real position. */
+export function buildFullBacklogFilters(): TodoListFilters {
+  return buildTodoListFilters({ search: '', priority: null, type: null });
+}
