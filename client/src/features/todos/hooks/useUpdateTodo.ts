@@ -16,6 +16,8 @@ export type UpdateTodoVariables = {
   changes: UpdateTodoRequest;
   /** The todo as it was loaded: tells which board and sprint the todo is leaving. */
   previous: Pick<Todo, 'projectId' | 'sprintId'>;
+  /** Toast text on success. Defaults to "Todo saved"; the row menu passes "Moved …". */
+  successMessage?: string;
 };
 
 /** True when the edit can change sprint numbers or a board (sprint, status or points). */
@@ -33,7 +35,7 @@ export function useUpdateTodo() {
   return useMutation({
     mutationKey: todoMutationKeys.update,
     mutationFn: ({ todoId, changes }: UpdateTodoVariables) => updateTodo({ todoId, changes }),
-    onSuccess: (todo, { changes, previous }) => {
+    onSuccess: (todo, { changes, previous, successMessage }) => {
       queryClient.setQueryData(todoKeys.detail(todo.id), todo);
       replaceTodoInListCaches(queryClient, todo);
       invalidateTodoCounters(queryClient, todo.projectId);
@@ -44,7 +46,7 @@ export function useUpdateTodo() {
           void queryClient.invalidateQueries({ queryKey: boardKeys.detail(sprintId) });
         }
       }
-      showToast('Todo saved');
+      showToast(successMessage ?? 'Todo saved');
     },
   });
 }

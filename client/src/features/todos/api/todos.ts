@@ -3,6 +3,7 @@ import { isOneOf } from '@/shared/utils/isOneOf';
 import { STORY_POINTS, TODO_PRIORITIES, TODO_STATUSES, TODO_TYPES } from '@/shared/types/api';
 import type {
   CreateTodoRequest,
+  MoveTodoRequest,
   Todo,
   TodoListQuery,
   UpdateTodoRequest,
@@ -82,4 +83,12 @@ export async function updateTodo(params: {
 
 export async function deleteTodo(todoId: string): Promise<void> {
   await api.delete(`/todos/${todoId}`);
+}
+
+/** Moves a todo to `request.position` of the target list (0 = top). Returns the moved todo. */
+export async function moveTodo(params: {
+  todoId: string;
+  request: MoveTodoRequest;
+}): Promise<Todo> {
+  return assertTodo(await api.post<unknown>(`/todos/${params.todoId}/move`, params.request));
 }

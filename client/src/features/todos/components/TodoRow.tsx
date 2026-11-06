@@ -1,11 +1,13 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
 import { TodoActionsMenu } from '@/features/todos/components/TodoActionsMenu';
+import type { TodoMenuAction } from '@/features/todos/components/TodoActionsMenu';
 import { LabelChips } from '@/shared/components/LabelChips';
 import { PointsChip } from '@/shared/components/PointsChip';
 import { PriorityBadge } from '@/shared/components/PriorityBadge';
 import { TypeIcon } from '@/shared/components/TypeIcon';
 import { staggeredEnterSx } from '@/shared/theme/motion';
+import type { CSSProperties, ReactNode, Ref } from 'react';
 import type { Todo } from '@/shared/types/api';
 
 const TITLE_SX = {
@@ -25,6 +27,17 @@ type TodoRowProps = {
   index: number;
   onOpen: (todoId: string) => void;
   onDelete: (todo: Todo) => void;
+  /** The drag handle of a sortable row (Sprint 4), shown before the row button. */
+  dragHandle?: ReactNode;
+  /** Extra ⋮ menu entries, for example "Move to top". */
+  menuActions?: readonly TodoMenuAction[];
+  /** Sortable rows: the `li` ref and the transform style from dnd-kit. */
+  rootRef?: Ref<HTMLLIElement>;
+  rootStyle?: CSSProperties;
+  /** The row being dragged stays in the list as a faded placeholder. */
+  isDragging?: boolean;
+  /** Sortable rows skip the enter animation: its final `transform` would override the drag transform. */
+  hasEnterAnimation?: boolean;
 };
 
 /**
@@ -32,19 +45,35 @@ type TodoRowProps = {
  * sibling (a button must not be nested in a button). Inside the button only phrasing content
  * (`span`s) is used, which is why the badges are not MUI chips.
  */
-export function TodoRow({ todo, index, onOpen, onDelete }: TodoRowProps) {
+export function TodoRow({
+  todo,
+  index,
+  onOpen,
+  onDelete,
+  dragHandle,
+  menuActions,
+  rootRef,
+  rootStyle,
+  isDragging = false,
+  hasEnterAnimation = true,
+}: TodoRowProps) {
   return (
     <Box
       component="li"
+      ref={rootRef}
+      style={rootStyle}
       sx={{
         display: 'flex',
         alignItems: 'center',
         borderTop: 1,
         borderColor: 'divider',
         '&:first-of-type': { borderTop: 0 },
-        ...staggeredEnterSx(index),
+        ...(hasEnterAnimation && staggeredEnterSx(index)),
+        opacity: isDragging ? 0.4 : 1,
+        backgroundColor: 'background.paper',
       }}
     >
+      {dragHandle}
       <ButtonBase
         type="button"
         onClick={() => onOpen(todo.id)}
@@ -58,7 +87,7 @@ export function TodoRow({ todo, index, onOpen, onDelete }: TodoRowProps) {
           columnGap: 1.5,
           rowGap: 0.75,
           paddingBlock: 1.25,
-          paddingInlineStart: 2,
+          paddingInlineStart: dragHandle === undefined ? 2 : 0.5,
           paddingInlineEnd: 1,
           textAlign: 'start',
           transition: (theme) => theme.transitions.create('background-color'),
@@ -91,7 +120,12 @@ export function TodoRow({ todo, index, onOpen, onDelete }: TodoRowProps) {
         </Box>
       </ButtonBase>
       <Box sx={{ display: 'flex', paddingInlineEnd: 1 }}>
-        <TodoActionsMenu todo={todo} onOpen={onOpen} onDelete={() => onDelete(todo)} />
+        <TodoActionsMenu
+          todo={todo}
+          onOpen={onOpen}
+          onDelete={() => onDelete(todo)}
+          extraActions={menuActions}
+        />
       </Box>
     </Box>
   );

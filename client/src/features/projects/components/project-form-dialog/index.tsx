@@ -9,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useId, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { paths } from '@/app/navigation';
 import { applyFieldErrors } from '@/features/auth';
@@ -115,7 +115,7 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
     },
   });
 
-  const onSubmit = handleSubmit(async (formValues) => {
+  const submit = async (formValues: ProjectFormValues) => {
     // A ref, not `isPending`: a fast double click can arrive before React re-renders.
     if (isSubmittingRef.current) return;
     isSubmittingRef.current = true;
@@ -147,7 +147,12 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
     } finally {
       isSubmittingRef.current = false;
     }
-  });
+  };
+
+  // `handleSubmit` runs inside the event handler, not while rendering: the ref is only read there.
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    void handleSubmit(submit)(event);
+  };
 
   return (
     <>
