@@ -55,6 +55,7 @@ export function Sidebar() {
                       borderRadius: '0.125rem',
                       backgroundColor: 'primary.main',
                     },
+
                     '& .MuiListItemText-primary': { fontWeight: 'fontWeightMedium' },
                   },
                 }}

@@ -41,6 +41,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         minWidth: 0,
         transition: (theme) => theme.transitions.create(['border-color', 'background-color']),
         '&:hover': { borderColor: 'primary.main', backgroundColor: 'action.hover' },
+
       }}
     >
       <Box

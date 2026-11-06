@@ -58,12 +58,13 @@ export function AppShell() {
               <Outlet />
             </Suspense>
           </Box>
+
         </Box>
       </Box>
       <AssistantDrawer />
       <ProjectDialogsHost />
       <TodoDetailsHost />
-      <ToastHost />
+
     </Box>
   );
 }
