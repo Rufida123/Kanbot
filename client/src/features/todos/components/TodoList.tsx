@@ -11,6 +11,8 @@ type TodoListProps = {
   label: string;
   /** Renders a row in place of the default one (Sprint 4 uses it for sortable rows). */
   renderRow?: (row: RowArgs) => ReactNode;
+  /** Plain rows without a menu or Delete (todos of a completed sprint). */
+  isReadOnly?: boolean;
 };
 
 export type RowArgs = {
@@ -24,7 +26,7 @@ export type RowArgs = {
  * The rows of one list, in the order given. It owns no data and no scroll, so it can sit inside
  * a `SortableContext`. Opening and deleting go through the URL and the delete store.
  */
-export function TodoList({ todos, label, renderRow }: TodoListProps) {
+export function TodoList({ todos, label, renderRow, isReadOnly = false }: TodoListProps) {
   const { openTodo } = useTodoDialogParam();
   const requestDelete = useTodoDeleteStore((state) => state.request);
 
@@ -40,6 +42,7 @@ export function TodoList({ todos, label, renderRow }: TodoListProps) {
             index={index}
             onOpen={openTodo}
             onDelete={requestDelete}
+            isReadOnly={isReadOnly}
           />
         ),
       )}

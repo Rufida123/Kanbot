@@ -1,17 +1,10 @@
-import ConstructionOutlinedIcon from '@mui/icons-material/ConstructionOutlined';
-import { EmptyState } from '@/shared/components/EmptyState';
+import { useParams } from 'react-router';
+import { PROJECT_ID_PARAM } from '@/app/navigation';
+import { BoardView } from '@/features/board/components/BoardView';
 
-/** Placeholder until Sprint 5 builds the real page. */
+/** `/projects/:projectId/board`. The page only composes; `ProjectGuard` guarantees the project exists. */
 export default function BoardPage() {
-  return (
-    <>
-      <title>Board · Kanbot</title>
-      <EmptyState
-        headingComponent="h1"
-        icon={<ConstructionOutlinedIcon fontSize="large" />}
-        title="Board: coming in Sprint 5"
-        message="The sprint board will live here."
-      />
-    </>
-  );
+  const projectId = useParams()[PROJECT_ID_PARAM];
+  if (projectId === undefined) return null;
+  return <BoardView projectId={projectId} />;
 }

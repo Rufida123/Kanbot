@@ -23,12 +23,13 @@ export type TodoMenuAction = {
 type TodoActionsMenuProps = {
   todo: Pick<Todo, 'id' | 'key' | 'title'>;
   onOpen: (todoId: string) => void;
-  onDelete: (todoId: string) => void;
+  /** Omitted: the menu has no Delete entry (the board and read-only views). */
+  onDelete?: (todoId: string) => void;
   /** The "Move to…" entries (Sprint 4), shown between Open and Delete. */
   extraActions?: readonly TodoMenuAction[];
 };
 
-/** The ⋮ button of a row: Open, the move actions it is given, and Delete. */
+/** The ⋮ button of a row: Open, the move actions it is given, and Delete (when `onDelete` is given). */
 export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: TodoActionsMenuProps) {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const id = useId();
@@ -86,13 +87,17 @@ export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: T
             </ListItemText>
           </MenuItem>
         ))}
-        {extraActions.length > 0 ? <Divider component="li" role="separator" /> : null}
-        <MenuItem onClick={() => runAction(onDelete)}>
-          <ListItemIcon>
-            <DeleteOutlinedIcon fontSize="small" color="error" aria-hidden="true" />
-          </ListItemIcon>
-          Delete
-        </MenuItem>
+        {onDelete !== undefined && extraActions.length > 0 ? (
+          <Divider component="li" role="separator" />
+        ) : null}
+        {onDelete === undefined ? null : (
+          <MenuItem onClick={() => runAction(onDelete)}>
+            <ListItemIcon>
+              <DeleteOutlinedIcon fontSize="small" color="error" aria-hidden="true" />
+            </ListItemIcon>
+            Delete
+          </MenuItem>
+        )}
       </Menu>
     </>
   );

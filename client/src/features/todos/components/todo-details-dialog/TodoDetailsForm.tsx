@@ -19,6 +19,7 @@ import { TodoDialogFrame } from '@/features/todos/components/todo-details-dialog
 import { TODO_LIMITS } from '@/features/todos/config/limits';
 import {
   COMPLETED_SPRINT_HINT,
+  COMPLETED_SPRINT_READ_ONLY_MESSAGE,
   NOT_ESTIMATED_LABEL,
   SPRINTS_ERROR_HINT,
   SPRINTS_LOADING_HINT,
@@ -27,6 +28,7 @@ import { useUpdateTodo } from '@/features/todos/hooks/useUpdateTodo';
 import { useTodoDeleteStore } from '@/features/todos/store/todoDeleteStore';
 import { getSprintOptions } from '@/features/todos/utils/getSprintOptions';
 import { getTodoChanges, hasTodoChanges, toTodoFormValues } from '@/features/todos/utils/getTodoChanges';
+import { getTodoLock } from '@/features/todos/utils/getTodoLock';
 import { isTodoMovable } from '@/features/todos/utils/isTodoMovable';
 import { ApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
@@ -126,6 +128,9 @@ export function TodoDetailsForm({
 
   const isMovable = isTodoMovable(savedTodo, sprints);
   const isSprintListReady = sprints !== undefined;
+  const lock = getTodoLock({ todo: savedTodo, sprints, isSprintsError });
+  const isReadOnly = lock === 'locked';
+  const isLocked = lock !== 'editable';
   const sprintHint = getSprintHint(sprints, isSprintsError, isMovable);
 
   const requestClose = () => {
@@ -139,7 +144,7 @@ export function TodoDetailsForm({
 
   const save = async (formValues: TodoFormValues) => {
     // A ref, not `isPending`: a fast double click can arrive before React re-renders.
-    if (isSubmittingRef.current) return;
+    if (isSubmittingRef.current || isLocked) return;
     const saveChanges = getTodoChanges(savedTodo, formValues);
     if (!hasTodoChanges(saveChanges)) return;
     isSubmittingRef.current = true;
@@ -187,6 +192,7 @@ export function TodoDetailsForm({
       >
         <DialogContent dividers sx={{ paddingBlock: 2.5 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+            {isReadOnly ? <Alert severity="info">{COMPLETED_SPRINT_READ_ONLY_MESSAGE}</Alert> : null}
             {formError ? <Alert severity="error">{formError}</Alert> : null}
             <Box sx={COLUMNS_SX}>
               <Box sx={COLUMN_SX}>
@@ -196,6 +202,7 @@ export function TodoDetailsForm({
                   autoComplete="off"
                   maxLength={TODO_LIMITS.titleMax}
                   registration={register('title')}
+                  isDisabled={isLocked}
                   error={errors.title}
                 />
                 <FormTextField
@@ -205,6 +212,7 @@ export function TodoDetailsForm({
                   autoComplete="off"
                   maxLength={TODO_LIMITS.descriptionMax}
                   registration={register('description')}
+                  isDisabled={isLocked}
                   error={errors.description}
                   counter={`${currentValues.description.length}/${TODO_LIMITS.descriptionMax}`}
                 />
@@ -216,7 +224,7 @@ export function TodoDetailsForm({
                   control={control}
                   options={STATUS_OPTIONS}
                   error={errors.status}
-                  isDisabled={!isMovable}
+                  isDisabled={!isMovable || isLocked}
                 />
                 <FormSelectField
                   label="Priority"
@@ -225,6 +233,7 @@ export function TodoDetailsForm({
                   options={PRIORITY_OPTIONS}
                   renderOption={renderPriority}
                   error={errors.priority}
+                  isDisabled={isLocked}
                 />
                 <FormSelectField
                   label="Type"
@@ -233,6 +242,7 @@ export function TodoDetailsForm({
                   options={TYPE_OPTIONS}
                   renderOption={renderType}
                   error={errors.type}
+                  isDisabled={isLocked}
                 />
                 <FormSelectField
                   label="Story points"
@@ -240,6 +250,7 @@ export function TodoDetailsForm({
                   control={control}
                   options={STORY_POINT_OPTIONS}
                   error={errors.storyPoints}
+                  isDisabled={isLocked}
                 />
                 <FormSelectField
                   label="Sprint"
@@ -248,13 +259,14 @@ export function TodoDetailsForm({
                   options={getSprintOptions(sprints, savedTodo.sprintId)}
                   error={errors.sprintId}
                   hint={sprintHint}
-                  isDisabled={!isMovable || !isSprintListReady}
+                  isDisabled={!isMovable || !isSprintListReady || isLocked}
                 />
-                <LabelsField control={control} error={errors.labels} />
+                <LabelsField control={control} error={errors.labels} isDisabled={isLocked} />
                 <FormTextField
                   label="Due date"
                   type="date"
                   registration={register('dueDate')}
+                  isDisabled={isLocked}
                   error={errors.dueDate}
                 />
               </Box>
@@ -265,7 +277,7 @@ export function TodoDetailsForm({
           <Button
             color="error"
             variant="outlined"
-            disabled={isPending}
+            disabled={isPending || isLocked}
             onClick={() =>
               requestDelete({
                 id: savedTodo.id,
@@ -279,12 +291,12 @@ export function TodoDetailsForm({
             Delete
           </Button>
           <Button color="inherit" onClick={requestClose} disabled={isPending}>
-            Cancel
+            {isReadOnly ? 'Close' : 'Cancel'}
           </Button>
           <Button
             type="submit"
             variant="contained"
-            disabled={isPending || !hasUnsavedChanges}
+            disabled={isPending || isLocked || !hasUnsavedChanges}
             startIcon={isPending ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined}
           >
             Save

@@ -64,7 +64,7 @@ export function AppShell() {
       <AssistantDrawer />
       <ProjectDialogsHost />
       <TodoDetailsHost />
-
+      <ToastHost />
     </Box>
   );
 }

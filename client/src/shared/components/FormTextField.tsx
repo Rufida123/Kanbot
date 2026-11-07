@@ -28,6 +28,7 @@ export type FormTextFieldProps = {
   maxLength?: number;
   /** Small text on the right under the input, for example "12/500". */
   counter?: string;
+  isDisabled?: boolean;
 };
 
 /** Label above the input (as in the wireframes), error and hint below. */
@@ -46,6 +47,7 @@ export function FormTextField({
   minRows,
   maxLength,
   counter,
+  isDisabled = false,
 }: FormTextFieldProps) {
   const id = useId();
   const helperId = `${id}-helper`;
@@ -53,7 +55,7 @@ export function FormTextField({
   const { ref, ...inputProps } = registration;
 
   return (
-    <FormControl fullWidth error={Boolean(error)} required={isRequired}>
+    <FormControl fullWidth error={Boolean(error)} required={isRequired} disabled={isDisabled}>
       <FormLabel htmlFor={id} sx={{ marginBottom: 0.75 }}>
         {label}
       </FormLabel>

@@ -7,8 +7,8 @@ import { ProjectGuard } from './components/ProjectGuard';
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const BacklogPage = lazy(() => import('@/features/backlog/pages/BacklogPage'));
 const BoardPage = lazy(() => import('@/features/board/pages/BoardPage'));
-const SprintsPage = lazy(() => import('@/features/sprints/pages/SprintsPage'));
-const SprintDetailsPage = lazy(() => import('@/features/sprints/pages/SprintDetailsPage'));
+const SprintsPage = lazy(() => import('@/features/board/pages/SprintsPage'));
+const SprintDetailsPage = lazy(() => import('@/features/board/pages/SprintDetailsPage'));
 
 /** Private routes. The router wraps them in `RequireAuth` and `AppShell`. */
 export const projectsRoutes: RouteObject[] = [
