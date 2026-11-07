@@ -3,6 +3,7 @@ import Drawer from '@mui/material/Drawer';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router';
+import { AiDialogsHost } from '@/features/ai';
 import { ProjectDialogsHost, useRemoveDeletedProjectCaches } from '@/features/projects';
 import { TodoDetailsHost } from '@/features/todos';
 import { ToastHost } from '@/shared/components/ToastHost';
@@ -63,8 +64,9 @@ export function AppShell() {
       </Box>
       <AssistantDrawer />
       <ProjectDialogsHost />
+      <AiDialogsHost />
       <TodoDetailsHost />
-
+      <ToastHost />
     </Box>
   );
 }

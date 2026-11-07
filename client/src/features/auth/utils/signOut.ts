@@ -3,11 +3,14 @@ import { useSessionStore } from '@/shared/stores/sessionStore';
 import type { SignOutReason } from '@/shared/stores/sessionStore';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { useUiStore } from '@/shared/stores/uiStore';
+import { useAiChatStore } from '@/features/ai/store/aiChatStore';
+import { useAiDialogStore } from '@/features/ai/store/aiDialogStore';
 import { useProjectDialogStore } from '@/features/projects/store/projectDialogStore';
 
 /**
  * Clears the token, the user, every cached query and the client stores (UI state, toasts,
- * open project dialogs). The route guards then show /login.
+ * open project dialogs, the AI conversation and dialog: the conversation contains project data,
+ * so the next user of this browser must not see it). The route guards then show /login.
  */
 export function signOut(reason: SignOutReason | null): void {
   useSessionStore.getState().endSession(reason);
@@ -15,6 +18,8 @@ export function signOut(reason: SignOutReason | null): void {
   useUiStore.getState().reset();
   useToastStore.getState().reset();
   useProjectDialogStore.getState().reset();
+  useAiChatStore.getState().reset();
+  useAiDialogStore.getState().reset();
 }
 
 /**

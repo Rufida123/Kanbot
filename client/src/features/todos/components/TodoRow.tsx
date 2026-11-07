@@ -36,6 +36,8 @@ type TodoRowProps = {
   rootStyle?: CSSProperties;
   /** The row being dragged stays in the list as a faded placeholder. */
   isDragging?: boolean;
+  /** Rows of a completed sprint: no drag handle and no menu, only the open button. */
+  isReadOnly?: boolean;
   /** Sortable rows skip the enter animation: its final `transform` would override the drag transform. */
   hasEnterAnimation?: boolean;
 };
@@ -55,8 +57,10 @@ export function TodoRow({
   rootRef,
   rootStyle,
   isDragging = false,
+  isReadOnly = false,
   hasEnterAnimation = true,
 }: TodoRowProps) {
+  const rowHandle = isReadOnly ? undefined : dragHandle;
   return (
     <Box
       component="li"
@@ -73,7 +77,7 @@ export function TodoRow({
         backgroundColor: 'background.paper',
       }}
     >
-      {dragHandle}
+      {rowHandle}
       <ButtonBase
         type="button"
         onClick={() => onOpen(todo.id)}
@@ -87,7 +91,7 @@ export function TodoRow({
           columnGap: 1.5,
           rowGap: 0.75,
           paddingBlock: 1.25,
-          paddingInlineStart: dragHandle === undefined ? 2 : 0.5,
+          paddingInlineStart: rowHandle === undefined ? 2 : 0.5,
           paddingInlineEnd: 1,
           textAlign: 'start',
           transition: (theme) => theme.transitions.create('background-color'),
@@ -119,14 +123,16 @@ export function TodoRow({
           <PointsChip points={todo.storyPoints} />
         </Box>
       </ButtonBase>
-      <Box sx={{ display: 'flex', paddingInlineEnd: 1 }}>
-        <TodoActionsMenu
-          todo={todo}
-          onOpen={onOpen}
-          onDelete={() => onDelete(todo)}
-          extraActions={menuActions}
-        />
-      </Box>
+      {isReadOnly ? null : (
+        <Box sx={{ display: 'flex', paddingInlineEnd: 1 }}>
+          <TodoActionsMenu
+            todo={todo}
+            onOpen={onOpen}
+            onDelete={() => onDelete(todo)}
+            extraActions={menuActions}
+          />
+        </Box>
+      )}
     </Box>
   );
 }

@@ -3,15 +3,10 @@ import {
   DndContext,
   DragOverlay,
   getFirstCollision,
-  KeyboardSensor,
-  PointerSensor,
   pointerWithin,
   rectIntersection,
-  useSensor,
-  useSensors,
 } from '@dnd-kit/core';
 import type { CollisionDetection, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
-import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -20,11 +15,7 @@ import type { ReactNode } from 'react';
 import { DragPreviewContext } from '@/features/backlog/context/DragPreviewContext';
 import { isContainerId, isSortableData } from '@/features/backlog/utils/containerIds';
 import type { ContainerId } from '@/features/backlog/utils/containerIds';
-import {
-  createDragAnnouncements,
-  SCREEN_READER_INSTRUCTIONS,
-} from '@/features/backlog/utils/createDragAnnouncements';
-import type { Placement } from '@/features/backlog/utils/createDragAnnouncements';
+import { BACKLOG_DRAG_INSTRUCTIONS } from '@/features/backlog/config/dnd';
 import {
   findContainer,
   moveBetweenLists,
@@ -33,10 +24,12 @@ import {
 } from '@/features/backlog/utils/dragLogic';
 import type { ListSource, PreviewIds } from '@/features/backlog/utils/dragLogic';
 import { TodoRow, useMoveTodo } from '@/features/todos';
+import { REDUCED_MOTION_QUERY } from '@/shared/dnd/config';
+import { createDragAnnouncements } from '@/shared/dnd/createDragAnnouncements';
+import type { Placement } from '@/shared/dnd/createDragAnnouncements';
+import { useDragSensors } from '@/shared/dnd/useDragSensors';
 import type { Todo } from '@/shared/types/api';
 
-const POINTER_ACTIVATION_DISTANCE_PX = 5;
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 const noop = () => undefined;
 
 /**
@@ -74,11 +67,7 @@ export function BacklogDndProvider({ projectId, lists, getListLabel, children }:
   const moveMutation = useMoveTodo(projectId);
   const isReducedMotion = useMediaQuery(REDUCED_MOTION_QUERY);
   const [drag, setDrag] = useState<DragState | null>(null);
-  const sensors = useSensors(
-    // A few pixels of movement first, so a plain click on the handle never starts a drag.
-    useSensor(PointerSensor, { activationConstraint: { distance: POINTER_ACTIVATION_DISTANCE_PX } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
+  const sensors = useDragSensors();
 
   const listsKey = getListsKey(lists);
   const todoById = new Map(lists.flatMap((list) => list.todos).map((todo) => [todo.id, todo]));
@@ -190,7 +179,7 @@ export function BacklogDndProvider({ projectId, lists, getListLabel, children }:
       collisionDetection={collisionDetection}
       accessibility={{
         announcements: createDragAnnouncements({ getKey, describe }),
-        screenReaderInstructions: { draggable: SCREEN_READER_INSTRUCTIONS },
+        screenReaderInstructions: { draggable: BACKLOG_DRAG_INSTRUCTIONS },
       }}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}

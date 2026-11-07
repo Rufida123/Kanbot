@@ -1,30 +1,40 @@
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { useId } from 'react';
-import { EmptyState } from '@/shared/components/EmptyState';
+import { useEffect, useId } from 'react';
+import { useParams } from 'react-router';
+import { PROJECT_ID_PARAM } from '@/app/navigation';
+import { AssistantPanel } from '@/features/ai';
 import { ASSISTANT_DRAWER_WIDTH_REM } from '@/shared/layout/layout';
 import { useUiStore } from '@/shared/stores/uiStore';
 
 /**
- * Empty shell of the AI assistant (its content arrives in Sprint 6). Esc and the close
- * button close it; focus goes back to the "Ask AI" button because MUI restores it.
+ * The AI assistant (AI-1). The frame lives here (paper, title, close button); the content is
+ * `AssistantPanel`. It needs a project, so on `/projects` it renders nothing and closes itself.
+ * The drawer stays mounted while closed (`keepMounted`): the typed text, the scroll position and
+ * a request in flight survive closing and reopening it. Esc and the close button close it, and
+ * MUI returns focus to the "Ask AI" button.
  */
 export function AssistantDrawer() {
+  const projectId = useParams()[PROJECT_ID_PARAM];
   const isOpen = useUiStore((state) => state.assistantOpen);
   const setAssistantOpen = useUiStore((state) => state.setAssistantOpen);
   const titleId = useId();
 
+  useEffect(() => {
+    if (projectId === undefined && isOpen) setAssistantOpen(false);
+  }, [projectId, isOpen, setAssistantOpen]);
+
   return (
     <Drawer
       anchor="right"
-      open={isOpen}
+      open={isOpen && projectId !== undefined}
       onClose={() => setAssistantOpen(false)}
       slotProps={{
+        root: { keepMounted: true },
         paper: {
           'aria-labelledby': titleId,
           sx: { width: `min(100vw, ${ASSISTANT_DRAWER_WIDTH_REM}rem)`, display: 'flex' },
@@ -52,13 +62,7 @@ export function AssistantDrawer() {
           </IconButton>
         </Tooltip>
       </Box>
-      <Box sx={{ flex: 1, overflow: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <EmptyState
-          icon={<AutoAwesomeIcon fontSize="large" />}
-          title="Assistant coming soon"
-          message="Chat, todo generation and sprint planning help will appear here."
-        />
-      </Box>
+      {projectId === undefined ? null : <AssistantPanel projectId={projectId} />}
     </Drawer>
   );
 }

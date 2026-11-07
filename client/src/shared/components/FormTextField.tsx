@@ -26,8 +26,11 @@ export type FormTextFieldProps = {
   isMultiline?: boolean;
   minRows?: number;
   maxLength?: number;
+  /** Mobile keyboard for whole numbers (the value stays text; the schema parses it). */
+  inputMode?: 'text' | 'numeric';
   /** Small text on the right under the input, for example "12/500". */
   counter?: string;
+  isDisabled?: boolean;
 };
 
 /** Label above the input (as in the wireframes), error and hint below. */
@@ -45,7 +48,9 @@ export function FormTextField({
   isMultiline = false,
   minRows,
   maxLength,
+  inputMode,
   counter,
+  isDisabled = false,
 }: FormTextFieldProps) {
   const id = useId();
   const helperId = `${id}-helper`;
@@ -53,7 +58,7 @@ export function FormTextField({
   const { ref, ...inputProps } = registration;
 
   return (
-    <FormControl fullWidth error={Boolean(error)} required={isRequired}>
+    <FormControl fullWidth error={Boolean(error)} required={isRequired} disabled={isDisabled}>
       <FormLabel htmlFor={id} sx={{ marginBottom: 0.75 }}>
         {label}
       </FormLabel>
@@ -69,7 +74,7 @@ export function FormTextField({
         multiline={isMultiline}
         minRows={minRows}
         // `required` marks the label only: validation messages come from Zod (form uses noValidate).
-        inputProps={{ 'aria-describedby': helperText ? helperId : undefined, maxLength }}
+        inputProps={{ 'aria-describedby': helperText ? helperId : undefined, maxLength, inputMode }}
       />
       {/* The slot is always rendered so an error appearing on blur never shifts the layout
           (a shift between mouse-down and mouse-up would swallow clicks on links below). */}

@@ -1,6 +1,7 @@
 import { api, ApiError } from '@/shared/api/client';
 import { isOneOf } from '@/shared/utils/isOneOf';
 import type {
+  CompleteSprintRequest,
   CreateSprintRequest,
   Sprint,
   SprintStatus,
@@ -18,7 +19,7 @@ function isNullableString(value: unknown): value is string | null {
   return value === null || typeof value === 'string';
 }
 
-function isSprint(value: unknown): value is Sprint {
+export function isSprint(value: unknown): value is Sprint {
   return (
     isRecord(value) &&
     typeof value.id === 'string' &&
@@ -32,7 +33,7 @@ function isSprint(value: unknown): value is Sprint {
   );
 }
 
-function unexpectedResponse(): ApiError {
+export function unexpectedResponse(): ApiError {
   return new ApiError({
     status: null,
     code: 'UNEXPECTED_RESPONSE',
@@ -52,6 +53,11 @@ export async function listSprints(projectId: string, signal?: AbortSignal): Prom
     return data.sprints;
   }
   throw unexpectedResponse();
+}
+
+/** One sprint by id (404 for an unknown id or another user's sprint). */
+export async function getSprint(sprintId: string, signal?: AbortSignal): Promise<Sprint> {
+  return assertSprint(await api.get<unknown>(`/sprints/${sprintId}`, { signal }));
 }
 
 export async function createSprint(params: {
@@ -85,4 +91,15 @@ export async function startSprint(params: {
   request: StartSprintRequest;
 }): Promise<Sprint> {
   return assertSprint(await api.post<unknown>(`/sprints/${params.sprintId}/start`, params.request));
+}
+
+/**
+ * Completes the active sprint. Done todos stay in it; the others go to the backlog or to a
+ * planned sprint. 409 when it is not active any more, 400 when the target is no longer planned.
+ */
+export async function completeSprint(params: {
+  sprintId: string;
+  request: CompleteSprintRequest;
+}): Promise<Sprint> {
+  return assertSprint(await api.post<unknown>(`/sprints/${params.sprintId}/complete`, params.request));
 }

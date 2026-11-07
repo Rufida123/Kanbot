@@ -2,14 +2,13 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { memo } from 'react';
-import { DragHandle } from '@/features/backlog/components/DragHandle';
 import { useMoveActions } from '@/features/backlog/context/MoveActionsContext';
 import type { ContainerId } from '@/features/backlog/utils/containerIds';
 import { TodoRow } from '@/features/todos';
+import { REDUCED_MOTION_QUERY } from '@/shared/dnd/config';
+import { DragHandle } from '@/shared/dnd/DragHandle';
 import { motion } from '@/shared/theme/tokens';
 import type { Todo } from '@/shared/types/api';
-
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
 
 type SortableTodoRowProps = {
   todo: Todo;

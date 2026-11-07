@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { matchPath, useLocation, useParams } from 'react-router';
 import { paths, PROJECT_ID_PARAM } from '@/app/navigation';
 import { useProject } from '@/features/projects';
-import { TOP_BAR_HEIGHT_REM } from '@/shared/layout/layout';
+import { ASK_AI_BUTTON_ID, TOP_BAR_HEIGHT_REM } from '@/shared/layout/layout';
 import { useUiStore } from '@/shared/stores/uiStore';
 
 const SECTION_TITLES: Record<string, string> = {
@@ -69,15 +69,19 @@ export function TopBar({ isDesktop }: TopBarProps) {
             {getPageTitle(pathname, project?.name)}
           </Typography>
         </Box>
-        <Button
-          variant="outlined"
-          startIcon={<AutoAwesomeIcon aria-hidden="true" />}
-          aria-haspopup="dialog"
-          aria-expanded={assistantOpen}
-          onClick={() => setAssistantOpen(!assistantOpen)}
-        >
-          Ask AI
-        </Button>
+        {/* The assistant needs a project: no button on /projects. */}
+        {projectId === undefined ? null : (
+          <Button
+            id={ASK_AI_BUTTON_ID}
+            variant="outlined"
+            startIcon={<AutoAwesomeIcon aria-hidden="true" />}
+            aria-haspopup="dialog"
+            aria-expanded={assistantOpen}
+            onClick={() => setAssistantOpen(!assistantOpen)}
+          >
+            Ask AI
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

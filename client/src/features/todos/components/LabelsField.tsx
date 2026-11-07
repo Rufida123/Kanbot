@@ -19,6 +19,7 @@ type LabelsError = FieldErrors<TodoFormValues>['labels'];
 type LabelsFieldProps = {
   control: Control<TodoFormValues>;
   error?: LabelsError;
+  isDisabled?: boolean;
 };
 
 /** The message of the whole list ("At most 10 labels") or of the first invalid label. */
@@ -37,7 +38,7 @@ function getLabelsErrorMessage(error: LabelsError): string | undefined {
  * Free-text tags: type and press Enter (or leave the field) to add. Values are trimmed,
  * de-duplicated and capped at 10, each at most 30 characters.
  */
-export function LabelsField({ control, error }: LabelsFieldProps) {
+export function LabelsField({ control, error, isDisabled = false }: LabelsFieldProps) {
   const id = useId();
   const helperId = `${id}-helper`;
 
@@ -49,13 +50,14 @@ export function LabelsField({ control, error }: LabelsFieldProps) {
         const hint = `${field.value.length}/${TODO_LIMITS.labelsMax} labels. Press Enter to add.`;
         const helperText = getLabelsErrorMessage(error) ?? hint;
         return (
-          <FormControl fullWidth error={Boolean(error)}>
+          <FormControl fullWidth error={Boolean(error)} disabled={isDisabled}>
             <FormLabel htmlFor={id} sx={{ marginBottom: 0.75 }}>
               Labels
             </FormLabel>
             <Autocomplete
               multiple
               freeSolo
+              disabled={isDisabled}
               autoSelect
               id={id}
               options={EMPTY_OPTIONS}
