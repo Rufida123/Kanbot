@@ -44,6 +44,7 @@ export function useUpdateTodo() {
         for (const sprintId of new Set([previous.sprintId, todo.sprintId])) {
           if (sprintId === null) continue;
           void queryClient.invalidateQueries({ queryKey: boardKeys.detail(sprintId) });
+          void queryClient.invalidateQueries({ queryKey: sprintKeys.detail(sprintId) });
         }
       }
       showToast(successMessage ?? 'Todo saved');

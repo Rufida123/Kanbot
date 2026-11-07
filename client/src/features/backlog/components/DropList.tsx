@@ -2,7 +2,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import Box from '@mui/material/Box';
 import type { ReactNode } from 'react';
-import { DragHandle } from '@/features/backlog/components/DragHandle';
+import { DragHandle } from '@/shared/dnd/DragHandle';
 import { SortableTodoRow } from '@/features/backlog/components/SortableTodoRow';
 import { useMoveActions } from '@/features/backlog/context/MoveActionsContext';
 import { usePreviewedTodos } from '@/features/backlog/context/DragPreviewContext';
