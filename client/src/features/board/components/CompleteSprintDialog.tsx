@@ -1,6 +1,7 @@
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,12 +15,14 @@ import RadioGroup from '@mui/material/RadioGroup';
 import { useId, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { paths } from '@/app/navigation';
+import { AiDisclaimer, useSprintSummary } from '@/features/ai';
 import { useCompleteSprint } from '@/features/board/hooks/useCompleteSprint';
 import { getUnfinishedCount } from '@/features/board/utils/progress';
 import type { BoardColumns } from '@/features/board/utils/progress';
 import { getPlannedSprints, useSprints } from '@/features/sprints';
 import { BACKLOG_LABEL } from '@/features/todos';
 import { ApiError } from '@/shared/api/client';
+import { showToast } from '@/shared/stores/toastStore';
 import type { Sprint } from '@/shared/types/api';
 import { formatCount } from '@/shared/utils/formatCount';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
@@ -35,6 +38,14 @@ type CompleteSprintDialogProps = {
 };
 
 type DialogError = { message: string; isAlreadyCompleted: boolean };
+
+/** Which request the dialog is waiting for; it cannot be dismissed during either step. */
+type SubmitPhase = 'completing' | 'summarizing';
+
+function getSubmitLabel(phase: SubmitPhase | null): string {
+  if (phase === 'completing') return 'Completing…';
+  return phase === 'summarizing' ? 'Generating summary…' : 'Complete sprint';
+}
 
 function toDialogError(error: unknown): DialogError {
   return {
@@ -55,10 +66,13 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
   const groupLabelId = `${id}-destination`;
   const navigate = useNavigate();
   const completeMutation = useCompleteSprint(projectId);
+  const summaryMutation = useSprintSummary(projectId);
   const sprintsQuery = useSprints(projectId);
   const isSubmittingRef = useRef(false);
   const [choice, setChoice] = useState(BACKLOG_VALUE);
   const [error, setError] = useState<DialogError | null>(null);
+  const [shouldSummarize, setShouldSummarize] = useState(false);
+  const [phase, setPhase] = useState<SubmitPhase | null>(null);
 
   const doneCount = columns.done.length;
   const unfinishedCount = getUnfinishedCount(columns);
@@ -67,21 +81,32 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
   const destinationSprint = plannedSprints.find((item) => item.id === choice);
   const moveUnfinishedTo = destinationSprint?.id ?? BACKLOG_VALUE;
   const destinationLabel = destinationSprint?.name ?? BACKLOG_LABEL;
-  const isPending = completeMutation.isPending;
+  const isPending = phase !== null;
   const detailsPath = paths.project(projectId).sprint(sprint.id);
 
   const submit = async () => {
     if (isSubmittingRef.current) return;
     isSubmittingRef.current = true;
     setError(null);
+    setPhase('completing');
     try {
       await completeMutation.mutateAsync({ sprintId: sprint.id, moveUnfinishedTo });
+      if (shouldSummarize) {
+        setPhase('summarizing');
+        try {
+          await summaryMutation.mutateAsync(sprint.id);
+        } catch (summaryError) {
+          // The sprint is completed either way: go on to its page, where "Summarize" is a click away.
+          showToast(`Sprint completed, but the summary failed: ${getErrorMessage(summaryError)}`, 'error');
+        }
+      }
       onClose();
       void navigate(detailsPath);
     } catch (submitError) {
       setError(toDialogError(submitError));
     } finally {
       isSubmittingRef.current = false;
+      setPhase(null);
     }
   };
 
@@ -145,6 +170,16 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
             </Box>
           </>
         )}
+        <Box>
+          <FormControlLabel
+            disabled={isPending}
+            control={<Checkbox checked={shouldSummarize} onChange={(event) => setShouldSummarize(event.target.checked)} />}
+            label="Generate AI summary"
+          />
+          <Box sx={{ paddingInlineStart: 4 }}>
+            <AiDisclaimer />
+          </Box>
+        </Box>
       </DialogContent>
       <DialogActions sx={{ padding: 2, gap: 1 }}>
         <Button color="inherit" onClick={onClose} disabled={isPending}>
@@ -161,7 +196,7 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
             onClick={() => void submit()}
             startIcon={isPending ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined}
           >
-            Complete sprint
+            {getSubmitLabel(phase)}
           </Button>
         )}
       </DialogActions>

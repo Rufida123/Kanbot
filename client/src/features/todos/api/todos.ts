@@ -2,6 +2,7 @@ import { api, ApiError } from '@/shared/api/client';
 import { isOneOf } from '@/shared/utils/isOneOf';
 import { STORY_POINTS, TODO_PRIORITIES, TODO_STATUSES, TODO_TYPES } from '@/shared/types/api';
 import type {
+  BulkCreateTodosRequest,
   CreateTodoRequest,
   MoveTodoRequest,
   Todo,
@@ -79,6 +80,16 @@ export async function updateTodo(params: {
   changes: UpdateTodoRequest;
 }): Promise<Todo> {
   return assertTodo(await api.patch<unknown>(`/todos/${params.todoId}`, params.changes));
+}
+
+/** Saves several todos at once (the confirmed AI drafts; the API accepts 1–50). Returns them in request order. */
+export async function bulkCreateTodos(params: {
+  projectId: string;
+  request: BulkCreateTodosRequest;
+}): Promise<Todo[]> {
+  const data = await api.post<unknown>(`/projects/${params.projectId}/todos/bulk`, params.request);
+  if (isRecord(data) && Array.isArray(data.todos) && data.todos.every(isTodo)) return data.todos;
+  throw unexpectedResponse();
 }
 
 export async function deleteTodo(todoId: string): Promise<void> {

@@ -40,6 +40,14 @@ export function formatTimestamp(value: string): string {
   return Number.isNaN(date.getTime()) ? '' : DATE_FORMAT.format(date);
 }
 
+const DATE_TIME_FORMAT = new Intl.DateTimeFormat(DATE_LOCALE, { dateStyle: 'medium', timeStyle: 'short' });
+
+/** "Oct 21, 2026, 3:45 PM" from an ISO 8601 timestamp. Returns an empty string when it is not a date. */
+export function formatDateTime(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : DATE_TIME_FORMAT.format(date);
+}
+
 /** `YYYY-MM-DD` from a local date (never `toISOString`, which converts to UTC and can shift the day). */
 export function toDateOnly(date: Date): string {
   const year = String(date.getFullYear()).padStart(4, '0');

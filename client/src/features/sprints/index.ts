@@ -2,6 +2,9 @@
 export { SprintFormDialog } from './components/sprint-form-dialog';
 export { useSprints } from './hooks/useSprints';
 export { useSprint } from './hooks/useSprint';
+export { useCreateSprint } from './hooks/useCreateSprint';
+export { isSprint, unexpectedResponse } from './api/sprints';
+export { SPRINT_LIMITS } from './config/limits';
 export { sprintKeys } from './api/keys';
 export {
   getActiveSprint,

@@ -7,6 +7,7 @@ import { useIsMutating } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router';
 import { paths } from '@/app/navigation';
+import { SprintSummaryDialog } from '@/features/ai';
 import { isNotFoundError } from '@/features/board/api/board';
 import { BoardColumns } from '@/features/board/components/BoardColumns';
 import { BoardDndProvider } from '@/features/board/components/BoardDndProvider';
@@ -58,6 +59,7 @@ function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
   const { data, error, isError, isPending, isFetching, refetch } = useBoard(sprintId);
   const isSaving = useIsMutating({ mutationKey: todoMutationKeys.move }) > 0;
   const [isCompleteOpen, setIsCompleteOpen] = useState(false);
+  const [isSummaryOpen, setIsSummaryOpen] = useState(false);
 
   if (isPending) return <BoardSkeleton />;
   if (isError && data === undefined) {
@@ -82,11 +84,15 @@ function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
         progress={calculateProgress(columns)}
         isSaving={isSaving}
         onComplete={() => setIsCompleteOpen(true)}
+        onSummary={() => setIsSummaryOpen(true)}
       />
       <Box aria-hidden="true" sx={{ height: '0.125rem' }}>
         {isFetching ? <LinearProgress sx={{ height: '0.125rem' }} /> : null}
       </Box>
       <BoardColumns projectId={projectId} columns={columns} />
+      {isSummaryOpen ? (
+        <SprintSummaryDialog projectId={projectId} sprint={sprint} onClose={() => setIsSummaryOpen(false)} />
+      ) : null}
       {isCompleteOpen ? (
         <CompleteSprintDialog
           projectId={projectId}

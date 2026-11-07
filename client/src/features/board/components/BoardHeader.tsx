@@ -1,3 +1,4 @@
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CheckIcon from '@mui/icons-material/Check';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -15,10 +16,12 @@ type BoardHeaderProps = {
   /** Moves are still being saved: completing now would race with them. */
   isSaving: boolean;
   onComplete: () => void;
+  /** Opens the AI summary dialog (AI-4). */
+  onSummary: () => void;
 };
 
-/** Sticky sprint header: name, goal, dates, days left, progress and the Complete button. */
-export function BoardHeader({ sprint, progress, isSaving, onComplete }: BoardHeaderProps) {
+/** Sticky sprint header: name, goal, dates, days left, progress, the AI summary and Complete buttons. */
+export function BoardHeader({ sprint, progress, isSaving, onComplete, onSummary }: BoardHeaderProps) {
   const dateRange = formatDateRange(sprint.startDate, sprint.endDate);
   const days = getDaysRemaining(sprint.endDate);
   const daysText = formatDaysRemaining(days);
@@ -61,13 +64,18 @@ export function BoardHeader({ sprint, progress, isSaving, onComplete }: BoardHea
       <Box sx={{ flex: '1 1 14rem', maxWidth: '24rem', minWidth: 0 }}>
         <SprintProgress progress={progress} label={`${sprint.name} progress`} />
       </Box>
-      <Tooltip title={isSaving ? 'Saving changes…' : ''}>
-        <span>
-          <Button variant="contained" startIcon={<CheckIcon aria-hidden="true" />} disabled={isSaving} onClick={onComplete}>
-            Complete sprint
-          </Button>
-        </span>
-      </Tooltip>
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+        <Button variant="outlined" startIcon={<AutoAwesomeIcon aria-hidden="true" />} onClick={onSummary}>
+          Summary
+        </Button>
+        <Tooltip title={isSaving ? 'Saving changes…' : ''}>
+          <span>
+            <Button variant="contained" startIcon={<CheckIcon aria-hidden="true" />} disabled={isSaving} onClick={onComplete}>
+              Complete sprint
+            </Button>
+          </span>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }

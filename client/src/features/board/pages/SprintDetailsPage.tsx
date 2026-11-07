@@ -5,6 +5,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import { Link as RouterLink, useParams } from 'react-router';
 import { paths, PROJECT_ID_PARAM, SPRINT_ID_PARAM } from '@/app/navigation';
+import { SprintSummaryContent } from '@/features/ai';
 import { isNotFoundError } from '@/features/board/api/board';
 import { SprintStatusBadge } from '@/features/board/components/SprintStatusBadge';
 import { StatTile } from '@/features/board/components/StatTile';
@@ -92,6 +93,14 @@ function SprintDetails({ projectId, sprint }: DetailsProps) {
         <StatTile label="Carried over" value={carriedOver === null ? NO_VALUE : String(carriedOver)} />
         <StatTile label="Completion" value={`${getCompletionPercent(stats)}%`} />
       </Box>
+      {sprint.status === 'planned' ? null : (
+        <Paper variant="outlined" component="section" aria-labelledby="sprint-summary-heading" sx={{ padding: 2 }}>
+          <Typography id="sprint-summary-heading" component="h2" variant="h3" sx={{ marginBottom: 1.5 }}>
+            AI summary
+          </Typography>
+          <SprintSummaryContent projectId={projectId} sprint={sprint} />
+        </Paper>
+      )}
       <Paper variant="outlined" component="section" aria-labelledby="sprint-todos-heading" sx={{ overflow: 'hidden' }}>
         <Typography id="sprint-todos-heading" component="h2" variant="h3" sx={{ padding: 2 }}>
           Todos

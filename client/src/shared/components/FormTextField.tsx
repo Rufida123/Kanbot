@@ -26,6 +26,8 @@ export type FormTextFieldProps = {
   isMultiline?: boolean;
   minRows?: number;
   maxLength?: number;
+  /** Mobile keyboard for whole numbers (the value stays text; the schema parses it). */
+  inputMode?: 'text' | 'numeric';
   /** Small text on the right under the input, for example "12/500". */
   counter?: string;
   isDisabled?: boolean;
@@ -46,6 +48,7 @@ export function FormTextField({
   isMultiline = false,
   minRows,
   maxLength,
+  inputMode,
   counter,
   isDisabled = false,
 }: FormTextFieldProps) {
@@ -71,7 +74,7 @@ export function FormTextField({
         multiline={isMultiline}
         minRows={minRows}
         // `required` marks the label only: validation messages come from Zod (form uses noValidate).
-        inputProps={{ 'aria-describedby': helperText ? helperId : undefined, maxLength }}
+        inputProps={{ 'aria-describedby': helperText ? helperId : undefined, maxLength, inputMode }}
       />
       {/* The slot is always rendered so an error appearing on blur never shifts the layout
           (a shift between mouse-down and mouse-up would swallow clicks on links below). */}

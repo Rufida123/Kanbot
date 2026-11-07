@@ -1,4 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
 import Alert from '@mui/material/Alert';
@@ -9,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import { useRef, useState } from 'react';
+import { useAiDialogStore } from '@/features/ai';
 import { BacklogDndProvider } from '@/features/backlog/components/BacklogDndProvider';
 import { BacklogFilters } from '@/features/backlog/components/BacklogFilters';
 import { DeleteSprintDialog } from '@/features/backlog/components/DeleteSprintDialog';
@@ -56,6 +58,7 @@ type BacklogViewProps = { projectId: string };
 export function BacklogView({ projectId }: BacklogViewProps) {
   const filters = useBacklogFilters();
   const quickCreateRef = useRef<HTMLInputElement>(null);
+  const openGenerateTodos = useAiDialogStore((state) => state.openGenerateTodos);
   const [dialog, setDialog] = useState<SprintDialogState>({ kind: 'none' });
   const [collapsedSprintIds, setCollapsedSprintIds] = useState<ReadonlySet<string>>(new Set());
 
@@ -204,11 +207,19 @@ export function BacklogView({ projectId }: BacklogViewProps) {
             icon={<ChecklistIcon fontSize="large" />}
             title="Your backlog is empty"
             message="Add the work you want to do. You can plan it into sprints later, or drag a todo here."
-            // Sprint 6 adds "Generate with AI" next to this button.
             action={
-              <Button variant="contained" onClick={() => quickCreateRef.current?.focus()}>
-                Create todo
-              </Button>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
+                <Button variant="contained" onClick={() => quickCreateRef.current?.focus()}>
+                  Create todo
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<AutoAwesomeIcon aria-hidden="true" />}
+                  onClick={(event) => openGenerateTodos(event.currentTarget)}
+                >
+                  Generate with AI
+                </Button>
+              </Box>
             }
           />
         }
