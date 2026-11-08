@@ -7,7 +7,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useId, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, useWatch } from 'react-hook-form';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router';
@@ -23,17 +24,8 @@ import { ApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import { FormTextField } from '@/shared/components/FormTextField';
 import type { ProjectWithStats } from '@/shared/types/api';
-import {
-  createProjectSchema,
-  editProjectSchema,
-  emptyProjectFormValues,
-  KEY_CREATE_HINT,
-  KEY_EDIT_HINT,
-  KEY_TAKEN_MESSAGE,
-  projectFormFields,
-} from './config';
+import { createProjectSchemas, emptyProjectFormValues, projectFormFields } from './config';
 
-const GENERIC_ERROR = 'Something went wrong. Please try again.';
 const FORM_FIELDS_GAP = 0.5;
 
 type ProjectFormDialogProps = {
@@ -55,6 +47,8 @@ function isKeyConflict(error: unknown): boolean {
  * starts with a fresh form. It closes only after a successful save or a confirmed discard.
  */
 export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) {
+  const { t } = useTranslation();
+  const schemas = useMemo(() => createProjectSchemas(t), [t]);
   const isEdit = project !== undefined;
   const id = useId();
   const titleId = `${id}-title`;
@@ -78,7 +72,7 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
     control,
     formState: { errors, isDirty },
   } = useForm<ProjectFormValues>({
-    resolver: zodResolver(isEdit ? editProjectSchema : createProjectSchema),
+    resolver: zodResolver(isEdit ? schemas.edit : schemas.create),
     mode: 'onTouched',
     defaultValues: initialValues,
   });
@@ -140,9 +134,9 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
       onClose();
     } catch (error) {
       if (isKeyConflict(error)) {
-        setError('key', { type: 'server', message: KEY_TAKEN_MESSAGE }, { shouldFocus: true });
+        setError('key', { type: 'server', message: t('projects:form.keyTaken') }, { shouldFocus: true });
       } else if (!applyFieldErrors(error, setError, projectFormFields)) {
-        setFormError(error instanceof ApiError ? error.message : GENERIC_ERROR);
+        setFormError(error instanceof ApiError ? error.message : t('common:errors.generic'));
       }
     } finally {
       isSubmittingRef.current = false;
@@ -158,13 +152,13 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
     <>
       <Dialog open onClose={requestClose} aria-labelledby={titleId} fullWidth maxWidth="sm">
         <Box component="form" noValidate onSubmit={onSubmit}>
-          <DialogTitle id={titleId}>{isEdit ? 'Edit project' : 'New project'}</DialogTitle>
+          <DialogTitle id={titleId}>{isEdit ? t('projects:form.editTitle') : t('projects:form.newTitle')}</DialogTitle>
           <DialogContent
             sx={{ display: 'flex', flexDirection: 'column', gap: FORM_FIELDS_GAP, paddingTop: 1 }}
           >
             {formError ? <Alert severity="error">{formError}</Alert> : null}
             <FormTextField
-              label="Name"
+              label={t('projects:form.name')}
               isRequired
               autoFocus={!isEdit}
               autoComplete="off"
@@ -173,16 +167,16 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
               error={errors.name}
             />
             <FormTextField
-              label="Key"
+              label={t('projects:form.key')}
               autoComplete="off"
               maxLength={PROJECT_LIMITS.keyMax}
               registration={keyRegistration}
               error={errors.key}
-              hint={isEdit ? KEY_EDIT_HINT : KEY_CREATE_HINT}
-              placeholder="e.g. KAN"
+              hint={isEdit ? t('projects:form.keyEditHint') : t('projects:form.keyCreateHint')}
+              placeholder={t('projects:form.keyPlaceholder')}
             />
             <FormTextField
-              label="Description"
+              label={t('projects:form.description')}
               isMultiline
               minRows={3}
               autoComplete="off"
@@ -194,7 +188,7 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
           </DialogContent>
           <DialogActions sx={{ padding: 2, gap: 1 }}>
             <Button color="inherit" onClick={requestClose} disabled={isPending}>
-              Cancel
+              {t('common:actions.cancel')}
             </Button>
             <Button
               type="submit"
@@ -204,21 +198,21 @@ export function ProjectFormDialog({ project, onClose }: ProjectFormDialogProps) 
                 isPending ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined
               }
             >
-              {isEdit ? 'Save' : 'Create'}
+              {isEdit ? t('common:actions.save') : t('common:actions.create')}
             </Button>
           </DialogActions>
         </Box>
       </Dialog>
       <ConfirmDialog
         open={isDiscardOpen}
-        title="Discard changes?"
-        confirmLabel="Discard"
-        cancelLabel="Keep editing"
+        title={t('common:actions.discardTitle')}
+        confirmLabel={t('common:actions.discard')}
+        cancelLabel={t('common:actions.keepEditing')}
         isDestructive
         onConfirm={onClose}
         onCancel={() => setIsDiscardOpen(false)}
       >
-        Your unsaved changes will be lost.
+        {t('common:actions.unsavedLost')}
       </ConfirmDialog>
     </>
   );

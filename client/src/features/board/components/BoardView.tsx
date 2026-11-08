@@ -5,6 +5,16 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Skeleton from '@mui/material/Skeleton';
 import { useIsMutating } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogActions from '@mui/material/DialogActions';
+import { BoardFilterContext } from '@/features/board/context/BoardFilterContext';
+import { BurndownChart } from '@/features/board/components/BurndownChart';
+import { LabelFilterSelect } from '@/features/todos';
+import { FILTER_PARAMS } from '@/app/navigation';
 import { Link as RouterLink } from 'react-router';
 import { paths } from '@/app/navigation';
 import { SprintSummaryDialog } from '@/features/ai';
@@ -25,15 +35,16 @@ import { getErrorMessage } from '@/shared/utils/getErrorMessage';
 type BoardViewProps = { projectId: string };
 
 function NoActiveSprint({ projectId }: BoardViewProps) {
+  const { t } = useTranslation();
   return (
     <EmptyState
       headingComponent="h1"
       icon={<ViewKanbanOutlinedIcon fontSize="large" />}
-      title="No active sprint"
-      message="Start a planned sprint from the backlog to work on it here."
+      title={t('board:noSprint.title')}
+      message={t('board:noSprint.message')}
       action={
         <Button component={RouterLink} to={paths.project(projectId).backlog} variant="contained">
-          Go to the backlog
+          {t('board:noSprint.action')}
         </Button>
       }
     />
@@ -41,8 +52,9 @@ function NoActiveSprint({ projectId }: BoardViewProps) {
 }
 
 function BoardSkeleton() {
+  const { t } = useTranslation();
   return (
-    <Box aria-busy="true" aria-label="Loading board" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box aria-busy="true" aria-label={t('board:view.loading')} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       <Skeleton variant="rounded" height="5rem" />
       <Box sx={{ display: 'flex', gap: 2, overflow: 'hidden' }}>
         {BOARD_STATUSES.map((status) => (
@@ -56,6 +68,10 @@ function BoardSkeleton() {
 type ActiveBoardProps = BoardViewProps & { sprintId: string };
 
 function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const labelFilter = searchParams.get(FILTER_PARAMS.label);
+  const [isBurndownOpen, setIsBurndownOpen] = useState(false);
   const { data, error, isError, isPending, isFetching, refetch } = useBoard(sprintId);
   const isSaving = useIsMutating({ mutationKey: todoMutationKeys.move }) > 0;
   const [isCompleteOpen, setIsCompleteOpen] = useState(false);
@@ -66,7 +82,7 @@ function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
     if (isNotFoundError(error)) return <NoActiveSprint projectId={projectId} />;
     return (
       <ErrorState
-        title="We couldn’t load the board"
+        title={t('board:view.loadError')}
         message={getErrorMessage(error)}
         onRetry={() => void refetch()}
       />
@@ -77,19 +93,47 @@ function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
 
   const { sprint, columns } = data;
   return (
+    <BoardFilterContext.Provider value={labelFilter}>
     <BoardDndProvider projectId={projectId} columns={columns}>
-      <title>{`${sprint.name} · Board · Kanbot`}</title>
+      <title>{t('board:view.titleSuffix', { name: sprint.name })}</title>
       <BoardHeader
         sprint={sprint}
         progress={calculateProgress(columns)}
         isSaving={isSaving}
         onComplete={() => setIsCompleteOpen(true)}
         onSummary={() => setIsSummaryOpen(true)}
+        onBurndown={() => setIsBurndownOpen(true)}
+        filter={
+          <LabelFilterSelect
+            projectId={projectId}
+            labels={[...new Set(Object.values(columns).flatMap((list) => list.flatMap((todo) => todo.labels)))].sort((a, b) => a.localeCompare(b))}
+            value={labelFilter}
+            onChange={(label) =>
+              setSearchParams((previous) => {
+                const next = new URLSearchParams(previous);
+                if (label === null) next.delete(FILTER_PARAMS.label);
+                else next.set(FILTER_PARAMS.label, label);
+                return next;
+              }, { replace: true })
+            }
+          />
+        }
       />
       <Box aria-hidden="true" sx={{ height: '0.125rem' }}>
         {isFetching ? <LinearProgress sx={{ height: '0.125rem' }} /> : null}
       </Box>
       <BoardColumns projectId={projectId} columns={columns} />
+      {isBurndownOpen ? (
+        <Dialog open onClose={() => setIsBurndownOpen(false)} fullWidth maxWidth="md" aria-labelledby="burndown-title">
+          <DialogTitle id="burndown-title">{t('board:burndown.title')}</DialogTitle>
+          <DialogContent>
+            <BurndownChart sprint={sprint} todos={Object.values(columns).flat()} />
+          </DialogContent>
+          <DialogActions sx={{ padding: 2 }}>
+            <Button onClick={() => setIsBurndownOpen(false)}>{t('common:actions.close')}</Button>
+          </DialogActions>
+        </Dialog>
+      ) : null}
       {isSummaryOpen ? (
         <SprintSummaryDialog projectId={projectId} sprint={sprint} onClose={() => setIsSummaryOpen(false)} />
       ) : null}
@@ -102,6 +146,7 @@ function ActiveBoard({ projectId, sprintId }: ActiveBoardProps) {
         />
       ) : null}
     </BoardDndProvider>
+    </BoardFilterContext.Provider>
   );
 }
 

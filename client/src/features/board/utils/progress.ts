@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import type { Todo, TodoStatus } from '@/shared/types/api';
 
 /** The four board columns, as the API returns them. */
@@ -59,9 +60,9 @@ export function getProgressPercent(progress: SprintProgress): number {
 export function getProgressSummary(progress: SprintProgress): string {
   const percent = getProgressPercent(progress);
   if (hasPointsEstimate(progress)) {
-    return `${progress.donePoints} of ${progress.totalPoints} points, ${percent}%`;
+    return t('board:progress.summaryPoints', { done: progress.donePoints, total: progress.totalPoints, percent });
   }
-  return `${progress.doneTodos} of ${progress.totalTodos} todos, ${percent}%`;
+  return t('board:progress.summaryTodos', { done: progress.doneTodos, total: progress.totalTodos, percent });
 }
 
 /** Todos that are not in the Done column. */

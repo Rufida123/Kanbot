@@ -5,25 +5,20 @@ import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormEvent } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { applyFieldErrors } from '@/features/auth';
 import { LabelsField } from '@/features/todos/components/LabelsField';
 import {
+  createTodoFormSchema,
   todoFormFields,
-  todoFormSchema,
 } from '@/features/todos/components/todo-details-dialog/config';
 import type { TodoFormValues } from '@/features/todos/components/todo-details-dialog/config';
 import { TodoDialogFrame } from '@/features/todos/components/todo-details-dialog/TodoDialogFrame';
 import { TODO_LIMITS } from '@/features/todos/config/limits';
-import {
-  COMPLETED_SPRINT_HINT,
-  COMPLETED_SPRINT_READ_ONLY_MESSAGE,
-  NOT_ESTIMATED_LABEL,
-  SPRINTS_ERROR_HINT,
-  SPRINTS_LOADING_HINT,
-} from '@/features/todos/config/copy';
+import { notEstimatedLabel } from '@/features/todos/config/copy';
 import { useUpdateTodo } from '@/features/todos/hooks/useUpdateTodo';
 import { useTodoDeleteStore } from '@/features/todos/store/todoDeleteStore';
 import { getSprintOptions } from '@/features/todos/utils/getSprintOptions';
@@ -46,11 +41,17 @@ import {
 import type { SelectOption } from '@/shared/config/constants';
 import { showToast } from '@/shared/stores/toastStore';
 import type { Sprint, Todo, TodoPriority, TodoType } from '@/shared/types/api';
+import { t as translate } from '@/shared/i18n';
 import { formatTimestamp } from '@/shared/utils/formatDate';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
 
 const STORY_POINT_OPTIONS: readonly SelectOption[] = [
-  { value: '', label: NOT_ESTIMATED_LABEL },
+  {
+    value: '',
+    get label() {
+      return notEstimatedLabel();
+    },
+  },
   ...STORY_POINT_VALUES.map((points) => ({ value: String(points), label: String(points) })),
 ];
 
@@ -79,8 +80,8 @@ function getSprintHint(
   isSprintsError: boolean,
   isMovable: boolean,
 ): string | undefined {
-  if (sprints === undefined) return isSprintsError ? SPRINTS_ERROR_HINT : SPRINTS_LOADING_HINT;
-  return isMovable ? undefined : COMPLETED_SPRINT_HINT;
+  if (sprints === undefined) return isSprintsError ? translate('todos:form.sprintsError') : translate('todos:form.sprintsLoading');
+  return isMovable ? undefined : translate('todos:form.completedHint');
 }
 
 /**
@@ -95,6 +96,8 @@ export function TodoDetailsForm({
   isReplacingLoader,
   onClose,
 }: TodoDetailsFormProps) {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createTodoFormSchema(t), [t]);
   // The values the form started from. A later refetch must not turn untouched fields into "changes".
   const [savedTodo] = useState(todo);
   const updateMutation = useUpdateTodo();
@@ -112,7 +115,7 @@ export function TodoDetailsForm({
     control,
     formState: { errors },
   } = useForm<TodoFormValues>({
-    resolver: zodResolver(todoFormSchema),
+    resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: initialValues,
   });
@@ -184,7 +187,7 @@ export function TodoDetailsForm({
     <>
       <TodoDialogFrame
         todoKey={savedTodo.key}
-        subtitle={`${TYPE_LABELS[savedTodo.type]} · created ${formatTimestamp(savedTodo.createdAt)}`}
+        subtitle={t('todos:form.subtitle', { type: TYPE_LABELS[savedTodo.type], date: formatTimestamp(savedTodo.createdAt) })}
         onClose={requestClose}
         onSubmit={submit}
         isBusy={isPending}
@@ -192,12 +195,12 @@ export function TodoDetailsForm({
       >
         <DialogContent dividers sx={{ paddingBlock: 2.5 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            {isReadOnly ? <Alert severity="info">{COMPLETED_SPRINT_READ_ONLY_MESSAGE}</Alert> : null}
+            {isReadOnly ? <Alert severity="info">{t('todos:form.completedReadOnly')}</Alert> : null}
             {formError ? <Alert severity="error">{formError}</Alert> : null}
             <Box sx={COLUMNS_SX}>
               <Box sx={COLUMN_SX}>
                 <FormTextField
-                  label="Title"
+                  label={t('todos:form.title')}
                   isRequired
                   autoComplete="off"
                   maxLength={TODO_LIMITS.titleMax}
@@ -206,7 +209,7 @@ export function TodoDetailsForm({
                   error={errors.title}
                 />
                 <FormTextField
-                  label="Description"
+                  label={t('todos:form.description')}
                   isMultiline
                   minRows={9}
                   autoComplete="off"
@@ -219,7 +222,7 @@ export function TodoDetailsForm({
               </Box>
               <Box sx={COLUMN_SX}>
                 <FormSelectField
-                  label="Status"
+                  label={t('todos:form.status')}
                   name="status"
                   control={control}
                   options={STATUS_OPTIONS}
@@ -227,7 +230,7 @@ export function TodoDetailsForm({
                   isDisabled={!isMovable || isLocked}
                 />
                 <FormSelectField
-                  label="Priority"
+                  label={t('todos:form.priority')}
                   name="priority"
                   control={control}
                   options={PRIORITY_OPTIONS}
@@ -236,7 +239,7 @@ export function TodoDetailsForm({
                   isDisabled={isLocked}
                 />
                 <FormSelectField
-                  label="Type"
+                  label={t('todos:form.type')}
                   name="type"
                   control={control}
                   options={TYPE_OPTIONS}
@@ -245,7 +248,7 @@ export function TodoDetailsForm({
                   isDisabled={isLocked}
                 />
                 <FormSelectField
-                  label="Story points"
+                  label={t('todos:form.storyPoints')}
                   name="storyPoints"
                   control={control}
                   options={STORY_POINT_OPTIONS}
@@ -253,7 +256,7 @@ export function TodoDetailsForm({
                   isDisabled={isLocked}
                 />
                 <FormSelectField
-                  label="Sprint"
+                  label={t('todos:form.sprint')}
                   name="sprintId"
                   control={control}
                   options={getSprintOptions(sprints, savedTodo.sprintId)}
@@ -263,7 +266,7 @@ export function TodoDetailsForm({
                 />
                 <LabelsField control={control} error={errors.labels} isDisabled={isLocked} />
                 <FormTextField
-                  label="Due date"
+                  label={t('todos:form.dueDate')}
                   type="date"
                   registration={register('dueDate')}
                   isDisabled={isLocked}
@@ -278,20 +281,22 @@ export function TodoDetailsForm({
             color="error"
             variant="outlined"
             disabled={isPending || isLocked}
-            onClick={() =>
+            onClick={() => {
+              // Soft delete with Undo: the dialog closes and the toast offers the way back.
               requestDelete({
                 id: savedTodo.id,
                 projectId: savedTodo.projectId,
                 key: savedTodo.key,
                 title: savedTodo.title,
-              })
-            }
+              });
+              onClose();
+            }}
             sx={{ marginInlineEnd: 'auto' }}
           >
-            Delete
+            {t('common:actions.delete')}
           </Button>
           <Button color="inherit" onClick={requestClose} disabled={isPending}>
-            {isReadOnly ? 'Close' : 'Cancel'}
+            {isReadOnly ? t('common:actions.close') : t('common:actions.cancel')}
           </Button>
           <Button
             type="submit"
@@ -299,20 +304,20 @@ export function TodoDetailsForm({
             disabled={isPending || isLocked || !hasUnsavedChanges}
             startIcon={isPending ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined}
           >
-            Save
+            {t('common:actions.save')}
           </Button>
         </DialogActions>
       </TodoDialogFrame>
       <ConfirmDialog
         open={isDiscardOpen}
-        title="Discard changes?"
-        confirmLabel="Discard"
-        cancelLabel="Keep editing"
+        title={t('common:actions.discardTitle')}
+        confirmLabel={t('common:actions.discard')}
+        cancelLabel={t('common:actions.keepEditing')}
         isDestructive
         onConfirm={onClose}
         onCancel={() => setIsDiscardOpen(false)}
       >
-        Your unsaved changes will be lost.
+        {t('common:actions.unsavedLost')}
       </ConfirmDialog>
     </>
   );

@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 import { paths, PROJECT_ID_PARAM } from '@/app/navigation';
 import { ProjectFormDialog } from '@/features/projects/components/project-form-dialog';
@@ -9,13 +10,13 @@ import { useProjectDialogStore } from '@/features/projects/store/projectDialogSt
 import { ApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 
-const GENERIC_ERROR = 'Something went wrong. Please try again.';
 
 /**
  * Renders the create, edit and delete dialogs. Mounted once in the app shell, so the page,
  * the cards and the sidebar all open the same dialogs through `projectDialogStore`.
  */
 export function ProjectDialogsHost() {
+  const { t } = useTranslation();
   const dialog = useProjectDialogStore((state) => state.dialog);
   const close = useProjectDialogStore((state) => state.close);
   const { data: projects, isSuccess } = useProjects();
@@ -46,7 +47,7 @@ export function ProjectDialogsHost() {
       if (currentProjectId === target.id) navigate(paths.projects);
       close();
     } catch (error) {
-      setDeleteError(error instanceof ApiError ? error.message : GENERIC_ERROR);
+      setDeleteError(error instanceof ApiError ? error.message : t('common:errors.generic'));
     }
   };
 
@@ -58,8 +59,8 @@ export function ProjectDialogsHost() {
   return (
     <ConfirmDialog
       open
-      title="Delete project?"
-      confirmLabel="Delete project"
+      title={t('projects:delete.title')}
+      confirmLabel={t('projects:delete.confirm')}
       isDestructive
       isPending={deleteMutation.isPending}
       errorMessage={deleteError}
@@ -67,8 +68,7 @@ export function ProjectDialogsHost() {
       onCancel={handleCancel}
     >
       <Typography>
-        <strong>{target.name}</strong> and all of its todos and sprints will be permanently
-        deleted. This cannot be undone.
+        <Trans i18nKey="projects:delete.body" values={{ name: target.name }} components={{ strong: <strong dir="auto" /> }} />
       </Typography>
     </ConfirmDialog>
   );

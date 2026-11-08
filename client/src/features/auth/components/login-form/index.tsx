@@ -2,7 +2,8 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { PasswordField } from '@/features/auth/components/PasswordField';
 import { useLogin } from '@/features/auth/hooks/useLogin';
@@ -10,19 +11,19 @@ import { applyFieldErrors } from '@/features/auth/utils/applyFieldErrors';
 import { ApiError } from '@/shared/api/client';
 import { FormTextField } from '@/shared/components/FormTextField';
 import { useSessionStore } from '@/shared/stores/sessionStore';
-import { loginDefaultValues, loginFields, loginSchema } from './config';
+import { createLoginSchema, loginDefaultValues, loginFields } from './config';
 import type { LoginFormValues } from './config';
 
-const SESSION_EXPIRED_MESSAGE = 'Your session has expired. Please log in again.';
-
 export function LoginForm() {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createLoginSchema(t), [t]);
   const {
     register,
     handleSubmit,
     setError,
     formState: { errors },
   } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: loginDefaultValues,
   });
@@ -37,7 +38,7 @@ export function LoginForm() {
       onError: (error) => {
         if (applyFieldErrors(error, setError, loginFields)) return;
         setFormError(
-          error instanceof ApiError ? error.message : 'Something went wrong. Please try again.',
+          error instanceof ApiError ? error.message : t('common:errors.generic'),
         );
       },
     });
@@ -53,27 +54,27 @@ export function LoginForm() {
       {formError ? (
         <Alert severity="error">{formError}</Alert>
       ) : isSessionExpired ? (
-        <Alert severity="warning">{SESSION_EXPIRED_MESSAGE}</Alert>
+        <Alert severity="warning">{t('auth:login.sessionExpired')}</Alert>
       ) : null}
       <FormTextField
-        label="Email"
+        label={t('auth:fields.email')}
         isRequired
         type="email"
         autoComplete="email"
-        placeholder="you@example.com"
+        placeholder={t('auth:fields.emailPlaceholder')}
         autoFocus
         registration={register('email')}
         error={errors.email}
       />
       <PasswordField
-        label="Password"
+        label={t('auth:fields.password')}
         isRequired
         autoComplete="current-password"
         registration={register('password')}
         error={errors.password}
       />
       <Button type="submit" variant="contained" size="large" fullWidth loading={isPending}>
-        Log in
+        {t('auth:login.submit')}
       </Button>
     </Box>
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
 
@@ -10,10 +11,11 @@ type TodoRowSkeletonProps = {
 };
 
 /** Placeholder rows with the footprint of `TodoRow`, shown while a list loads. */
-export function TodoRowSkeleton({ label = 'Loading backlog', count = DEFAULT_SKELETON_COUNT }: TodoRowSkeletonProps) {
+export function TodoRowSkeleton({ label, count = DEFAULT_SKELETON_COUNT }: TodoRowSkeletonProps) {
+  const { t } = useTranslation();
   const skeletonKeys = Array.from({ length: count }, (_, index) => `skeleton-${index}`);
   return (
-    <Box component="ul" aria-busy="true" aria-label={label} sx={{ listStyle: 'none' }}>
+    <Box component="ul" aria-busy="true" aria-label={label ?? t('todos:list.loadingBacklog')} sx={{ listStyle: 'none' }}>
       {skeletonKeys.map((key) => (
         <Box
           component="li"

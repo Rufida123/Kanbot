@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ListAltIcon from '@mui/icons-material/ListAlt';
@@ -31,6 +32,7 @@ type ProjectCardProps = { project: ProjectWithStats };
  * link, positioned over the card: a button must not be nested inside an `<a>`.
  */
 export function ProjectCard({ project }: ProjectCardProps) {
+  const { t } = useTranslation();
   const isSprintActive = hasActiveSprint(project);
   return (
     <Paper
@@ -63,7 +65,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
           <Chip label={project.key} size="small" variant="outlined" />
-          <Typography component="h2" variant="h4" sx={clamp(2)}>
+          <Typography component="h2" variant="h4" dir="auto" sx={clamp(2)}>
             {project.name}
           </Typography>
         </Box>
@@ -72,7 +74,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           color="text.secondary"
           sx={{ ...clamp(2), minHeight: '2.625rem' }}
         >
-          {project.description === '' ? 'No description' : project.description}
+          {project.description === '' ? t('projects:card.noDescription') : project.description}
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, marginTop: 'auto' }}>
           <Chip

@@ -1,3 +1,5 @@
+import { CopyLinkButton } from '@/shared/components/CopyLinkButton';
+import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -39,6 +41,7 @@ export function TodoDialogFrame({
   isReplacingLoader = false,
   children,
 }: TodoDialogFrameProps) {
+  const { t } = useTranslation();
   const titleId = useId();
   const isSmallScreen = useIsSmallScreen();
   const theme = useTheme();
@@ -70,10 +73,11 @@ export function TodoDialogFrame({
         >
           {todoKey ? <Chip label={todoKey} size="small" color="primary" /> : null}
           <Typography component="h2" variant="body2" color="text.secondary" sx={{ flex: 1, minWidth: 0 }} noWrap>
-            {subtitle ?? 'Todo details'}
+            {subtitle ?? t('todos:form.detailsTitle')}
           </Typography>
-          <Tooltip title="Close">
-            <IconButton edge="end" aria-label="Close" onClick={onClose}>
+          <CopyLinkButton />
+        <Tooltip title={t('common:actions.close')}>
+            <IconButton edge="end" aria-label={t('common:actions.close')} onClick={onClose}>
               <CloseIcon aria-hidden="true" />
             </IconButton>
           </Tooltip>

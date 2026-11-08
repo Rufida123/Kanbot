@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography';
+import { useTranslation } from 'react-i18next';
 import { useDeleteTodo } from '@/features/todos/hooks/useDeleteTodo';
 import { useTodoDialogParam } from '@/features/todos/hooks/useTodoDialogParam';
 import { useTodoDeleteStore } from '@/features/todos/store/todoDeleteStore';
@@ -10,6 +11,7 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
  * the list, and it comes back with a toast if the request fails.
  */
 export function TodoDeleteConfirm() {
+  const { t } = useTranslation(['todos']);
   const target = useTodoDeleteStore((state) => state.target);
   const clear = useTodoDeleteStore((state) => state.clear);
   const { todoId: openTodoId, closeTodo } = useTodoDialogParam();
@@ -27,16 +29,16 @@ export function TodoDeleteConfirm() {
   return (
     <ConfirmDialog
       open
-      title="Delete todo?"
-      confirmLabel="Delete todo"
+      title={t('todos:todoDeleteConfirm.confirmTitle')}
+      confirmLabel={t('todos:todoDeleteConfirm.confirmLabel')}
       isDestructive
       onConfirm={handleConfirm}
       onCancel={clear}
     >
       <Typography>
-        <strong>{target.key}</strong> “{target.title}” will be permanently deleted. This cannot be
-        undone.
+        {t('todos:todoDeleteConfirm.message2', { key: target.key, title: target.title })}
       </Typography>
     </ConfirmDialog>
   );
 }
+

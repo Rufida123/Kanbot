@@ -9,6 +9,7 @@ export const projectSegments = {
   backlog: 'backlog',
   board: 'board',
   sprints: 'sprints',
+  week: 'week',
   sprint: `sprints/:${SPRINT_ID_PARAM}`,
 } as const;
 
@@ -27,6 +28,7 @@ export const paths = {
       backlog: `${root}/${projectSegments.backlog}`,
       board: `${root}/${projectSegments.board}`,
       sprints: `${root}/${projectSegments.sprints}`,
+      week: `${root}/${projectSegments.week}`,
       sprint: (sprintId: string) => `${root}/${projectSegments.sprints}/${sprintId}`,
     };
   },
@@ -43,4 +45,5 @@ export const FILTER_PARAMS = {
   search: 'q',
   priority: 'priority',
   type: 'type',
+  label: 'label',
 } as const;

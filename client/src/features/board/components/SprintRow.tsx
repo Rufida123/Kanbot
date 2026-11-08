@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
 import { paths } from '@/app/navigation';
 import { SprintStatusBadge } from '@/features/board/components/SprintStatusBadge';
@@ -9,6 +10,7 @@ import { formatDateRange } from '@/shared/utils/formatDate';
 
 /** One row of the history list. The whole row is a link to the sprint's details. */
 export function SprintRow({ sprint }: { sprint: Sprint }) {
+  const { t } = useTranslation();
   const stats = getSprintStats(sprint);
   const dateRange = formatDateRange(sprint.startDate, sprint.endDate);
   return (
@@ -29,15 +31,15 @@ export function SprintRow({ sprint }: { sprint: Sprint }) {
           '&:hover': { backgroundColor: 'action.hover' },
         }}
       >
-        <Box component="span" sx={{ flex: '1 1 12rem', minWidth: 0, fontWeight: 'fontWeightMedium', overflowWrap: 'anywhere' }}>
+        <Box component="span" dir="auto" sx={{ flex: '1 1 12rem', minWidth: 0, fontWeight: 'fontWeightMedium', overflowWrap: 'anywhere' }}>
           {sprint.name}
         </Box>
         <SprintStatusBadge status={sprint.status} />
         <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-          {dateRange === '' ? 'No dates' : dateRange}
+          {dateRange === '' ? t('common:dates.noDates') : dateRange}
         </Box>
         <Box component="span" sx={{ color: 'text.secondary', fontSize: '0.875rem', fontVariantNumeric: 'tabular-nums' }}>
-          {stats.donePoints}/{stats.totalPoints} points
+          {t('sprints:points', { done: stats.donePoints, total: stats.totalPoints })}
         </Box>
       </ButtonBase>
     </Box>

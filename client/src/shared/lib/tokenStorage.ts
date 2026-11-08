@@ -1,4 +1,4 @@
-/** The JWT is the only thing stored client-side (NFR-7). Never log it. */
+/** Only the JWT is stored by the base app (NFR-7); enhancement preferences live in `preferences.ts`. Never log it. */
 const TOKEN_KEY = 'kanbot_token';
 
 export function readToken(): string | null {

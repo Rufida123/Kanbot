@@ -1,6 +1,8 @@
 import { api } from '@/shared/api/client';
 import { AI_REQUEST_TIMEOUT_MS } from '@/shared/config/api';
 import { isSprint, unexpectedResponse } from '@/features/sprints';
+import { AI_LIMITS } from '@/features/ai/config/limits';
+import { getLanguageHint, withLanguageHint } from '@/features/ai/utils/languageHint';
 import type {
   AiSource,
   AiStatusResponse,
@@ -89,7 +91,8 @@ export async function generateTodos(params: {
 }): Promise<GenerateTodosResult> {
   const data = await api.post<unknown>(
     `/projects/${params.projectId}/ai/generate-todos`,
-    params.request,
+    // The language hint is part of the prompt text (frontend only, no backend change).
+    { ...params.request, prompt: withLanguageHint(params.request.prompt, AI_LIMITS.promptMax) },
     { ...AI_REQUEST_CONFIG, signal: params.signal },
   );
   if (isRecord(data) && Array.isArray(data.todos) && isAiSource(data.source)) {
@@ -106,7 +109,11 @@ export async function planSprint(params: {
 }): Promise<PlanSprintResponse> {
   const data = await api.post<unknown>(
     `/projects/${params.projectId}/ai/plan-sprint`,
-    params.request,
+    {
+      ...params.request,
+      focus:
+        params.request.focus === undefined ? getLanguageHint() : withLanguageHint(params.request.focus, AI_LIMITS.focusMax),
+    },
     { ...AI_REQUEST_CONFIG, signal: params.signal },
   );
   if (

@@ -1,0 +1,151 @@
+{
+  "backlog": "Backlog",
+  "form": {
+    "title": "Title",
+    "description": "Description",
+    "status": "Status",
+    "priority": "Priority",
+    "type": "Type",
+    "storyPoints": "Story points",
+    "sprint": "Sprint",
+    "dueDate": "Due date",
+    "subtitle": "{{type}} · created {{date}}",
+    "detailsTitle": "Todo details",
+    "loading": "Loading todo",
+    "notFound": "Todo not found",
+    "notFoundMessage": "It may have been deleted, or the link is wrong.",
+    "loadError": "We couldn’t load this todo",
+    "completedHint": "This todo belongs to a completed sprint and cannot be moved.",
+    "completedReadOnly": "This sprint is completed. Its todos are read-only.",
+    "sprintsLoading": "Loading sprints…",
+    "sprintsError": "Sprints could not be loaded. Try again later.",
+    "currentSprint": "Current sprint",
+    "sprintOption": "{{name}} ({{status}})"
+  },
+  "labels": {
+    "label": "Labels",
+    "add": "Add a label",
+    "hint": "{{count}}/{{max}} labels. Press Enter to add."
+  },
+  "validation": {
+    "titleRequired": "Title is required",
+    "titleMax": "Title must be at most {{max}} characters",
+    "descriptionMax": "Description must be at most {{max}} characters",
+    "labelEmpty": "A label cannot be empty",
+    "labelMax": "A label must be at most {{max}} characters",
+    "labelsMax": "At most {{max}} labels",
+    "invalidValue": "Choose a valid value",
+    "invalidDate": "Enter a valid date"
+  },
+  "quick": {
+    "placeholder": "Create todo: type a title and press Enter",
+    "label": "Create todo",
+    "hint": "Enter to add · Esc to clear",
+    "created": "Created {{key}}"
+  },
+  "menu": {
+    "actions": "Todo actions",
+    "actionsFor": "Actions for {{key}} {{title}}"
+  },
+  "list": {
+    "loadingBacklog": "Loading backlog"
+  },
+  "toast": {
+    "saved": "Todo saved"
+  },
+  "delete": {
+    "deleted": "{{key}} deleted",
+    "deletedMany_one": "{{count}} todo deleted",
+    "deletedMany_other": "{{count}} todos deleted"
+  },
+  "inline": {
+    "editHint": "Double-click or use “Rename” to edit",
+    "rename": "Rename",
+    "changePriority": "Change priority of {{key}}",
+    "changePoints": "Change story points of {{key}}",
+    "statusMoved": "{{key}} moved to {{status}}"
+  },
+  "move": {
+    "top": "Move to top",
+    "bottom": "Move to bottom",
+    "backlog": "Move to backlog",
+    "toSprint": "Move to {{name}}",
+    "toActiveSprint": "Move to {{name}} (active)",
+    "filtered": "Clear filters to move within the backlog",
+    "loading": "The list is still loading",
+    "atTop": "Already at the top",
+    "atBottom": "Already at the bottom",
+    "movedTop": "{{key}} moved to the top",
+    "movedBottom": "{{key}} moved to the bottom",
+    "movedTo": "{{key}} moved to {{destination}}",
+    "theBacklog": "the backlog"
+  },
+  "week": {
+    "title": "My week",
+    "subtitle": "Todos due this week, grouped by day.",
+    "overdue": "Overdue",
+    "noTodos": "Nothing due",
+    "emptyTitle": "Nothing due this week",
+    "emptyMessage": "Set a due date on a todo to see it here.",
+    "openBacklog": "Go to the backlog",
+    "loadError": "We couldn’t load your week"
+  },
+  "labelManager": {
+    "title": "Manage labels",
+    "open": "Labels",
+    "empty": "No labels in this project yet. Add a label to a todo to manage it here.",
+    "create": "Create label",
+    "newName": "New label name",
+    "rename": "Rename {{name}}",
+    "colour": "Colour of {{name}}",
+    "delete": "Delete {{name}}",
+    "uses": "Used by {{count}} todos",
+    "noColour": "No colour",
+    "createdHint": "Colours are saved in this browser only.",
+    "renamed": "Label renamed",
+    "deleted": "Label removed from {{count}} todos",
+    "exists": "This label already exists"
+  },
+  "labelFilter": {
+    "label": "Filter by label",
+    "all": "All labels"
+  },
+  "bulk": {
+    "select": "Select",
+    "done": "Done selecting",
+    "selectTodo": "Select {{key}}",
+    "selectAll": "Select all",
+    "selectNone": "Clear selection",
+    "bar": "Bulk actions",
+    "moveToSprint": "Move to sprint",
+    "changePriority": "Priority",
+    "changeType": "Type",
+    "delete": "Delete",
+    "progress": "Updating {{done}} of {{total}}…",
+    "updated_one": "{{count}} todo updated",
+    "updated_other": "{{count}} todos updated",
+    "partial": "{{done}} updated, {{failed}} failed",
+    "partialDetail": "Failed: {{keys}}",
+    "reorderOff": "Selection mode is on. Drag and drop is paused.",
+    "noSprints": "No planned or active sprint to move to"
+  },
+  "export": {
+    "button": "Export",
+    "markdown": "Markdown (.md)",
+    "csv": "CSV (.csv)",
+    "done": "Exported {{name}}",
+    "csvHeaders": {
+      "key": "Key",
+      "title": "Title",
+      "type": "Type",
+      "status": "Status",
+      "priority": "Priority",
+      "points": "Story points",
+      "labels": "Labels",
+      "dueDate": "Due date",
+      "sprint": "Sprint"
+    },
+    "mdTitleBacklog": "{{project}} · Backlog",
+    "mdTotals": "Total: {{todos}} · {{points}}"
+  }
+}

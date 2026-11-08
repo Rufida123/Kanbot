@@ -39,7 +39,7 @@ export function SortableTodoCard({ todo, columnId, menuActions, onOpen }: Sortab
       isDragging={isDragging}
       dragHandle={
         <DragHandle
-          verb="Move"
+          verb="move"
           todoKey={todo.key}
           activatorRef={setActivatorNodeRef}
           activatorProps={{ ...attributes, ...listeners }}

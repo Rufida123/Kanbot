@@ -1,0 +1,257 @@
+{
+  "navigation": {
+    "openNavigation": "فتح التنقل",
+    "closeNavigation": "إغلاق التنقل",
+    "askAi": "اسأل الذكاء الاصطناعي"
+  },
+  "sidebar": {
+    "backlog": "المتراكم",
+    "board": "اللوحة",
+    "sprints": "المراحل",
+    "projects": "المشاريع",
+    "settings": "الإعدادات"
+  },
+  "topbar": {
+    "backlog": "المتراكم",
+    "board": "اللوحة",
+    "sprints": "المراحل"
+  },
+  "assistant": {
+    "title": "مساعد الذكاء الاصطناعي",
+    "close": "إغلاق المساعد"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "message": "الصفحة التي تبحث عنها غير موجودة.",
+    "goHome": "الذهاب إلى الصفحة الرئيسية"
+  },
+  "projects": {
+    "title": "المشاريع",
+    "empty": "لا توجد مشاريع حتى الآن. أنشئ واحدًا للبدء.",
+    "createNew": "إنشاء مشروع جديد",
+    "noDescription": "لا توجد وصفة",
+    "loading": "جاري تحميل المشاريع...",
+    "error": "فشل تحميل المشاريع",
+    "deleteConfirm": "هل تريد حذف المشروع؟",
+    "deleteMessage": "وجميع مهامه والمراحل المرتبطة به ستُحذف بشكل دائم. لا يمكن التراجع عن هذا.",
+    "deleteError": "فشل حذف المشروع"
+  },
+  "projectForm": {
+    "createTitle": "مشروع جديد",
+    "editTitle": "تعديل المشروع",
+    "nameLabel": "الاسم",
+    "namePlaceholder": "على سبيل المثال KAN",
+    "keyLabel": "المفتاح",
+    "descriptionLabel": "الوصفة",
+    "descriptionPlaceholder": "أدخل وصفة المشروع (اختياري)",
+    "createButton": "إنشاء",
+    "updateButton": "حفظ",
+    "cancelButton": "إلغاء",
+    "nameRequired": "اسم المشروع مطلوب",
+    "discardTitle": "هل تريد التخلي عن التغييرات؟",
+    "discardConfirm": "التخلي",
+    "discardCancel": "الاستمرار في التحرير",
+    "discardMessage": "سيتم فقدان التغييرات غير المحفوظة.",
+    "createSuccess": "تم إنشاء المشروع بنجاح",
+    "updateSuccess": "تم تحديث المشروع بنجاح",
+    "createError": "فشل إنشاء المشروع",
+    "updateError": "فشل تحديث المشروع"
+  },
+  "sprints": {
+    "title": "المراحل: قادمة في المرحلة 4",
+    "comingSoon": "ميزة المراحل قادمة في المرحلة 4",
+    "empty": "لا توجد مراحل حتى الآن.",
+    "loading": "جاري تحميل المراحل...",
+    "error": "فشل تحميل المراحل",
+    "createNew": "إنشاء مرحلة",
+    "deleteConfirm": "هل أنت متأكد من أنك تريد حذف هذه المرحلة؟"
+  },
+  "sprintDetails": {
+    "title": "تفاصيل المرحلة: قادمة في المرحلة 5",
+    "comingSoon": "طريقة عرض تفاصيل المرحلة قادمة في المرحلة 5",
+    "loading": "جاري تحميل تفاصيل المرحلة...",
+    "error": "فشل تحميل تفاصيل المرحلة"
+  },
+  "sprintForm": {
+    "createTitle": "إنشاء مرحلة",
+    "editTitle": "تعديل المرحلة",
+    "nameLabel": "اسم المرحلة",
+    "namePlaceholder": "أدخل اسم المرحلة",
+    "goalLabel": "هدف المرحلة",
+    "goalPlaceholder": "أدخل هدف المرحلة (اختياري)",
+    "durationLabel": "المدة (أيام)",
+    "durationPlaceholder": "أدخل المدة",
+    "createButton": "إنشاء",
+    "updateButton": "تحديث",
+    "cancelButton": "إلغاء",
+    "nameRequired": "اسم المرحلة مطلوب",
+    "durationRequired": "المدة مطلوبة",
+    "durationInvalid": "يجب أن تكون المدة رقمًا موجبًا",
+    "createSuccess": "تم إنشاء المرحلة بنجاح",
+    "updateSuccess": "تم تحديث المرحلة بنجاح",
+    "createError": "فشل إنشاء المرحلة",
+    "updateError": "فشل تحديث المرحلة"
+  },
+  "board": {
+    "summary": "الملخص",
+    "completeSprint": "إنهاء المرحلة",
+    "empty": "لا توجد مهام في هذه المرحلة. أضف بعضها للبدء.",
+    "loading": "جاري تحميل اللوحة...",
+    "error": "فشل تحميل اللوحة",
+    "stats": {
+      "total": "الإجمالي",
+      "completed": "مكتمل",
+      "inProgress": "قيد التقدم",
+      "points": "النقاط"
+    },
+    "noActiveSprint": {
+      "title": "لا توجد مرحلة نشطة",
+      "message": "ابدأ مرحلة مخطط لها من المتراكم للعمل عليها هنا.",
+      "action": "انتقل إلى المتراكم"
+    },
+    "loadingBoard": "جاري تحميل اللوحة",
+    "errorLoading": "لم نتمكن من تحميل اللوحة",
+    "pageTitle": "{{sprintName}} · اللوحة · Kanbot"
+  },
+  "boardColumn": {
+    "todo": "المراد عمله",
+    "inProgress": "قيد التقدم",
+    "done": "مكتمل",
+    "ariaLabel": "العمود: {{columnName}}",
+    "points": "{{count}} · {{points}} نقطة",
+    "ariaLabelTodos": "{{columnName}} مهام",
+    "empty": "لا توجد مهام",
+    "dropHere": "أسقط هنا"
+  },
+  "completeSprintDialog": {
+    "title": "إنهاء المرحلة",
+    "message": "هل تريد وضع علامة على هذه المرحلة كمكتملة؟",
+    "cancelButton": "إلغاء",
+    "confirmButton": "إنهاء",
+    "loading": "جاري إنهاء المرحلة...",
+    "success": "تم إنهاء المرحلة بنجاح",
+    "error": "فشل إنهاء المرحلة",
+    "header": "إنهاء {{sprintName}}",
+    "doneCount": "{{count}} مكتملة، {{notDone}} غير مكتملة.",
+    "allDone": "جميع المهام مكتملة.",
+    "moveUnfinishedLabel": "نقل المهام غير المكتملة إلى",
+    "loadingPlannedSprints": "جاري تحميل المراحل المخطط لها…",
+    "plannedSprintsError": "تعذر تحميل المراحل المخطط لها. يمكنك لا تزال نقل المهام إلى المتراكم.",
+    "moveDestination": "{{count}} سيتم نقلها إلى {{destination}}. لا يمكن التراجع عن هذا.",
+    "generateAiSummary": "إنشاء ملخص الذكاء الاصطناعي",
+    "viewSprint": "عرض المرحلة",
+    "tryAgain": "حاول مجددًا",
+    "completingLabel": "جاري الإنهاء…",
+    "generatingSummaryLabel": "جاري إنشاء الملخص…"
+  },
+  "backlog": {
+    "empty": "لا توجد مهام في المتراكم",
+    "loading": "جاري تحميل المتراكم...",
+    "error": "فشل تحميل المتراكم"
+  },
+  "backlogFilters": {
+    "priority": "جميع الأولويات",
+    "type": "جميع الأنواع",
+    "search": "ابحث عن المهام...",
+    "ariaLabel": "تصفية {{filterName}}",
+    "ariaLabelContainer": "تصفية المتراكم",
+    "ariaLabelSearch": "ابحث عن المهام",
+    "clearSearchTitle": "مسح البحث",
+    "clearSearchLabel": "مسح البحث",
+    "ariaLabelPriority": "تصفية حسب الأولوية",
+    "ariaLabelType": "تصفية حسب النوع",
+    "clearFiltersButton": "مسح المرشحات"
+  },
+  "deleteSprintDialog": {
+    "title": "حذف المرحلة",
+    "message": "هل أنت متأكد من أنك تريد حذف هذه المرحلة؟",
+    "cancelButton": "إلغاء",
+    "deleteButton": "حذف",
+    "loading": "جاري حذف المرحلة...",
+    "success": "تم حذف المرحلة بنجاح",
+    "error": "فشل حذف المرحلة",
+    "confirmTitle": "حذف المرحلة؟",
+    "confirmLabel": "حذف المرحلة",
+    "noTodos": "لا توجد مهام فيها.",
+    "todosReturn": "{{count}} سيعود إلى نهاية المتراكم.",
+    "willBeDeleted": "{{sprintName}} سيتم حذفها."
+  },
+  "startSprintDialog": {
+    "title": "بدء المرحلة",
+    "selectSprintLabel": "اختر مرحلة",
+    "selectSprintPlaceholder": "اختر مرحلة",
+    "nosprintsAvailable": "لا توجد مراحل متاحة",
+    "cancelButton": "إلغاء",
+    "startButton": "ابدأ",
+    "loading": "جاري بدء المرحلة...",
+    "success": "تم بدء المرحلة بنجاح",
+    "error": "فشل بدء المرحلة",
+    "header": "بدء {{sprintName}}",
+    "startDateLabel": "تاريخ البداية",
+    "endDateLabel": "تاريخ النهاية",
+    "validationError": "يمكن فقط بدء المراحل المخطط لها.",
+    "activeSprintError": "\"{{sprintName}}\" لا تزال نشطة. أنهها قبل بدء مرحلة أخرى.",
+    "noTodos": "هذه المرحلة لا تحتوي على مهام.",
+    "todosMove": "{{count}} سيتم نقلها إلى اللوحة.",
+    "genericError": "حدث خطأ ما. يرجى المحاولة مجددًا.",
+    "invalidStartDate": "أدخل تاريخ بداية صالح",
+    "invalidEndDate": "أدخل تاريخ نهاية صالح",
+    "endBeforeStart": "يجب أن يكون تاريخ النهاية في أو بعد تاريخ البداية"
+  },
+  "sprintSection": {
+    "planning": "التخطيط",
+    "active": "نشط",
+    "completed": "مكتمل",
+    "startSprintButton": "ابدأ المرحلة",
+    "sprintActionsTooltip": "إجراءات المرحلة",
+    "ariaLabel": "الإجراءات الخاصة بـ {{sprintName}}",
+    "editSprintMenuItem": "تعديل المرحلة",
+    "startSprintMenuItem": "ابدأ المرحلة",
+    "deleteSprintMenuItem": "حذف المرحلة",
+    "noTodosYet": "لا توجد مهام في هذه المرحلة حتى الآن. اسحب المهام هنا، أو استخدم قائمة المهمة واختر \"نقل إلى {{sprintName}}\".",
+    "loadingLabel": "جاري تحميل {{sprintName}}",
+    "goalPrefix": "الهدف:",
+    "tryAgain": "حاول مجددًا"
+  },
+  "todoDeleteConfirm": {
+    "title": "حذف المهمة",
+    "message": "هل أنت متأكد من أنك تريد حذف هذه المهمة؟",
+    "cancelButton": "إلغاء",
+    "deleteButton": "حذف",
+    "loading": "جاري حذف المهمة...",
+    "success": "تم حذف المهمة بنجاح",
+    "error": "فشل حذف المهمة",
+    "confirmTitle": "حذف المهمة؟",
+    "confirmLabel": "حذف المهمة",
+    "message2": "{{key}} \"{{title}}\" سيتم حذفه بشكل دائم. لا يمكن التراجع عن هذا."
+  },
+  "pointsChip": {
+    "notEstimated": "غير مقدر",
+    "points": "{{points}} نقطة{{plural}}"
+  },
+  "typeIcon": {
+    "story": "قصة",
+    "task": "مهمة",
+    "bug": "خلل"
+  },
+  "todoStatus": {
+    "todo": "المراد عمله",
+    "inProgress": "قيد التقدم",
+    "inReview": "قيد المراجعة",
+    "done": "مكتمل"
+  },
+  "todoPriority": {
+    "low": "منخفض",
+    "medium": "متوسط",
+    "high": "مرتفع",
+    "urgent": "عاجل"
+  },
+  "common": {
+    "yes": "نعم",
+    "no": "كلا",
+    "ok": "حسنًا",
+    "gotIt": "فهمت",
+    "delete": "حذف",
+    "tryAgain": "حاول مجددًا"
+  }
+}

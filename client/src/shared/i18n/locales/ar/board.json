@@ -1,0 +1,124 @@
+{
+  "dnd": {
+    "instructions": "لالتقاط مهمة اضغط Space أو Enter على زر النقل الخاص بها. استخدم مفاتيح الأسهم لنقلها بين الأعمدة وداخلها. اضغط Space أو Enter لإفلاتها أو Escape للإلغاء."
+  },
+  "noSprint": {
+    "title": "لا سبرنت نشط",
+    "message": "ابدأ سبرنتاً مخططاً من سجل المهام لتعمل عليه هنا.",
+    "action": "الانتقال إلى سجل المهام"
+  },
+  "view": {
+    "loading": "جارٍ تحميل اللوحة",
+    "loadError": "تعذّر تحميل اللوحة",
+    "titleSuffix": "{{name}} · اللوحة · Kanbot"
+  },
+  "header": {
+    "progress": "تقدّم {{name}}",
+    "summary": "الملخص",
+    "burndown": "مخطط الاحتراق",
+    "complete": "إكمال السبرنت",
+    "saving": "جارٍ حفظ التغييرات…"
+  },
+  "column": {
+    "points": "{{todos}} · {{points}}",
+    "todosAria": "مهام {{status}}",
+    "position": "العمود {{current}} من {{total}}: {{name}}",
+    "swipeHint": "مرّر لرؤية الأعمدة الأخرى"
+  },
+  "progress": {
+    "points": "{{done}}/{{total}} نقطة",
+    "todos": "{{done}}/{{total}} مهمة",
+    "summaryPoints": "{{done}} من {{total}} نقطة، {{percent}}٪",
+    "summaryTodos": "{{done}} من {{total}} مهمة، {{percent}}٪"
+  },
+  "dates": {
+    "endsToday": "ينتهي اليوم",
+    "daysLeft_zero": "لا أيام متبقية",
+    "daysLeft_one": "يوم واحد متبقٍ",
+    "daysLeft_two": "يومان متبقيان",
+    "daysLeft_few": "{{count}} أيام متبقية",
+    "daysLeft_many": "{{count}} يوماً متبقياً",
+    "daysLeft_other": "{{count}} يوم متبقٍ",
+    "endedAgo_zero": "انتهى اليوم",
+    "endedAgo_one": "انتهى منذ يوم",
+    "endedAgo_two": "انتهى منذ يومين",
+    "endedAgo_few": "انتهى منذ {{count}} أيام",
+    "endedAgo_many": "انتهى منذ {{count}} يوماً",
+    "endedAgo_other": "انتهى منذ {{count}} يوم"
+  },
+  "move": {
+    "to": "نقل إلى {{status}}",
+    "moved": "تم نقل {{key}} إلى {{status}}"
+  },
+  "complete": {
+    "title": "إكمال {{name}}",
+    "confirm": "إكمال السبرنت",
+    "allDoneAlert": "كل المهام منجزة.",
+    "moveTo": "نقل المهام غير المكتملة إلى",
+    "completing": "جارٍ الإكمال…",
+    "summarizing": "جارٍ توليد الملخص…",
+    "counts": "{{done}} منجزة، {{unfinished}} غير منجزة.",
+    "summaryFailed": "تم إكمال السبرنت لكن فشل توليد الملخص: {{message}}",
+    "generateSummary": "توليد ملخص بالذكاء الاصطناعي",
+    "viewSprint": "عرض السبرنت",
+    "loadingPlanned": "جارٍ تحميل السبرنتات المخططة…",
+    "plannedError": "تعذّر تحميل السبرنتات المخططة. ما زال بإمكانك نقل المهام إلى سجل المهام.",
+    "willMove": "ستنتقل {{todos}} إلى {{destination}}. لا يمكن التراجع عن ذلك.",
+    "destinationOption": "{{name}} · {{todos}}",
+    "completedToast": "تم إكمال {{name}}"
+  },
+  "sprints": {
+    "title": "السبرنتات",
+    "loading": "جارٍ تحميل السبرنتات",
+    "loadError": "تعذّر تحميل السبرنتات",
+    "emptyTitle": "لا سبرنتات بعد",
+    "emptyMessage": "أنشئ سبرنتاً في سجل المهام وابدأه. سيظهر هنا.",
+    "goBacklog": "الانتقال إلى سجل المهام",
+    "listLabel": "السبرنتات",
+    "template": "الإعدادات الافتراضية للسبرنت",
+    "points": "{{done}}/{{total}} نقطة",
+    "velocityTitle": "السرعة"
+  },
+  "details": {
+    "loading": "جارٍ تحميل السبرنت",
+    "notFound": "السبرنت غير موجود",
+    "notFoundMessage": "ربما حُذف، أو أن الرابط غير صحيح.",
+    "goSprints": "الانتقال إلى السبرنتات",
+    "loadError": "تعذّر تحميل هذا السبرنت",
+    "goBoard": "الانتقال إلى اللوحة",
+    "goBacklog": "الانتقال إلى سجل المهام",
+    "numbers": "أرقام السبرنت",
+    "completedTodos": "المهام المكتملة",
+    "pointsDone": "النقاط المنجزة",
+    "carriedOver": "المرحّلة",
+    "completion": "نسبة الإنجاز",
+    "aiSummary": "ملخص الذكاء الاصطناعي",
+    "todos": "المهام",
+    "todosLabel": "مهام {{name}}",
+    "loadingTodos": "جارٍ تحميل المهام",
+    "todosError": "تعذّر تحميل المهام",
+    "noTodos": "لا مهام في هذا السبرنت",
+    "noTodosMessage": "لم تبقَ أي مهمة في هذا السبرنت.",
+    "exportTitle": "{{name}} · ملخص"
+  },
+  "burndown": {
+    "title": "مخطط الاحتراق",
+    "description": "نقاط القصة المتبقية في كل يوم: الخط المثالي مقابل الخط الفعلي.",
+    "ideal": "المثالي",
+    "actual": "الفعلي",
+    "today": "اليوم",
+    "remaining": "النقاط المتبقية",
+    "empty": "يحتاج مخطط الاحتراق إلى سبرنت له تاريخ بدء وانتهاء ومهام مقدّرة بالنقاط.",
+    "short": "هذا السبرنت أقصر من أن يُرسم له مخطط احتراق (أقل من يومين).",
+    "aria": "مخطط الاحتراق. تبقّت {{remaining}} من {{total}} نقطة."
+  },
+  "velocity": {
+    "title": "السرعة",
+    "description": "النقاط الملتزم بها والمنجزة في سبرناتك المكتملة.",
+    "committed": "الملتزم به",
+    "completed": "المنجز",
+    "average": "المتوسط: {{value}}",
+    "empty": "أكمل سبرنتاً لترى سرعتك.",
+    "aria": "مخطط السرعة لـ {{count}} سبرنتات مكتملة. متوسط المنجز: {{value}} نقطة."
+  }
+}

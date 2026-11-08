@@ -1,32 +1,40 @@
 import { create } from 'zustand';
 
-/** Which AI dialog is open. Nothing else lives here: drafts stay in the dialog's own state. */
-export type AiDialog = 'generate-todos' | 'plan-sprint';
+export type AiDialog = 'generate-todos' | 'plan-sprint' | 'improve-todo' | 'estimate' | 'standup';
 
 type AiDialogState = {
   dialog: AiDialog | null;
-  /** The element that opened the dialog, so focus can return to it on close. */
   trigger: HTMLElement | null;
+  /** The todo to improve (`improve-todo`). */
+  todoId: string | null;
 };
 
 type AiDialogActions = {
   openGenerateTodos: (trigger: HTMLElement | null) => void;
   openPlanSprint: (trigger: HTMLElement | null) => void;
+  openImproveTodo: (todoId: string, trigger: HTMLElement | null) => void;
+  openEstimate: (trigger: HTMLElement | null) => void;
+  openStandup: (trigger: HTMLElement | null) => void;
+  /** Closes the dialog and returns focus to whatever opened it. */
   close: () => void;
+  /** Back to the initial state. Called on logout. */
   reset: () => void;
 };
 
-const initialState: AiDialogState = { dialog: null, trigger: null };
+const initialState: AiDialogState = { dialog: null, trigger: null, todoId: null };
 
 export const useAiDialogStore = create<AiDialogState & AiDialogActions>()((set, get) => ({
   ...initialState,
-  openGenerateTodos: (trigger) => set({ dialog: 'generate-todos', trigger }),
-  openPlanSprint: (trigger) => set({ dialog: 'plan-sprint', trigger }),
+  openGenerateTodos: (trigger) => set({ dialog: 'generate-todos', trigger, todoId: null }),
+  openPlanSprint: (trigger) => set({ dialog: 'plan-sprint', trigger, todoId: null }),
+  openImproveTodo: (todoId, trigger) => set({ dialog: 'improve-todo', trigger, todoId }),
+  openEstimate: (trigger) => set({ dialog: 'estimate', trigger, todoId: null }),
+  openStandup: (trigger) => set({ dialog: 'standup', trigger, todoId: null }),
   close: () => {
     const { trigger } = get();
     set(initialState);
     if (trigger === null) return;
-    // After the dialog has unmounted.
+    // Focus returns after the dialog has unmounted.
     requestAnimationFrame(() => {
       if (trigger.isConnected) trigger.focus();
     });

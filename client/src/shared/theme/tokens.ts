@@ -7,18 +7,25 @@
  * Every text/surface pair was checked for WCAG AA contrast (see client/README.md).
  */
 
-/** Inter (latin subset, self-hosted by @fontsource). Fallbacks cover the time before it loads. */
+/**
+ * Inter covers Latin; IBM Plex Sans Arabic covers Arabic (both self-hosted by @fontsource, loaded
+ * with `font-display: swap`). A glyph missing from Inter falls through to the Arabic font, so one
+ * stack works for English, Arabic and mixed text. Fallbacks cover the time before they load.
+ */
 export const fontFamily =
-  '"Inter", "Roboto", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif';
+  '"Inter", "IBM Plex Sans Arabic", "Noto Sans Arabic", "Roboto", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif';
+
+/** Type scale in rem. Components pick a theme variant, never a raw size. */
+export const typeScale = { xs: 0.75, sm: 0.8125, base: 0.875, md: 1, lg: 1.125, xl: 1.25, xxl: 1.5, display: 2 } as const;
 
 /** Only these four weights are loaded (main.tsx). */
 export const fontWeight = { regular: 400, medium: 500, semibold: 600, bold: 700 } as const;
 
-/** Spacing step in rem: theme.spacing(2) = 1rem (8px grid). */
+/** Spacing step in rem: theme.spacing(2) = 1rem (8px grid). The only spacing scale. */
 export const spacingStepRem = 0.5;
 
 /** Corner radius in px. */
-export const radius = { control: 8, card: 16 } as const;
+export const radius = { chip: 4, control: 8, card: 16, pill: 999 } as const;
 
 export const grey = {
   50: '#F9FAFB',
@@ -38,6 +45,9 @@ export const motion = {
   durationMs: { fast: 120, base: 200, slow: 320 },
   easing: 'cubic-bezier(0.2, 0, 0, 1)',
 } as const;
+
+/** Elevation scale: flat by default; only floating layers cast a shadow. */
+export const elevation = { flat: 0, menu: 8, overlay: 24 } as const;
 
 export const shadow = {
   none: 'none',

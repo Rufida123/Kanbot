@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import Box from '@mui/material/Box';
@@ -22,13 +23,14 @@ const GRID_SX = {
 } as const;
 
 export default function ProjectsPage() {
+  const { t } = useTranslation();
   const { data: projects, error, isPending, isError, isFetching, refetch } = useProjects();
   const openCreate = useProjectDialogStore((state) => state.openCreate);
 
   const renderContent = () => {
     if (isPending) {
       return (
-        <Box sx={GRID_SX} aria-busy="true" aria-label="Loading projects">
+        <Box sx={GRID_SX} aria-busy="true" aria-label={t('projects:page.loading')}>
           {SKELETON_KEYS.map((key) => (
             <ProjectCardSkeleton key={key} />
           ))}
@@ -38,8 +40,8 @@ export default function ProjectsPage() {
     if (isError) {
       return (
         <ErrorState
-          title="We couldn’t load your projects"
-          message={error instanceof ApiError ? error.message : 'Something went wrong. Please try again.'}
+          title={t('projects:page.loadError')}
+          message={error instanceof ApiError ? error.message : t('common:errors.generic')}
           onRetry={() => void refetch()}
         />
       );
@@ -48,15 +50,15 @@ export default function ProjectsPage() {
       return (
         <EmptyState
           icon={<FolderOpenOutlinedIcon fontSize="large" />}
-          title="No projects yet"
-          message="A project holds your backlog, sprints and board. Create one to get started."
+          title={t('projects:page.emptyTitle')}
+          message={t('projects:page.emptyMessage')}
           action={
             <Button
               variant="contained"
               startIcon={<AddIcon aria-hidden="true" />}
               onClick={(event) => openCreate(event.currentTarget)}
             >
-              Create your first project
+              {t('projects:page.createFirst')}
             </Button>
           }
         />
@@ -77,10 +79,10 @@ export default function ProjectsPage() {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, maxWidth: '72rem', width: '100%', marginInline: 'auto' }}>
-      <title>Projects · Kanbot</title>
+      <title>{`${t('projects:page.title')} · Kanbot`}</title>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
         <Typography component="h1" variant="h2">
-          Projects
+          {t('projects:page.title')}
         </Typography>
         {projects && projects.length > 0 ? (
           <Button
@@ -88,13 +90,13 @@ export default function ProjectsPage() {
             startIcon={<AddIcon aria-hidden="true" />}
             onClick={(event) => openCreate(event.currentTarget)}
           >
-            New project
+            {t('projects:page.newProject')}
           </Button>
         ) : null}
       </Box>
       {/* Fixed-height slot: the refresh indicator never shifts the content. */}
       <Box sx={{ height: '0.25rem' }}>
-        {isFetching && !isPending ? <LinearProgress aria-label="Refreshing projects" /> : null}
+        {isFetching && !isPending ? <LinearProgress aria-label={t('projects:page.refreshing')} /> : null}
       </Box>
       {renderContent()}
     </Box>

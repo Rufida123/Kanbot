@@ -1,0 +1,116 @@
+{
+  "dnd": {
+    "instructions": "To pick up a todo, press Space or Enter on its move button. Use the arrow keys to move it between and within columns. Press Space or Enter to drop it, or Escape to cancel."
+  },
+  "noSprint": {
+    "title": "No active sprint",
+    "message": "Start a planned sprint from the backlog to work on it here.",
+    "action": "Go to the backlog"
+  },
+  "view": {
+    "loading": "Loading board",
+    "loadError": "We couldn’t load the board",
+    "titleSuffix": "{{name}} · Board · Kanbot"
+  },
+  "header": {
+    "progress": "{{name}} progress",
+    "summary": "Summary",
+    "burndown": "Burndown",
+    "complete": "Complete sprint",
+    "saving": "Saving changes…"
+  },
+  "column": {
+    "points": "{{todos}} · {{points}}",
+    "todosAria": "{{status}} todos",
+    "position": "Column {{current}} of {{total}}: {{name}}",
+    "swipeHint": "Swipe to see other columns"
+  },
+  "progress": {
+    "points": "{{done}}/{{total}} points",
+    "todos": "{{done}}/{{total}} todos",
+    "summaryPoints": "{{done}} of {{total}} points, {{percent}}%",
+    "summaryTodos": "{{done}} of {{total}} todos, {{percent}}%"
+  },
+  "dates": {
+    "endsToday": "Ends today",
+    "daysLeft_one": "{{count}} day left",
+    "daysLeft_other": "{{count}} days left",
+    "endedAgo_one": "Ended {{count}} day ago",
+    "endedAgo_other": "Ended {{count}} days ago"
+  },
+  "move": {
+    "to": "Move to {{status}}",
+    "moved": "{{key}} moved to {{status}}"
+  },
+  "complete": {
+    "title": "Complete {{name}}",
+    "confirm": "Complete sprint",
+    "allDoneAlert": "All todos are done.",
+    "moveTo": "Move unfinished todos to",
+    "completing": "Completing…",
+    "summarizing": "Generating summary…",
+    "counts": "{{done}} done, {{unfinished}} not done.",
+    "summaryFailed": "Sprint completed, but the summary failed: {{message}}",
+    "generateSummary": "Generate AI summary",
+    "viewSprint": "View sprint",
+    "loadingPlanned": "Loading planned sprints…",
+    "plannedError": "Planned sprints could not be loaded. You can still move the todos to the backlog.",
+    "willMove": "{{todos}} will move to {{destination}}. This cannot be undone.",
+    "destinationOption": "{{name}} · {{todos}}",
+    "completedToast": "{{name}} completed"
+  },
+  "sprints": {
+    "title": "Sprints",
+    "loading": "Loading sprints",
+    "loadError": "We couldn’t load the sprints",
+    "emptyTitle": "No sprints yet",
+    "emptyMessage": "Create a sprint in the backlog and start it. It will show up here.",
+    "goBacklog": "Go to the backlog",
+    "listLabel": "Sprints",
+    "template": "Sprint defaults",
+    "points": "{{done}}/{{total}} points",
+    "velocityTitle": "Velocity"
+  },
+  "details": {
+    "loading": "Loading sprint",
+    "notFound": "Sprint not found",
+    "notFoundMessage": "It may have been deleted, or the link is wrong.",
+    "goSprints": "Go to sprints",
+    "loadError": "We couldn’t load this sprint",
+    "goBoard": "Go to board",
+    "goBacklog": "Go to backlog",
+    "numbers": "Sprint numbers",
+    "completedTodos": "Completed todos",
+    "pointsDone": "Points done",
+    "carriedOver": "Carried over",
+    "completion": "Completion",
+    "aiSummary": "AI summary",
+    "todos": "Todos",
+    "todosLabel": "{{name}} todos",
+    "loadingTodos": "Loading todos",
+    "todosError": "We couldn’t load the todos",
+    "noTodos": "No todos in this sprint",
+    "noTodosMessage": "Nothing stayed in this sprint.",
+    "exportTitle": "{{name}} · Summary"
+  },
+  "burndown": {
+    "title": "Burndown",
+    "description": "Remaining story points per day: ideal line against the actual line.",
+    "ideal": "Ideal",
+    "actual": "Actual",
+    "today": "Today",
+    "remaining": "Remaining points",
+    "empty": "Burndown needs a sprint with a start date, an end date and estimated todos.",
+    "short": "This sprint is too short to draw a burndown (less than two days).",
+    "aria": "Burndown chart. {{remaining}} of {{total}} points remaining."
+  },
+  "velocity": {
+    "title": "Velocity",
+    "description": "Committed and completed points of your completed sprints.",
+    "committed": "Committed",
+    "completed": "Completed",
+    "average": "Average: {{value}}",
+    "empty": "Complete a sprint to see your velocity.",
+    "aria": "Velocity chart for {{count}} completed sprints. Average completed: {{value}} points."
+  }
+}

@@ -1,3 +1,5 @@
+import { useEndOrigin } from '@/shared/hooks/useMenuOrigin';
+import { useTranslation } from 'react-i18next';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -31,6 +33,8 @@ type TodoActionsMenuProps = {
 
 /** The ⋮ button of a row: Open, the move actions it is given, and Delete (when `onDelete` is given). */
 export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: TodoActionsMenuProps) {
+  const origin = useEndOrigin();
+  const { t } = useTranslation();
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const id = useId();
   const buttonId = `${id}-button`;
@@ -44,11 +48,11 @@ export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: T
 
   return (
     <>
-      <Tooltip title="Todo actions">
+      <Tooltip title={t('todos:menu.actions')}>
         <IconButton
           id={buttonId}
           size="small"
-          aria-label={`Actions for ${todo.key} ${todo.title}`}
+          aria-label={t('todos:menu.actionsFor', { key: todo.key, title: todo.title })}
           aria-haspopup="menu"
           aria-controls={isOpen ? menuId : undefined}
           aria-expanded={isOpen}
@@ -63,14 +67,14 @@ export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: T
         open={isOpen}
         onClose={() => setAnchor(null)}
         slotProps={{ list: { 'aria-labelledby': buttonId } }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={origin.anchorOrigin}
+        transformOrigin={origin.transformOrigin}
       >
         <MenuItem onClick={() => runAction(onOpen)}>
           <ListItemIcon>
             <OpenInNewIcon fontSize="small" aria-hidden="true" />
           </ListItemIcon>
-          Open
+          {t('common:actions.open')}
         </MenuItem>
         {extraActions.length > 0 ? <Divider component="li" role="separator" /> : null}
         {extraActions.map((action) => (
@@ -95,7 +99,7 @@ export function TodoActionsMenu({ todo, onOpen, onDelete, extraActions = [] }: T
             <ListItemIcon>
               <DeleteOutlinedIcon fontSize="small" color="error" aria-hidden="true" />
             </ListItemIcon>
-            Delete
+            {t('common:actions.delete')}
           </MenuItem>
         )}
       </Menu>

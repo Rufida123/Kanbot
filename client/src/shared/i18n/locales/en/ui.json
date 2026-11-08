@@ -1,0 +1,257 @@
+{
+  "navigation": {
+    "openNavigation": "Open navigation",
+    "closeNavigation": "Close navigation",
+    "askAi": "Ask AI"
+  },
+  "sidebar": {
+    "backlog": "Backlog",
+    "board": "Board",
+    "sprints": "Sprints",
+    "projects": "Projects",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "backlog": "Backlog",
+    "board": "Board",
+    "sprints": "Sprints"
+  },
+  "assistant": {
+    "title": "AI assistant",
+    "close": "Close assistant"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "message": "The page you're looking for doesn't exist.",
+    "goHome": "Go home"
+  },
+  "projects": {
+    "title": "Projects",
+    "empty": "No projects yet. Create one to get started.",
+    "createNew": "Create new project",
+    "noDescription": "No description",
+    "loading": "Loading projects...",
+    "error": "Failed to load projects",
+    "deleteConfirm": "Delete project?",
+    "deleteMessage": "and all of its todos and sprints will be permanently deleted. This cannot be undone.",
+    "deleteError": "Failed to delete project"
+  },
+  "projectForm": {
+    "createTitle": "New project",
+    "editTitle": "Edit project",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. KAN",
+    "keyLabel": "Key",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Enter project description (optional)",
+    "createButton": "Create",
+    "updateButton": "Save",
+    "cancelButton": "Cancel",
+    "nameRequired": "Project name is required",
+    "discardTitle": "Discard changes?",
+    "discardConfirm": "Discard",
+    "discardCancel": "Keep editing",
+    "discardMessage": "Your unsaved changes will be lost.",
+    "createSuccess": "Project created successfully",
+    "updateSuccess": "Project updated successfully",
+    "createError": "Failed to create project",
+    "updateError": "Failed to update project"
+  },
+  "sprints": {
+    "title": "Sprints: coming in Sprint 4",
+    "comingSoon": "Sprints feature coming in Sprint 4",
+    "empty": "No sprints yet.",
+    "loading": "Loading sprints...",
+    "error": "Failed to load sprints",
+    "createNew": "Create sprint",
+    "deleteConfirm": "Are you sure you want to delete this sprint?"
+  },
+  "sprintDetails": {
+    "title": "Sprint details: coming in Sprint 5",
+    "comingSoon": "Sprint details view coming in Sprint 5",
+    "loading": "Loading sprint details...",
+    "error": "Failed to load sprint details"
+  },
+  "sprintForm": {
+    "createTitle": "Create sprint",
+    "editTitle": "Edit sprint",
+    "nameLabel": "Sprint name",
+    "namePlaceholder": "Enter sprint name",
+    "goalLabel": "Sprint goal",
+    "goalPlaceholder": "Enter sprint goal (optional)",
+    "durationLabel": "Duration (days)",
+    "durationPlaceholder": "Enter duration",
+    "createButton": "Create",
+    "updateButton": "Update",
+    "cancelButton": "Cancel",
+    "nameRequired": "Sprint name is required",
+    "durationRequired": "Duration is required",
+    "durationInvalid": "Duration must be a positive number",
+    "createSuccess": "Sprint created successfully",
+    "updateSuccess": "Sprint updated successfully",
+    "createError": "Failed to create sprint",
+    "updateError": "Failed to update sprint"
+  },
+  "board": {
+    "summary": "Summary",
+    "completeSprint": "Complete sprint",
+    "empty": "No todos in this sprint. Add some to get started.",
+    "loading": "Loading board...",
+    "error": "Failed to load board",
+    "stats": {
+      "total": "Total",
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "points": "Points"
+    },
+    "noActiveSprint": {
+      "title": "No active sprint",
+      "message": "Start a planned sprint from the backlog to work on it here.",
+      "action": "Go to the backlog"
+    },
+    "loadingBoard": "Loading board",
+    "errorLoading": "We couldn't load the board",
+    "pageTitle": "{{sprintName}} · Board · Kanbot"
+  },
+  "boardColumn": {
+    "todo": "To Do",
+    "inProgress": "In Progress",
+    "done": "Done",
+    "ariaLabel": "Column: {{columnName}}",
+    "points": "{{count}} · {{points}} pts",
+    "ariaLabelTodos": "{{columnName}} todos",
+    "empty": "No todos",
+    "dropHere": "Drop here"
+  },
+  "completeSprintDialog": {
+    "title": "Complete sprint",
+    "message": "Mark this sprint as complete?",
+    "cancelButton": "Cancel",
+    "confirmButton": "Complete",
+    "loading": "Completing sprint...",
+    "success": "Sprint completed successfully",
+    "error": "Failed to complete sprint",
+    "header": "Complete {{sprintName}}",
+    "doneCount": "{{count}} done, {{notDone}} not done.",
+    "allDone": "All todos are done.",
+    "moveUnfinishedLabel": "Move unfinished todos to",
+    "loadingPlannedSprints": "Loading planned sprints…",
+    "plannedSprintsError": "Planned sprints could not be loaded. You can still move the todos to the backlog.",
+    "moveDestination": "{{count}} will move to {{destination}}. This cannot be undone.",
+    "generateAiSummary": "Generate AI summary",
+    "viewSprint": "View sprint",
+    "tryAgain": "Try again",
+    "completingLabel": "Completing…",
+    "generatingSummaryLabel": "Generating summary…"
+  },
+  "backlog": {
+    "empty": "No todos in backlog",
+    "loading": "Loading backlog...",
+    "error": "Failed to load backlog"
+  },
+  "backlogFilters": {
+    "priority": "All priorities",
+    "type": "All types",
+    "search": "Search todos...",
+    "ariaLabel": "Filter {{filterName}}",
+    "ariaLabelContainer": "Filter backlog",
+    "ariaLabelSearch": "Search todos",
+    "clearSearchTitle": "Clear search",
+    "clearSearchLabel": "Clear search",
+    "ariaLabelPriority": "Filter by priority",
+    "ariaLabelType": "Filter by type",
+    "clearFiltersButton": "Clear filters"
+  },
+  "deleteSprintDialog": {
+    "title": "Delete sprint",
+    "message": "Are you sure you want to delete this sprint?",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "loading": "Deleting sprint...",
+    "success": "Sprint deleted successfully",
+    "error": "Failed to delete sprint",
+    "confirmTitle": "Delete sprint?",
+    "confirmLabel": "Delete sprint",
+    "noTodos": "It has no todos.",
+    "todosReturn": "{{count}} will return to the end of the backlog.",
+    "willBeDeleted": "{{sprintName}} will be deleted."
+  },
+  "startSprintDialog": {
+    "title": "Start sprint",
+    "selectSprintLabel": "Select sprint",
+    "selectSprintPlaceholder": "Choose a sprint",
+    "nosprintsAvailable": "No sprints available",
+    "cancelButton": "Cancel",
+    "startButton": "Start",
+    "loading": "Starting sprint...",
+    "success": "Sprint started successfully",
+    "error": "Failed to start sprint",
+    "header": "Start {{sprintName}}",
+    "startDateLabel": "Start date",
+    "endDateLabel": "End date",
+    "validationError": "Only planned sprints can be started.",
+    "activeSprintError": "\"{{sprintName}}\" is still active. Complete it before starting another sprint.",
+    "noTodos": "This sprint has no todos.",
+    "todosMove": "{{count}} will move to the board.",
+    "genericError": "Something went wrong. Please try again.",
+    "invalidStartDate": "Enter a valid start date",
+    "invalidEndDate": "Enter a valid end date",
+    "endBeforeStart": "End date must be on or after the start date"
+  },
+  "sprintSection": {
+    "planning": "Planning",
+    "active": "Active",
+    "completed": "Completed",
+    "startSprintButton": "Start sprint",
+    "sprintActionsTooltip": "Sprint actions",
+    "ariaLabel": "Actions for {{sprintName}}",
+    "editSprintMenuItem": "Edit sprint",
+    "startSprintMenuItem": "Start sprint",
+    "deleteSprintMenuItem": "Delete sprint",
+    "noTodosYet": "No todos in this sprint yet. Drag todos here, or use a todo's menu and choose \"Move to {{sprintName}}\".",
+    "loadingLabel": "Loading {{sprintName}}",
+    "goalPrefix": "Goal:",
+    "tryAgain": "Try again"
+  },
+  "todoDeleteConfirm": {
+    "title": "Delete todo",
+    "message": "Are you sure you want to delete this todo?",
+    "cancelButton": "Cancel",
+    "deleteButton": "Delete",
+    "loading": "Deleting todo...",
+    "success": "Todo deleted successfully",
+    "error": "Failed to delete todo",
+    "confirmTitle": "Delete todo?",
+    "confirmLabel": "Delete todo",
+    "message2": "{{key}} \"{{title}}\" will be permanently deleted. This cannot be undone."
+  },
+  "pointsChip": {
+    "notEstimated": "Not estimated",
+    "points": "{{points}} story {{plural}}"
+  },
+  "typeIcon": {
+    "story": "Story",
+    "task": "Task",
+    "bug": "Bug"
+  },
+  "todoStatus": {
+    "todo": "To Do",
+    "inProgress": "In Progress",
+    "inReview": "In Review",
+    "done": "Done"
+  },
+  "todoPriority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "common": {
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "gotIt": "Got it",
+    "delete": "Delete",
+    "tryAgain": "Try again"
+  }
+}

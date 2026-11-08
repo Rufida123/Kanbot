@@ -11,7 +11,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import { useQueryClient } from '@tanstack/react-query';
-import { useId, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { getSavedSprintTemplate } from '@/features/sprints/utils/sprintTemplate';
+import { useId, useMemo, useRef, useState } from 'react';
 import type { SyntheticEvent } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router';
@@ -23,11 +25,10 @@ import { GoalField } from '@/features/ai/components/plan-sprint-dialog/GoalField
 import { PlanTodoList } from '@/features/ai/components/plan-sprint-dialog/PlanTodoList';
 import {
   PLAN_DEFAULT_VALUES,
-  planSprintSchema,
+  createPlanSprintSchema,
   toPlanRequest,
 } from '@/features/ai/components/plan-sprint-dialog/config';
 import type { PlanSprintFormValues } from '@/features/ai/components/plan-sprint-dialog/config';
-import { BACKLOG_EMPTY_FOR_PLAN_MESSAGE } from '@/features/ai/config/copy';
 import { AI_LIMITS } from '@/features/ai/config/limits';
 import { usePlanSprint } from '@/features/ai/hooks/usePlanSprint';
 import { getUnsuggestedTodos, matchPlanTodos } from '@/features/ai/utils/matchPlanTodos';
@@ -39,7 +40,6 @@ import { ErrorState } from '@/shared/components/ErrorState';
 import { FormTextField } from '@/shared/components/FormTextField';
 import { useIsSmallScreen } from '@/shared/hooks/useIsSmallScreen';
 import type { PlanSprintRequest } from '@/shared/types/api';
-import { formatCount } from '@/shared/utils/formatCount';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
 
 type PlanSprintDialogProps = { projectId: string; onClose: () => void };
@@ -55,6 +55,10 @@ type Plan = { todoIds: string[]; reasoning: string; capacity: number };
  * a todo that left the backlog meanwhile is skipped. Nothing is saved before the button.
  */
 export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createPlanSprintSchema(t), [t]);
+  // A saved sprint template (enhancement 14) pre-fills the capacity.
+  const templateCapacity = getSavedSprintTemplate()?.capacity;
   const id = useId();
   const titleId = `${id}-title`;
   const isSmallScreen = useIsSmallScreen();
@@ -77,9 +81,9 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
     control,
     formState: { errors },
   } = useForm<PlanSprintFormValues>({
-    resolver: zodResolver(planSprintSchema),
+    resolver: zodResolver(schema),
     mode: 'onTouched',
-    defaultValues: PLAN_DEFAULT_VALUES,
+    defaultValues: templateCapacity === undefined ? PLAN_DEFAULT_VALUES : { ...PLAN_DEFAULT_VALUES, capacity: String(templateCapacity) },
   });
   const focusLength = useWatch({ control, name: 'focus' }).length;
 
@@ -158,17 +162,17 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
   };
 
   const renderBacklogState = () => {
-    if (backlogQuery.isPending) return <Skeleton variant="rounded" height="4rem" aria-label="Loading backlog" />;
+    if (backlogQuery.isPending) return <Skeleton variant="rounded" height="4rem" aria-label={t('ai:planDialog.loadingBacklog')} />;
     if (backlogQuery.isError && backlog === undefined) {
       return (
         <ErrorState
-          title="We couldn’t load the backlog"
+          title={t('ai:planDialog.loadError')}
           message={getErrorMessage(backlogQuery.error)}
           onRetry={() => void backlogQuery.refetch()}
         />
       );
     }
-    if (isBacklogEmpty) return <Alert severity="info">{BACKLOG_EMPTY_FOR_PLAN_MESSAGE}</Alert>;
+    if (isBacklogEmpty) return <Alert severity="info">{t('ai:plan.backlogEmpty')}</Alert>;
     return null;
   };
 
@@ -184,14 +188,14 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
       maxWidth="md"
       fullScreen={isSmallScreen}
     >
-      <DialogTitle id={titleId}>Plan a sprint with AI</DialogTitle>
+      <DialogTitle id={titleId}>{t('ai:planDialog.title')}</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingTop: 1 }}>
         {renderBacklogState()}
         <Box component="form" noValidate onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             <Box sx={{ flex: '0 1 12rem' }}>
               <FormTextField
-                label="Capacity (story points)"
+                label={t('ai:planDialog.capacity')}
                 isRequired
                 inputMode="numeric"
                 autoFocus
@@ -205,7 +209,7 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
             </Box>
             <Box sx={{ flex: '1 1 16rem' }}>
               <FormTextField
-                label="Focus (optional)"
+                label={t('ai:planDialog.focus')}
                 autoComplete="off"
                 isDisabled={isFormDisabled}
                 maxLength={AI_LIMITS.focusMax}
@@ -228,7 +232,7 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
                 )
               }
             >
-              {isGenerating ? 'Planning…' : plan === null ? 'Suggest plan' : 'Suggest again'}
+              {isGenerating ? t('ai:planDialog.planning') : plan === null ? t('ai:planDialog.suggest') : t('ai:planDialog.suggestAgain')}
             </Button>
           </Box>
         </Box>
@@ -238,15 +242,14 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
             <GoalField value={goal} isDisabled={isBusy} onChange={setGoal} />
             {match.missingCount > 0 ? (
               <Alert severity="info">
-                {formatCount(match.missingCount, 'suggested todo')} {match.missingCount === 1 ? 'is' : 'are'} no longer
-                in the backlog and {match.missingCount === 1 ? 'was' : 'were'} skipped.
+                {t('ai:planDialog.missing', { count: match.missingCount })}
               </Alert>
             ) : null}
             {match.todos.length === 0 ? (
-              <Alert severity="warning">None of the suggested todos is in the backlog any more. Suggest a new plan.</Alert>
+              <Alert severity="warning">{t('ai:planDialog.noneLeft')}</Alert>
             ) : (
               <PlanTodoList
-                label="Suggested todos"
+                label={t('ai:planDialog.suggestedTodos')}
                 todos={match.todos}
                 checkedIds={checkedIds}
                 isDisabled={isBusy}
@@ -255,8 +258,8 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
             )}
             {unsuggestedTodos.length === 0 ? null : (
               <PlanTodoList
-                label="Other backlog todos"
-                heading="Other backlog todos (not suggested)"
+                label={t('ai:planDialog.otherTodos')}
+                heading={t('ai:planDialog.otherHeading')}
                 todos={unsuggestedTodos}
                 checkedIds={checkedIds}
                 isDisabled={isBusy}
@@ -266,7 +269,7 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
             {plan.reasoning.trim() === '' ? null : (
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Typography component="h3" variant="subtitle2">
-                  Why these todos
+                  {t('ai:planDialog.why')}
                 </Typography>
                 <AiMarkdown content={plan.reasoning} />
               </Box>
@@ -283,14 +286,14 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
               variant="body2"
               sx={{ fontWeight: 'fontWeightMedium', color: isOverCapacity ? 'warning.main' : 'text.primary' }}
             >
-              {checkedPoints} of {plan.capacity} points
-              {isOverCapacity ? ` · over capacity by ${checkedPoints - plan.capacity}` : ''}
+              {t('ai:planDialog.pointsOf', { checked: checkedPoints, capacity: plan.capacity })}
+              {isOverCapacity ? t('ai:planDialog.overCapacity', { over: checkedPoints - plan.capacity }) : ''}
             </Typography>
           )}
           <AiDisclaimer />
         </Box>
         <Button color="inherit" onClick={requestClose} disabled={isBusy}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         <Button
           variant="contained"
@@ -298,7 +301,7 @@ export function PlanSprintDialog({ projectId, onClose }: PlanSprintDialogProps) 
           onClick={() => void createSprint()}
           startIcon={isCreating ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined}
         >
-          Create sprint with {checkedTodos.length} {checkedTodos.length === 1 ? 'todo' : 'todos'}
+          {t('ai:planDialog.create', { count: checkedTodos.length })}
         </Button>
       </DialogActions>
     </Dialog>

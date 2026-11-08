@@ -3,6 +3,7 @@ import type { TodoMenuAction } from '@/features/todos';
 import { BOARD_STATUSES } from '@/features/board/config/layout';
 import type { BoardColumns } from '@/features/board/utils/progress';
 import { STATUS_LABELS } from '@/shared/config/constants';
+import { t } from '@/shared/i18n';
 import type { Todo } from '@/shared/types/api';
 
 /**
@@ -16,7 +17,7 @@ export function useBoardMoveActions(projectId: string, columns: BoardColumns) {
   return (todo: Todo): TodoMenuAction[] =>
     BOARD_STATUSES.filter((status) => status !== todo.status).map((status) => ({
       id: `move-to-${status}`,
-      label: `Move to ${STATUS_LABELS[status]}`,
+      label: t('board:move.to', { status: STATUS_LABELS[status] }),
       disabledReason: null,
       onSelect: () =>
         moveMutation.mutate({
@@ -24,7 +25,9 @@ export function useBoardMoveActions(projectId: string, columns: BoardColumns) {
           sprintId: todo.sprintId,
           status,
           position: columns[status].length,
-          successMessage: `${todo.key} moved to ${STATUS_LABELS[status]}`,
+          successMessage: t('board:move.moved', { key: todo.key, status: STATUS_LABELS[status] }),
+          // "Undo" puts the card back in its old column and place.
+          undo: { status: todo.status, position: Math.max(columns[todo.status].findIndex((item) => item.id === todo.id), 0) },
         }),
     }));
 }

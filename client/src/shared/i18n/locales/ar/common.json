@@ -1,0 +1,245 @@
+{
+  "app": {
+    "name": "Kanbot",
+    "projects": "المشاريع",
+    "kanbotAllProjects": "Kanbot، كل المشاريع",
+    "projectNav": "المشروع",
+    "skipToContent": "انتقل إلى المحتوى",
+    "pageNotFound": "الصفحة غير موجودة",
+    "pageNotFoundMessage": "هذه الصفحة غير موجودة أو ربما نُقلت.",
+    "goToProjects": "الانتقال إلى المشاريع",
+    "loading": "جارٍ التحميل…",
+    "checkingSession": "جارٍ التحقق من جلستك…",
+    "titleSuffix": "{{title}} · Kanbot",
+    "sectionTitle": "{{project}} · {{section}}",
+    "projectFallback": "المشروع",
+    "openNavigation": "فتح القائمة",
+    "askAi": "اسأل الذكاء الاصطناعي",
+    "aiAssistant": "المساعد الذكي",
+    "closeAssistant": "إغلاق المساعد",
+    "mobileNav": "التنقل الرئيسي"
+  },
+  "nav": {
+    "backlog": "سجل المهام",
+    "board": "اللوحة",
+    "sprints": "السبرنتات",
+    "week": "أسبوعي",
+    "ai": "الذكاء",
+    "breadcrumbs": "مسار التنقل"
+  },
+  "actions": {
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "save": "حفظ",
+    "create": "إنشاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "open": "فتح",
+    "retry": "حاول مجدداً",
+    "reload": "إعادة التحميل",
+    "apply": "تطبيق",
+    "discard": "تجاهل",
+    "undo": "تراجع",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "copyLink": "نسخ الرابط",
+    "done": "تم",
+    "back": "رجوع",
+    "next": "التالي",
+    "clear": "مسح",
+    "select": "تحديد",
+    "selectAll": "تحديد الكل",
+    "keepEditing": "متابعة التعديل",
+    "confirm": "تأكيد",
+    "yes": "نعم",
+    "no": "لا",
+    "none": "لا شيء",
+    "reset": "إعادة ضبط",
+    "export": "تصدير",
+    "unsavedLost": "ستضيع تغييراتك غير المحفوظة.",
+    "discardTitle": "تجاهل التغييرات؟",
+    "refreshing": "جارٍ التحديث…"
+  },
+  "errors": {
+    "generic": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "network": "تعذّر الوصول إلى الخادم. هل هو قيد التشغيل؟",
+    "timeout": "استغرق الخادم وقتاً طويلاً للرد. حاول مجدداً."
+  },
+  "status": {
+    "todo": "قيد الانتظار",
+    "in_progress": "قيد التنفيذ",
+    "in_review": "قيد المراجعة",
+    "done": "مكتملة"
+  },
+  "priority": {
+    "low": "منخفضة",
+    "medium": "متوسطة",
+    "high": "عالية",
+    "urgent": "عاجلة"
+  },
+  "type": {
+    "task": "مهمة",
+    "story": "قصة",
+    "bug": "خلل"
+  },
+  "sprintStatus": {
+    "planned": "مخطط له",
+    "active": "نشط",
+    "completed": "مكتمل"
+  },
+  "points": {
+    "notEstimated": "غير مقدّرة",
+    "label": "نقاط القصة",
+    "aria_zero": "بلا نقاط قصة",
+    "aria_one": "نقطة قصة واحدة",
+    "aria_two": "نقطتا قصة",
+    "aria_few": "{{count}} نقاط قصة",
+    "aria_many": "{{count}} نقطة قصة",
+    "aria_other": "{{count}} نقطة قصة"
+  },
+  "labels": {
+    "prefix": "التصنيفات:"
+  },
+  "count": {
+    "todo_zero": "لا مهام",
+    "todo_one": "مهمة واحدة",
+    "todo_two": "مهمتان",
+    "todo_few": "{{count}} مهام",
+    "todo_many": "{{count}} مهمة",
+    "todo_other": "{{count}} مهمة",
+    "matchingTodo_zero": "لا مهام مطابقة",
+    "matchingTodo_one": "مهمة مطابقة واحدة",
+    "matchingTodo_two": "مهمتان مطابقتان",
+    "matchingTodo_few": "{{count}} مهام مطابقة",
+    "matchingTodo_many": "{{count}} مهمة مطابقة",
+    "matchingTodo_other": "{{count}} مهمة مطابقة",
+    "unfinishedTodo_zero": "لا مهام غير مكتملة",
+    "unfinishedTodo_one": "مهمة غير مكتملة",
+    "unfinishedTodo_two": "مهمتان غير مكتملتين",
+    "unfinishedTodo_few": "{{count}} مهام غير مكتملة",
+    "unfinishedTodo_many": "{{count}} مهمة غير مكتملة",
+    "unfinishedTodo_other": "{{count}} مهمة غير مكتملة",
+    "point_zero": "0 نقطة",
+    "point_one": "نقطة واحدة",
+    "point_two": "نقطتان",
+    "point_few": "{{count}} نقاط",
+    "point_many": "{{count}} نقطة",
+    "point_other": "{{count}} نقطة",
+    "day_zero": "0 يوم",
+    "day_one": "يوم واحد",
+    "day_two": "يومان",
+    "day_few": "{{count}} أيام",
+    "day_many": "{{count}} يوماً",
+    "day_other": "{{count}} يوم",
+    "selected_zero": "لا عناصر محددة",
+    "selected_one": "عنصر واحد محدد",
+    "selected_two": "عنصران محددان",
+    "selected_few": "{{count}} عناصر محددة",
+    "selected_many": "{{count}} عنصراً محدداً",
+    "selected_other": "{{count}} عنصر محدد",
+    "label_zero": "لا تصنيفات",
+    "label_one": "تصنيف واحد",
+    "label_two": "تصنيفان",
+    "label_few": "{{count}} تصنيفات",
+    "label_many": "{{count}} تصنيفاً",
+    "label_other": "{{count}} تصنيف"
+  },
+  "theme": {
+    "label": "المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "language": {
+    "label": "اللغة",
+    "en": "English",
+    "ar": "العربية",
+    "switchTo": "تغيير اللغة"
+  },
+  "density": {
+    "label": "الكثافة",
+    "comfortable": "مريحة",
+    "compact": "مدمجة"
+  },
+  "settings": {
+    "label": "إعدادات العرض"
+  },
+  "dates": {
+    "noDates": "بلا تواريخ",
+    "today": "اليوم",
+    "tomorrow": "غداً",
+    "yesterday": "أمس",
+    "createdOn": "أُنشئت {{date}}",
+    "dueOverdue": "متأخرة · {{date}}",
+    "dueToday": "تستحق اليوم",
+    "dueOn": "تستحق {{date}}",
+    "exact": "الوقت بدقة: {{time}}"
+  },
+  "undo": {
+    "label": "تراجع",
+    "undone": "تم التراجع",
+    "failed": "تعذّر التراجع. حاول مجدداً.",
+    "pendingDelete": "جارٍ حذف {{key}}…"
+  },
+  "shortcuts": {
+    "title": "اختصارات لوحة المفاتيح",
+    "hint": "تُتجاهل الاختصارات أثناء الكتابة في أي حقل.",
+    "createTodo": "إنشاء مهمة",
+    "focusSearch": "التركيز على البحث",
+    "help": "عرض هذه المساعدة",
+    "goBoard": "الانتقال إلى اللوحة",
+    "goBacklog": "الانتقال إلى سجل المهام",
+    "goSprints": "الانتقال إلى السبرنتات",
+    "palette": "فتح لوحة الأوامر",
+    "closeEsc": "إغلاق النافذة أو القائمة",
+    "then": "ثم",
+    "openHelp": "اختصارات لوحة المفاتيح",
+    "enableSingleKey": "تفعيل اختصارات المفتاح الواحد"
+  },
+  "palette": {
+    "title": "لوحة الأوامر",
+    "placeholder": "ابحث في المشاريع والمهام والسبرنتات والإجراءات…",
+    "noResults": "لا نتائج",
+    "recent": "الأخيرة",
+    "actions": "الإجراءات",
+    "projects": "المشاريع",
+    "todos": "المهام",
+    "sprints": "السبرنتات",
+    "pages": "الصفحات",
+    "createTodo": "إنشاء مهمة",
+    "generateAi": "توليد مهام بالذكاء الاصطناعي",
+    "planSprint": "تخطيط سبرنت بالذكاء الاصطناعي",
+    "newProject": "مشروع جديد",
+    "theme": "المظهر: {{mode}}",
+    "languageTo": "اللغة: {{language}}",
+    "openHint": "Ctrl/⌘ + K",
+    "open": "البحث والأوامر",
+    "navHint": "↑ ↓ للتنقل · Enter للفتح · Esc للإغلاق"
+  },
+  "crash": {
+    "title": "حدث عطل في هذه الصفحة",
+    "message": "بقية التطبيق سليمة. أعد تحميل الصفحة أو ارجع إلى مشاريعك.",
+    "globalTitle": "واجه Kanbot مشكلة",
+    "details": "التفاصيل التقنية"
+  },
+  "offline": {
+    "banner": "أنت غير متصل بالإنترنت. ستفشل التغييرات حتى تعود الشبكة."
+  },
+  "pwa": {
+    "updateAvailable": "يتوفر إصدار جديد من Kanbot.",
+    "update": "تحديث",
+    "offlineReady": "Kanbot جاهز للفتح دون اتصال (هيكل التطبيق فقط)."
+  },
+  "misc": {
+    "noDescription": "بلا وصف",
+    "sprint": "السبرنت",
+    "loadingLabel": "جارٍ تحميل {{what}}",
+    "dropHere": "أفلت هنا",
+    "noTodos": "لا مهام",
+    "truncated": "{{text}}"
+  },
+  "unit": {
+    "points": "نقاط",
+    "todos": "مهام"
+  }
+}

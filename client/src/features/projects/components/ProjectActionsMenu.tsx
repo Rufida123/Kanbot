@@ -1,3 +1,5 @@
+import { useEndOrigin } from '@/shared/hooks/useMenuOrigin';
+import { useTranslation } from 'react-i18next';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -17,6 +19,8 @@ type ProjectActionsMenuProps = {
 
 /** The ⋮ button with Edit and Delete. Used on cards and next to the sidebar switcher. */
 export function ProjectActionsMenu({ project, size = 'medium' }: ProjectActionsMenuProps) {
+  const origin = useEndOrigin();
+  const { t } = useTranslation();
   const openEdit = useProjectDialogStore((state) => state.openEdit);
   const openDelete = useProjectDialogStore((state) => state.openDelete);
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
@@ -32,11 +36,11 @@ export function ProjectActionsMenu({ project, size = 'medium' }: ProjectActionsM
 
   return (
     <>
-      <Tooltip title="Project actions">
+      <Tooltip title={t('projects:menu.actions')}>
         <IconButton
           id={buttonId}
           size={size}
-          aria-label={`Actions for project ${project.name}`}
+          aria-label={t('projects:menu.actionsFor', { name: project.name })}
           aria-haspopup="menu"
           aria-controls={isOpen ? menuId : undefined}
           aria-expanded={isOpen}
@@ -51,20 +55,20 @@ export function ProjectActionsMenu({ project, size = 'medium' }: ProjectActionsM
         open={isOpen}
         onClose={() => setAnchor(null)}
         slotProps={{ list: { 'aria-labelledby': buttonId } }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        anchorOrigin={origin.anchorOrigin}
+        transformOrigin={origin.transformOrigin}
       >
         <MenuItem onClick={() => runAction(openEdit)}>
           <ListItemIcon>
             <EditOutlinedIcon fontSize="small" aria-hidden="true" />
           </ListItemIcon>
-          Edit
+          {t('common:actions.edit')}
         </MenuItem>
         <MenuItem onClick={() => runAction(openDelete)}>
           <ListItemIcon>
             <DeleteOutlinedIcon fontSize="small" color="error" aria-hidden="true" />
           </ListItemIcon>
-          Delete
+          {t('common:actions.delete')}
         </MenuItem>
       </Menu>
     </>

@@ -13,3 +13,5 @@ export {
   isSprintStartable,
 } from './utils/sprintSelectors';
 export { getStartDialogDates, getDefaultEndDate } from './utils/getDefaultSprintDates';
+export { SprintTemplateDialog } from './components/SprintTemplateDialog';
+export { getSprintTemplate } from './utils/sprintTemplate';

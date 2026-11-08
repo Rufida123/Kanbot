@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useDeleteSprint } from '@/features/backlog/hooks/useDeleteSprint';
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import type { Sprint } from '@/shared/types/api';
@@ -15,6 +16,7 @@ type DeleteSprintDialogProps = {
 
 /** Confirmation for deleting a planned sprint (SPR-2): its todos return to the backlog. */
 export function DeleteSprintDialog({ projectId, sprint, todoCount, onClose }: DeleteSprintDialogProps) {
+  const { t } = useTranslation();
   const deleteMutation = useDeleteSprint(projectId);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -31,8 +33,8 @@ export function DeleteSprintDialog({ projectId, sprint, todoCount, onClose }: De
   return (
     <ConfirmDialog
       open
-      title="Delete sprint?"
-      confirmLabel="Delete sprint"
+      title={t('backlog:sprint.deleteTitle')}
+      confirmLabel={t('backlog:sprint.delete')}
       isDestructive
       isPending={deleteMutation.isPending}
       errorMessage={errorMessage}
@@ -40,10 +42,17 @@ export function DeleteSprintDialog({ projectId, sprint, todoCount, onClose }: De
       onCancel={onClose}
     >
       <Typography>
-        <strong>{sprint.name}</strong> will be deleted.{' '}
-        {todoCount === 0
-          ? 'It has no todos.'
-          : `${formatCount(todoCount, 'todo')} will return to the end of the backlog.`}
+        <Trans
+          i18nKey="backlog:sprint.deleteBody"
+          values={{
+            name: sprint.name,
+            detail:
+              todoCount === 0
+                ? t('backlog:sprint.deleteNoTodos')
+                : t('backlog:sprint.deleteWithTodos', { todos: formatCount(todoCount, 'todo') }),
+          }}
+          components={{ strong: <strong dir="auto" /> }}
+        />
       </Typography>
     </ConfirmDialog>
   );

@@ -2,11 +2,13 @@ import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import type { ButtonHTMLAttributes } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type DragHandleProps = {
   todoKey: string;
   /** What the handle does, as a verb: "Reorder" (lists) or "Move" (board). */
-  verb?: string;
+  /** What the handle does: reorder (lists) or move (board). */
+  verb?: 'reorder' | 'move';
   /** When set the handle is disabled and the reason is shown (tooltip and accessible name). */
   disabledReason?: string | null;
   /** The `ref`, `attributes` and `listeners` of dnd-kit's `useSortable` (sortable rows only). */
@@ -20,11 +22,13 @@ type DragHandleProps = {
  */
 export function DragHandle({
   todoKey,
-  verb = 'Reorder',
+  verb = 'reorder',
   disabledReason = null,
   activatorRef,
   activatorProps,
 }: DragHandleProps) {
+  const { t } = useTranslation();
+  const verbText = t(`backlog:dnd.${verb}`);
   if (disabledReason !== null) {
     return (
       <Tooltip title={disabledReason}>
@@ -32,7 +36,7 @@ export function DragHandle({
           <IconButton
             size="small"
             disabled
-            aria-label={`${verb} ${todoKey} (unavailable: ${disabledReason})`}
+            aria-label={t('backlog:dnd.handleUnavailable', { verb: verbText, key: todoKey, reason: disabledReason })}
           >
             <DragIndicatorIcon fontSize="small" aria-hidden="true" />
           </IconButton>
@@ -41,12 +45,12 @@ export function DragHandle({
     );
   }
   return (
-    <Tooltip title={`Drag to ${verb.toLowerCase()}, or press Space`}>
+    <Tooltip title={t(verb === 'move' ? 'backlog:dnd.handleTooltipMove' : 'backlog:dnd.handleTooltipReorder')}>
       <IconButton
         {...activatorProps}
         ref={activatorRef}
         size="small"
-        aria-label={`${verb} ${todoKey}`}
+        aria-label={t('backlog:dnd.handleLabel', { verb: verbText, key: todoKey })}
         sx={{ cursor: 'grab', touchAction: 'none', '&:active': { cursor: 'grabbing' } }}
       >
         <DragIndicatorIcon fontSize="small" aria-hidden="true" />

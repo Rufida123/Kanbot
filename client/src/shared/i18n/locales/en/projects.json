@@ -1,0 +1,64 @@
+{
+  "page": {
+    "title": "Projects",
+    "newProject": "New project",
+    "loading": "Loading projects",
+    "refreshing": "Refreshing projects",
+    "loadError": "We couldn’t load your projects",
+    "emptyTitle": "No projects yet",
+    "emptyMessage": "A project holds your backlog, sprints and board. Create one to get started.",
+    "createFirst": "Create your first project"
+  },
+  "card": {
+    "noDescription": "No description",
+    "noActiveSprint": "No active sprint",
+    "inBacklog": "{{count}} in backlog"
+  },
+  "menu": {
+    "actions": "Project actions",
+    "actionsFor": "Actions for project {{name}}"
+  },
+  "delete": {
+    "title": "Delete project?",
+    "confirm": "Delete project",
+    "body": "<strong>{{name}}</strong> and all of its todos and sprints will be permanently deleted. This cannot be undone."
+  },
+  "guard": {
+    "notFound": "Project not found",
+    "notFoundMessage": "It may have been deleted, or the link is wrong.",
+    "loadError": "We couldn’t load this project",
+    "loading": "Loading project"
+  },
+  "switcher": {
+    "unavailable": "Projects unavailable",
+    "retry": "Retry",
+    "create": "Create project",
+    "switchCurrent": "Switch project. Current: {{name}}",
+    "noneSelected": "none selected",
+    "select": "Select project",
+    "all": "All projects",
+    "new": "New project"
+  },
+  "form": {
+    "editTitle": "Edit project",
+    "newTitle": "New project",
+    "name": "Name",
+    "key": "Key",
+    "keyPlaceholder": "e.g. KAN",
+    "description": "Description",
+    "keyCreateHint": "Leave empty to generate one from the name.",
+    "keyEditHint": "Changing the key does not change existing todo keys.",
+    "keyTaken": "This key is already used"
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "nameMax": "Name must be at most {{max}} characters",
+    "descriptionMax": "Description must be at most {{max}} characters",
+    "keyLength": "Key must be {{min}}–{{max}} letters"
+  },
+  "toast": {
+    "created": "Project created",
+    "updated": "Project updated",
+    "deleted": "Project deleted"
+  }
+}

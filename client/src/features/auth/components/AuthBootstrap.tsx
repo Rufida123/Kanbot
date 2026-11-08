@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import type { PropsWithChildren } from 'react';
@@ -16,6 +17,7 @@ import { useSessionStore } from '@/shared/stores/sessionStore';
  *   kept and the user can retry (a server outage must not log anyone out).
  */
 export function AuthBootstrap({ children }: PropsWithChildren) {
+  const { t } = useTranslation();
   const status = useSessionStore((state) => state.status);
   const restoreSession = useSessionStore((state) => state.restoreSession);
   const [startupError, setStartupError] = useState<ApiError | null>(null);
@@ -50,7 +52,7 @@ export function AuthBootstrap({ children }: PropsWithChildren) {
             : new ApiError({
                 status: null,
                 code: 'UNEXPECTED_RESPONSE',
-                message: 'Something went wrong. Please try again.',
+                message: t('common:errors.generic'),
               }),
         );
       });
@@ -58,7 +60,7 @@ export function AuthBootstrap({ children }: PropsWithChildren) {
     return () => {
       isCurrent = false;
     };
-  }, [status, attempt, restoreSession]);
+  }, [status, attempt, restoreSession, t]);
 
   if (status !== 'checking') return children;
 
@@ -66,7 +68,7 @@ export function AuthBootstrap({ children }: PropsWithChildren) {
     return (
       <ErrorState
         isFullPage
-        title="We couldn’t check your session"
+        title={t('auth:bootstrap.title')}
         message={startupError.message}
         onRetry={() => {
           setStartupError(null);
@@ -74,12 +76,12 @@ export function AuthBootstrap({ children }: PropsWithChildren) {
         }}
         actions={
           <Button variant="outlined" onClick={() => signOut(null)}>
-            Go to log in
+            {t('auth:bootstrap.goToLogin')}
           </Button>
         }
       />
     );
   }
 
-  return <LoadingScreen label="Checking your session…" />;
+  return <LoadingScreen label={t('common:app.checkingSession')} />;
 }

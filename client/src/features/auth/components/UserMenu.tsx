@@ -1,3 +1,5 @@
+import { useEndOrigin, useStartOrigin } from '@/shared/hooks/useMenuOrigin';
+import { useTranslation } from 'react-i18next';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
@@ -20,6 +22,10 @@ type UserMenuProps = {
 
 /** Account button + menu with the logout action (AUTH-4). */
 export function UserMenu({ placement = 'bottom-end' }: UserMenuProps) {
+  const origin = useEndOrigin();
+  // In the sidebar the menu opens from the START side (left in LTR, right in RTL).
+  const sidebarOrigin = useStartOrigin();
+  const { t } = useTranslation();
   const user = useSessionStore((state) => state.user);
   const [anchor, setAnchor] = useState<HTMLElement | null>(null);
   const id = useId();
@@ -37,7 +43,7 @@ export function UserMenu({ placement = 'bottom-end' }: UserMenuProps) {
       <Button
         id={buttonId}
         color="inherit"
-        aria-label={`Account menu for ${user.name}`}
+        aria-label={t('auth:menu.accountFor', { name: user.name })}
         aria-haspopup="menu"
         aria-controls={isOpen ? menuId : undefined}
         aria-expanded={isOpen}
@@ -77,16 +83,8 @@ export function UserMenu({ placement = 'bottom-end' }: UserMenuProps) {
         open={isOpen}
         onClose={close}
         slotProps={{ list: { 'aria-labelledby': buttonId } }}
-        anchorOrigin={
-          isSidebar
-            ? { vertical: 'top', horizontal: 'left' }
-            : { vertical: 'bottom', horizontal: 'right' }
-        }
-        transformOrigin={
-          isSidebar
-            ? { vertical: 'bottom', horizontal: 'left' }
-            : { vertical: 'top', horizontal: 'right' }
-        }
+        anchorOrigin={isSidebar ? sidebarOrigin.anchorOrigin : origin.anchorOrigin}
+        transformOrigin={isSidebar ? sidebarOrigin.transformOrigin : origin.transformOrigin}
       >
         <Box sx={{ paddingInline: 2, paddingBlock: 1, maxWidth: '16rem' }}>
           <Typography variant="subtitle2" sx={{ overflowWrap: 'anywhere' }}>
@@ -106,7 +104,7 @@ export function UserMenu({ placement = 'bottom-end' }: UserMenuProps) {
           <ListItemIcon>
             <LogoutIcon fontSize="small" aria-hidden="true" />
           </ListItemIcon>
-          Log out
+          {t('auth:menu.logout')}
         </MenuItem>
       </Menu>
     </>

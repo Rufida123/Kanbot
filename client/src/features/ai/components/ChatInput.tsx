@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Tooltip from '@mui/material/Tooltip';
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { KeyboardEvent, RefObject } from 'react';
 import { AI_LIMITS } from '@/features/ai/config/limits';
 
@@ -21,6 +22,7 @@ type ChatInputProps = {
  * closing the drawer (the drawer stays mounted).
  */
 export function ChatInput({ isDisabled, onSend, inputRef }: ChatInputProps) {
+  const { t } = useTranslation();
   const [value, setValue] = useState('');
   const wasDisabledRef = useRef(false);
 
@@ -62,19 +64,19 @@ export function ChatInput({ isDisabled, onSend, inputRef }: ChatInputProps) {
         onChange={(event) => setValue(event.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isDisabled}
-        placeholder="Ask about your project…"
+        placeholder={t('ai:chat.placeholder')}
         inputRef={inputRef}
-        inputProps={{ 'aria-label': 'Message', maxLength: AI_LIMITS.messageMax, dir: 'auto' }}
+        inputProps={{ 'aria-label': t('ai:chat.message'), maxLength: AI_LIMITS.messageMax, dir: 'auto' }}
       />
-      <Tooltip title="Send message">
+      <Tooltip title={t('ai:chat.send')}>
         <span>
           <IconButton
             type="submit"
             color="primary"
-            aria-label="Send message"
+            aria-label={t('ai:chat.send')}
             disabled={isDisabled || value.trim() === ''}
           >
-            <SendIcon aria-hidden="true" />
+            <SendIcon aria-hidden="true" sx={{ transform: (theme) => (theme.direction === 'rtl' ? 'scaleX(-1)' : 'none') }} />
           </IconButton>
         </span>
       </Tooltip>

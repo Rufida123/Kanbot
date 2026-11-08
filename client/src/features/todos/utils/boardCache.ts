@@ -75,3 +75,29 @@ export function applyMoveToBoardCaches(
 export function restoreBoardCaches(queryClient: QueryClient, snapshot: BoardSnapshot): void {
   for (const [queryKey, data] of snapshot) queryClient.setQueryData(queryKey, data);
 }
+
+/** Removes todos from every cached board of the project (optimistic delete). */
+export function removeTodosFromBoardCaches(
+  queryClient: QueryClient,
+  projectId: string,
+  todoIds: ReadonlySet<string>,
+): void {
+  for (const [queryKey, data] of getBoardSnapshot(queryClient, projectId)) {
+    if (data === undefined) continue;
+    queryClient.setQueryData<SprintBoardResponse>(queryKey, {
+      ...data,
+      columns: mapColumns(data.columns, (_status, todos) => todos.filter((todo) => !todoIds.has(todo.id))),
+    });
+  }
+}
+
+/** Replaces a todo in place on every cached board (optimistic inline edit: title, priority, points). */
+export function patchTodoInBoardCaches(queryClient: QueryClient, todo: Todo): void {
+  for (const [queryKey, data] of getBoardSnapshot(queryClient, todo.projectId)) {
+    if (data === undefined) continue;
+    queryClient.setQueryData<SprintBoardResponse>(queryKey, {
+      ...data,
+      columns: mapColumns(data.columns, (_status, todos) => todos.map((item) => (item.id === todo.id ? todo : item))),
+    });
+  }
+}

@@ -1,16 +1,16 @@
 import Typography from '@mui/material/Typography';
-import { AI_DISCLAIMER, AI_PRIVACY_NOTICE } from '@/features/ai/config/copy';
+import { useTranslation } from 'react-i18next';
 
 type AiDisclaimerProps = {
-  /** Lets a control point at the text with `aria-describedby`. */
   id?: string;
 };
 
-/** Shown on every AI surface: the answer may be wrong, and the text leaves the app. */
+/** "AI can make mistakes. Review before saving. Your text is sent to an AI service." */
 export function AiDisclaimer({ id }: AiDisclaimerProps) {
+  const { t } = useTranslation();
   return (
     <Typography id={id} variant="caption" color="text.secondary">
-      {AI_DISCLAIMER} {AI_PRIVACY_NOTICE}
+      {t('ai:disclaimer')} {t('ai:privacy')}
     </Typography>
   );
 }

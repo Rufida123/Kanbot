@@ -1,4 +1,5 @@
 import { getListLength, getTodoPosition } from '@/features/todos';
+import { t } from '@/shared/i18n';
 import type { Sprint, Todo } from '@/shared/types/api';
 
 export type MoveTarget =
@@ -15,10 +16,6 @@ export type MoveEntry = {
   target: MoveTarget;
 };
 
-export const FILTERED_MOVE_REASON = 'Clear filters to move within the backlog';
-const LOADING_REASON = 'The list is still loading';
-const AT_TOP_REASON = 'Already at the top';
-const AT_BOTTOM_REASON = 'Already at the bottom';
 
 type BuildMoveEntriesParams = {
   todo: Todo;
@@ -36,9 +33,9 @@ function getWithinListEntries(params: BuildMoveEntriesParams): MoveEntry[] {
   const { todo, ownList, isOwnListFiltered } = params;
   const isGrouped = todo.sprintId !== null;
   const unavailableReason = isOwnListFiltered
-    ? FILTERED_MOVE_REASON
+    ? t('todos:move.filtered')
     : ownList === undefined
-      ? LOADING_REASON
+      ? t('todos:move.loading')
       : null;
   const position = ownList === undefined ? -1 : getTodoPosition(ownList, todo.id, isGrouped);
   const lastPosition =
@@ -46,14 +43,14 @@ function getWithinListEntries(params: BuildMoveEntriesParams): MoveEntry[] {
   return [
     {
       id: 'move-top',
-      label: 'Move to top',
-      disabledReason: unavailableReason ?? (position === 0 ? AT_TOP_REASON : null),
+      label: t('todos:move.top'),
+      disabledReason: unavailableReason ?? (position === 0 ? t('todos:move.atTop') : null),
       target: { kind: 'top' },
     },
     {
       id: 'move-bottom',
-      label: 'Move to bottom',
-      disabledReason: unavailableReason ?? (position === lastPosition ? AT_BOTTOM_REASON : null),
+      label: t('todos:move.bottom'),
+      disabledReason: unavailableReason ?? (position === lastPosition ? t('todos:move.atBottom') : null),
       target: { kind: 'bottom' },
     },
   ];
@@ -68,13 +65,13 @@ export function buildMoveEntries(params: BuildMoveEntriesParams): MoveEntry[] {
   const { todo, sprints } = params;
   const entries = getWithinListEntries(params);
   if (todo.sprintId !== null) {
-    entries.push({ id: 'move-backlog', label: 'Move to backlog', disabledReason: null, target: { kind: 'backlog' } });
+    entries.push({ id: 'move-backlog', label: t('todos:move.backlog'), disabledReason: null, target: { kind: 'backlog' } });
   }
   for (const sprint of sprints ?? []) {
     if (sprint.id === todo.sprintId || sprint.status === 'completed') continue;
     entries.push({
       id: `move-${sprint.id}`,
-      label: sprint.status === 'active' ? `Move to ${sprint.name} (active)` : `Move to ${sprint.name}`,
+      label: sprint.status === 'active' ? t('todos:move.toActiveSprint', { name: sprint.name }) : t('todos:move.toSprint', { name: sprint.name }),
       disabledReason: null,
       target: { kind: 'sprint', sprint },
     });

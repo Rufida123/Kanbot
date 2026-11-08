@@ -1,4 +1,5 @@
 import { MS_PER_DAY } from '@/features/board/config/layout';
+import { t } from '@/shared/i18n';
 import { getTodayDateOnly, parseDateOnly } from '@/shared/utils/formatDate';
 
 /**
@@ -15,16 +16,13 @@ export function getDaysRemaining(endDate: string | null, today: string = getToda
   return Number.isFinite(days) ? days : null;
 }
 
-function formatDays(days: number): string {
-  return `${days} ${days === 1 ? 'day' : 'days'}`;
-}
 
 /** "5 days left", "1 day left", "Ends today", "Ended 1 day ago"; `null` (no text) without a date. */
 export function formatDaysRemaining(days: number | null): string | null {
   if (days === null) return null;
-  if (days === 0) return 'Ends today';
-  if (days > 0) return `${formatDays(days)} left`;
-  return `Ended ${formatDays(-days)} ago`;
+  if (days === 0) return t('board:dates.endsToday');
+  if (days > 0) return t('board:dates.daysLeft', { count: days });
+  return t('board:dates.endedAgo', { count: -days });
 }
 
 /** True when the end date is today or has passed (the days-left text can then use the warning tone). */

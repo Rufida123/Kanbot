@@ -4,7 +4,10 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useEffect, useRef } from 'react';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link as RouterLink } from 'react-router';
+import { TypewriterMarkdown } from '@/features/ai/components/TypewriterMarkdown';
+import { useAiChatStore } from '@/features/ai/store/aiChatStore';
 import { paths } from '@/app/navigation';
 import { AiMarkdown } from '@/features/ai/components/AiMarkdown';
 import type { AiChatMessage } from '@/features/ai/store/aiChatStore';
@@ -20,7 +23,9 @@ type MessageBubbleProps = {
 };
 
 function MessageBubble({ message, projectId, onNavigate }: MessageBubbleProps) {
+  const { t } = useTranslation();
   const isUser = message.role === 'user';
+  const markSettled = useAiChatStore((state) => state.markSettled);
   return (
     <Box sx={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
       <Box
@@ -34,12 +39,14 @@ function MessageBubble({ message, projectId, onNavigate }: MessageBubbleProps) {
           color: isUser ? 'primary.contrastText' : 'text.primary',
         }}
       >
-        <VisuallyHidden>{isUser ? 'You: ' : 'Assistant: '}</VisuallyHidden>
+        <VisuallyHidden>{isUser ? t('ai:chat.you') : t('ai:chat.assistant')}</VisuallyHidden>
         {isUser ? (
           // `dir="auto"`: an Arabic message keeps its direction.
           <Box dir="auto" sx={{ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>
             {message.content}
           </Box>
+        ) : message.isNew === true ? (
+          <TypewriterMarkdown content={message.content} onDone={() => markSettled(message.id)} />
         ) : (
           <AiMarkdown content={message.content} />
         )}
@@ -50,7 +57,7 @@ function MessageBubble({ message, projectId, onNavigate }: MessageBubbleProps) {
             onClick={onNavigate}
             sx={{ display: 'inline-block', marginTop: 1 }}
           >
-            View on board
+            {t('ai:chat.viewOnBoard')}
           </Link>
         )}
       </Box>
@@ -81,6 +88,7 @@ export function ChatMessageList({
   onNavigate,
   children,
 }: ChatMessageListProps) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const isPinnedRef = useRef(true);
   const lastMessage = messages[messages.length - 1];
@@ -107,7 +115,7 @@ export function ChatMessageList({
       role="log"
       aria-live="polite"
       aria-relevant="additions"
-      aria-label="Conversation"
+      aria-label={t('ai:chat.conversation')}
       onScroll={handleScroll}
       sx={{
         flex: 1,
@@ -121,7 +129,7 @@ export function ChatMessageList({
     >
       {messages.length === 0 && pendingLabel === null ? (
         <Typography variant="body2" color="text.secondary">
-          Ask a question about this project, or use a quick action above.
+          {t('ai:chat.empty')}
         </Typography>
       ) : null}
       {messages.map((message) => (

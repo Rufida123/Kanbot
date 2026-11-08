@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import Box from '@mui/material/Box';
 import InputBase from '@mui/material/InputBase';
 import Typography from '@mui/material/Typography';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useUiStore } from '@/shared/stores/uiStore';
 import type { KeyboardEvent, Ref } from 'react';
 import { TODO_LIMITS } from '@/features/todos/config/limits';
 import { useCreateTodo } from '@/features/todos/hooks/useCreateTodo';
@@ -20,14 +22,21 @@ type QuickCreateProps = {
  * (the requests run in order). Esc clears the text and leaves the field.
  */
 export function QuickCreate({ projectId, inputRef }: QuickCreateProps) {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [announcement, setAnnouncement] = useState('');
   const createMutation = useCreateTodo(projectId);
+  const ownRef = useRef<HTMLInputElement | null>(null);
+  const createSignal = useUiStore((state) => state.createTodoSignal);
+  // `c` (or the palette) asks the backlog to focus its quick-create field.
+  useEffect(() => {
+    if (createSignal > 0) ownRef.current?.focus();
+  }, [createSignal]);
 
   const create = async (newTitle: string) => {
     try {
       const todo = await createMutation.mutateAsync({ projectId, request: { title: newTitle } });
-      setAnnouncement(`Created ${todo.key}`);
+      setAnnouncement(t('todos:quick.created', { key: todo.key }));
     } catch {
       // The toast comes from the hook. Put the text back, unless the user already typed the next one.
       setTitle((current) => (current === '' ? newTitle : current));
@@ -69,12 +78,16 @@ export function QuickCreate({ projectId, inputRef }: QuickCreateProps) {
       <InputBase
         fullWidth
         value={title}
-        inputRef={inputRef}
+        inputRef={(element: HTMLInputElement | null) => {
+          ownRef.current = element;
+          if (typeof inputRef === 'function') inputRef(element);
+          else if (inputRef) (inputRef as { current: HTMLInputElement | null }).current = element;
+        }}
         onChange={(event) => setTitle(event.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Create todo: type a title and press Enter"
+        placeholder={t('todos:quick.placeholder')}
         autoComplete="off"
-        inputProps={{ 'aria-label': 'Create todo', maxLength: TODO_LIMITS.titleMax }}
+        inputProps={{ dir: 'auto', 'aria-keyshortcuts': 'c', 'aria-label': t('todos:quick.label'), maxLength: TODO_LIMITS.titleMax }}
         sx={{ paddingBlock: 0.75 }}
       />
       <Typography
@@ -83,7 +96,7 @@ export function QuickCreate({ projectId, inputRef }: QuickCreateProps) {
         aria-hidden="true"
         sx={{ display: { xs: 'none', sm: 'block' }, whiteSpace: 'nowrap' }}
       >
-        Enter to add · Esc to clear
+        {t('todos:quick.hint')}
       </Typography>
       <Box role="status">
         <VisuallyHidden>{announcement}</VisuallyHidden>

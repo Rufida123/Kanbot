@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteProject } from '@/features/projects/api/projects';
 import { projectMutationKeys, projectKeys } from '@/features/projects/api/keys';
@@ -16,7 +17,7 @@ export function useDeleteProject() {
     mutationFn: deleteProject,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
-      showToast('Project deleted');
+      showToast(t('projects:toast.deleted'));
     },
   });
 }

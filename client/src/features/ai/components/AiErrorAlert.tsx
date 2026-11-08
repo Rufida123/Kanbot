@@ -1,6 +1,6 @@
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
-import { AI_RETRY_LABEL } from '@/features/ai/config/copy';
+import { useTranslation } from 'react-i18next';
 import { getAiErrorText } from '@/features/ai/utils/getAiErrorText';
 
 type AiErrorAlertProps = {
@@ -14,6 +14,7 @@ type AiErrorAlertProps = {
  * "Try again" button. `ErrorState` is for whole-page failures and does not belong in the drawer.
  */
 export function AiErrorAlert({ error, onRetry }: AiErrorAlertProps) {
+  const { t } = useTranslation();
   return (
     <Alert
       severity="error"
@@ -22,7 +23,7 @@ export function AiErrorAlert({ error, onRetry }: AiErrorAlertProps) {
       action={
         onRetry === undefined ? undefined : (
           <Button color="inherit" size="small" onClick={onRetry}>
-            {AI_RETRY_LABEL}
+            {t('common:actions.retry')}
           </Button>
         )
       }

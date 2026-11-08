@@ -4,6 +4,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormLabel from '@mui/material/FormLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SPRINT_LIMITS } from '@/features/sprints';
 
 type GoalFieldProps = {
@@ -14,11 +15,12 @@ type GoalFieldProps = {
 
 /** The suggested sprint goal, editable before the sprint is created. Same look as `FormTextField`. */
 export function GoalField({ value, isDisabled, onChange }: GoalFieldProps) {
+  const { t } = useTranslation();
   const id = useId();
   return (
     <FormControl fullWidth disabled={isDisabled}>
       <FormLabel htmlFor={id} sx={{ marginBottom: 0.75 }}>
-        Sprint goal
+        {t('ai:planDialog.goal')}
       </FormLabel>
       <OutlinedInput
         id={id}

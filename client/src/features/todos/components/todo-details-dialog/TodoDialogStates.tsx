@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import DialogActions from '@mui/material/DialogActions';
@@ -14,9 +15,10 @@ type TodoDialogLoadingProps = {
 
 /** Same layout as the form, shown while the todo loads (the dialog never appears empty). */
 export function TodoDialogLoading({ todoKey, onClose }: TodoDialogLoadingProps) {
+  const { t } = useTranslation();
   return (
     <TodoDialogFrame todoKey={todoKey} onClose={onClose} isBusy>
-      <DialogContent dividers role="status" aria-label="Loading todo" sx={{ paddingBlock: 2.5 }}>
+      <DialogContent dividers role="status" aria-label={t('todos:form.loading')} sx={{ paddingBlock: 2.5 }}>
         <Box
           sx={{
             display: 'grid',
@@ -37,7 +39,7 @@ export function TodoDialogLoading({ todoKey, onClose }: TodoDialogLoadingProps) 
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button color="inherit" onClick={onClose}>
-          Close
+          {t('common:actions.close')}
         </Button>
       </DialogActions>
     </TodoDialogFrame>
@@ -60,18 +62,19 @@ export function TodoDialogError({
   onRetry,
   onClose,
 }: TodoDialogErrorProps) {
+  const { t } = useTranslation();
   return (
     <TodoDialogFrame todoKey={null} onClose={onClose} isReplacingLoader={isReplacingLoader}>
       <DialogContent dividers>
         <ErrorState
-          title={isNotFound ? 'Todo not found' : 'We couldn’t load this todo'}
-          message={isNotFound ? 'It may have been deleted, or the link is wrong.' : message}
+          title={isNotFound ? t('todos:form.notFound') : t('todos:form.loadError')}
+          message={isNotFound ? t('todos:form.notFoundMessage') : message}
           onRetry={isNotFound ? undefined : onRetry}
         />
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button variant="contained" onClick={onClose}>
-          Close
+          {t('common:actions.close')}
         </Button>
       </DialogActions>
     </TodoDialogFrame>

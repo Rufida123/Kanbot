@@ -9,8 +9,9 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
-import { useId, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
 import type { SyntheticEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useForm, useWatch } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router';
 import { paths } from '@/app/navigation';
@@ -19,11 +20,8 @@ import { AiErrorAlert } from '@/features/ai/components/AiErrorAlert';
 import { DraftRow } from '@/features/ai/components/generate-todos-dialog/DraftRow';
 import type { DraftChanges } from '@/features/ai/components/generate-todos-dialog/DraftRow';
 import {
-  EMPTY_RESULT_MESSAGE,
   GENERATE_DEFAULT_VALUES,
-  generateTodosSchema,
-  MOCK_PROMPT_HINT,
-  PROMPT_PLACEHOLDER,
+  createGenerateTodosSchema,
   toGenerateRequest,
 } from '@/features/ai/components/generate-todos-dialog/config';
 import type { GenerateTodosFormValues } from '@/features/ai/components/generate-todos-dialog/config';
@@ -50,6 +48,8 @@ type GenerateTodosDialogProps = { projectId: string; onClose: () => void };
  * while open (`AiDialogsHost`), so every opening starts with a fresh form.
  */
 export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogProps) {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createGenerateTodosSchema(t), [t]);
   const id = useId();
   const titleId = `${id}-title`;
   const isSmallScreen = useIsSmallScreen();
@@ -71,7 +71,7 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
     control,
     formState: { errors },
   } = useForm<GenerateTodosFormValues>({
-    resolver: zodResolver(generateTodosSchema),
+    resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: GENERATE_DEFAULT_VALUES,
   });
@@ -159,11 +159,11 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
         maxWidth="md"
         fullScreen={isSmallScreen}
       >
-        <DialogTitle id={titleId}>Generate todos with AI</DialogTitle>
+        <DialogTitle id={titleId}>{t('ai:generate.title')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingTop: 1 }}>
           <Box component="form" noValidate onSubmit={onSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
             <FormTextField
-              label="Describe a feature…"
+              label={t('ai:generate.describe')}
               isRequired
               isMultiline
               minRows={3}
@@ -171,16 +171,16 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
               autoComplete="off"
               isDisabled={isBusy}
               maxLength={AI_LIMITS.promptMax}
-              placeholder={PROMPT_PLACEHOLDER}
+              placeholder={t('ai:generate.placeholder')}
               registration={register('prompt')}
               error={errors.prompt}
-              hint={status?.mode === 'mock' ? MOCK_PROMPT_HINT : undefined}
+              hint={status?.mode === 'mock' ? t('ai:generate.mockHint') : undefined}
               counter={`${promptLength}/${AI_LIMITS.promptMax}`}
             />
             <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', gap: 2 }}>
               <Box sx={{ flex: '0 1 12rem' }}>
                 <FormTextField
-                  label="Number of todos"
+                  label={t('ai:generate.count')}
                   inputMode="numeric"
                   autoComplete="off"
                   isDisabled={isBusy}
@@ -203,18 +203,18 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
                   )
                 }
               >
-                {isGenerating ? 'Generating…' : hasDrafts ? 'Generate again' : 'Generate'}
+                {isGenerating ? t('ai:generate.generating') : hasDrafts ? t('ai:generate.again') : t('ai:generate.generate')}
               </Button>
             </Box>
           </Box>
           {generateMutation.isError ? <AiErrorAlert error={generateMutation.error} onRetry={retryGenerate} /> : null}
-          {isEmptyResult ? <Alert severity="info">{EMPTY_RESULT_MESSAGE}</Alert> : null}
+          {isEmptyResult ? <Alert severity="info">{t('ai:generate.empty')}</Alert> : null}
           {drafts !== null && drafts.length > 0 ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               <Typography component="h3" variant="subtitle2">
-                Suggested todos · nothing is saved yet
+                {t('ai:generate.suggested')}
               </Typography>
-              <Box component="ul" aria-label="Suggested todos" sx={{ display: 'flex', flexDirection: 'column', gap: 1, padding: 0 }}>
+              <Box component="ul" aria-label={t('ai:generate.suggestedAria')} sx={{ display: 'flex', flexDirection: 'column', gap: 1, padding: 0 }}>
                 {drafts.map((draft, index) => (
                   <DraftRow key={draft.id} draft={draft} position={index + 1} isDisabled={isBusy} onChange={changeDraft} />
                 ))}
@@ -228,7 +228,7 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
             <AiDisclaimer />
           </Box>
           <Button color="inherit" onClick={requestClose} disabled={isBusy}>
-            Cancel
+            {t('common:actions.cancel')}
           </Button>
           <Button
             variant="contained"
@@ -236,31 +236,31 @@ export function GenerateTodosDialog({ projectId, onClose }: GenerateTodosDialogP
             onClick={() => void addToBacklog()}
             startIcon={isSaving ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined}
           >
-            Add {checkedCount} to backlog
+            {t('ai:generate.addToBacklog', { count: checkedCount })}
           </Button>
         </DialogActions>
       </Dialog>
       <ConfirmDialog
         open={isDiscardOpen}
-        title="Discard generated todos?"
-        confirmLabel="Discard"
-        cancelLabel="Keep editing"
+        title={t('ai:generate.discardTitle')}
+        confirmLabel={t('common:actions.discard')}
+        cancelLabel={t('common:actions.keepEditing')}
         isDestructive
         onConfirm={onClose}
         onCancel={() => setIsDiscardOpen(false)}
       >
-        The suggested todos have not been saved. They will be lost.
+        {t('ai:generate.discardBody')}
       </ConfirmDialog>
       <ConfirmDialog
         open={pendingValues !== null}
-        title="Replace the generated todos?"
-        confirmLabel="Generate again"
-        cancelLabel="Keep current"
+        title={t('ai:generate.replaceTitle')}
+        confirmLabel={t('ai:generate.again')}
+        cancelLabel={t('ai:generate.keepCurrent')}
         isDestructive
         onConfirm={confirmRegenerate}
         onCancel={() => setPendingValues(null)}
       >
-        Generating again replaces the todos below, including your edits.
+        {t('ai:generate.replaceBody')}
       </ConfirmDialog>
     </>
   );

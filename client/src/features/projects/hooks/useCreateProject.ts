@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createProject } from '@/features/projects/api/projects';
 import { projectKeys } from '@/features/projects/api/keys';
@@ -11,7 +12,7 @@ export function useCreateProject() {
       // The new project's pages open right away: seed its detail from the response.
       queryClient.setQueryData(projectKeys.detail(project.id), project);
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
-      showToast('Project created');
+      showToast(t('projects:toast.created'));
     },
   });
 }

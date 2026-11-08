@@ -7,6 +7,7 @@ import {
   fontWeight,
   grey,
   radius,
+  elevation,
   shadow,
   motion,
   spacingStepRem,
@@ -14,8 +15,8 @@ import {
 import type { SchemeTokens } from './tokens';
 
 const ELEVATION_LEVELS = 25;
-const MENU_ELEVATION = 8;
-const OVERLAY_ELEVATION = 24;
+const MENU_ELEVATION = elevation.menu;
+const OVERLAY_ELEVATION = elevation.overlay;
 
 /** Flat UI: only menus and dialogs cast a shadow. */
 const shadows = Array.from({ length: ELEVATION_LEVELS }, (_, level) => {
@@ -42,7 +43,12 @@ function toPalette(tokens: SchemeTokens) {
   };
 }
 
-export const theme: Theme = createTheme({
+export type Direction = 'ltr' | 'rtl';
+
+/** One theme per text direction (MUI needs `direction` on the theme, emotion needs the RTL cache). */
+export function createAppTheme(direction: Direction): Theme {
+  return createTheme({
+  direction,
   cssVariables: { colorSchemeSelector: 'data' },
   colorSchemes: {
     light: { palette: toPalette(lightScheme) },
@@ -115,6 +121,11 @@ export const theme: Theme = createTheme({
             scrollBehavior: 'auto !important',
           },
         },
+        // Minimum 44px touch targets for icon buttons and nav items on touch screens (WCAG 2.5.5).
+        '@media (pointer: coarse)': {
+          '.MuiIconButton-root': { minWidth: '2.75rem', minHeight: '2.75rem' },
+          '.MuiMenuItem-root, .MuiListItemButton-root': { minHeight: '2.75rem' },
+        },
         ':focus-visible': {
           outline: `2px solid ${theme.vars.palette.focusRing}`,
           outlineOffset: '2px',
@@ -136,14 +147,6 @@ export const theme: Theme = createTheme({
         paper: ({ theme }) => ({ backgroundColor: theme.vars.palette.background.overlay }),
       },
     },
-    MuiDialog: {
-      styleOverrides: {
-        paper: ({ theme }) => ({
-          backgroundColor: theme.vars.palette.background.overlay,
-          borderRadius: radius.card,
-        }),
-      },
-    },
     MuiButton: {
       defaultProps: { disableElevation: true },
       styleOverrides: {
@@ -159,6 +162,15 @@ export const theme: Theme = createTheme({
     },
     MuiTooltip: {
       defaultProps: { arrow: true, enterDelay: 500, enterNextDelay: 200 },
+    },
+    MuiDialog: {
+      defaultProps: { transitionDuration: { enter: motion.durationMs.base, exit: motion.durationMs.fast } },
+      styleOverrides: {
+        paper: ({ theme }) => ({
+          backgroundColor: theme.vars.palette.background.overlay,
+          borderRadius: radius.card,
+        }),
+      },
     },
     MuiSkeleton: {
       defaultProps: { animation: 'wave' },
@@ -223,3 +235,6 @@ export const theme: Theme = createTheme({
     },
   },
 });
+}
+
+export const theme: Theme = createAppTheme('ltr');

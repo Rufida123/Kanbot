@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
@@ -10,8 +11,9 @@ type PasswordFieldProps = Omit<FormTextFieldProps, 'type' | 'endAdornment'>;
 
 /** Password input with a show/hide toggle. The toggle is a real button, reachable by keyboard. */
 export function PasswordField(props: PasswordFieldProps) {
+  const { t } = useTranslation();
   const [isVisible, setIsVisible] = useState(false);
-  const toggleLabel = isVisible ? 'Hide password' : 'Show password';
+  const toggleLabel = isVisible ? t('auth:fields.hidePassword') : t('auth:fields.showPassword');
 
   return (
     <FormTextField

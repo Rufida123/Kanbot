@@ -6,7 +6,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useId } from 'react';
-import { NO_ACTIVE_SPRINT_HINT } from '@/features/ai/config/copy';
+import { useTranslation } from 'react-i18next';
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
+import StraightenOutlinedIcon from '@mui/icons-material/StraightenOutlined';
 import { useAiDialogStore } from '@/features/ai/store/aiDialogStore';
 import { useProject } from '@/features/projects';
 import { ASK_AI_BUTTON_ID } from '@/shared/layout/layout';
@@ -26,6 +28,9 @@ type QuickActionsProps = {
  * no sprint list request.
  */
 export function QuickActions({ projectId, isBusy, onSummarize }: QuickActionsProps) {
+  const { t } = useTranslation();
+  const openStandup = useAiDialogStore((state) => state.openStandup);
+  const openEstimate = useAiDialogStore((state) => state.openEstimate);
   const hintId = useId();
   const { data: project } = useProject(projectId);
   const openGenerateTodos = useAiDialogStore((state) => state.openGenerateTodos);
@@ -40,14 +45,14 @@ export function QuickActions({ projectId, isBusy, onSummarize }: QuickActionsPro
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.75 }}>
-      <Box role="group" aria-label="Quick actions" sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      <Box role="group" aria-label={t('ai:quick.group')} sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
         <Button
           size="small"
           variant="outlined"
           startIcon={<PlaylistAddIcon aria-hidden="true" />}
           onClick={() => openDialog(openGenerateTodos)}
         >
-          Create todos
+          {t('ai:quick.createTodos')}
         </Button>
         <Button
           size="small"
@@ -55,7 +60,7 @@ export function QuickActions({ projectId, isBusy, onSummarize }: QuickActionsPro
           startIcon={<ViewKanbanOutlinedIcon aria-hidden="true" />}
           onClick={() => openDialog(openPlanSprint)}
         >
-          Plan sprint
+          {t('ai:quick.planSprint')}
         </Button>
         <Button
           size="small"
@@ -67,13 +72,19 @@ export function QuickActions({ projectId, isBusy, onSummarize }: QuickActionsPro
             if (activeSprint !== null) onSummarize(activeSprint.id);
           }}
         >
-          Summarize sprint
+          {t('ai:quick.summarize')}
+        </Button>
+        <Button size="small" variant="outlined" startIcon={<StraightenOutlinedIcon aria-hidden="true" />} onClick={() => openDialog(openEstimate)}>
+          {t('ai:quick.estimate')}
+        </Button>
+        <Button size="small" variant="outlined" startIcon={<EventNoteOutlinedIcon aria-hidden="true" />} onClick={() => openDialog(openStandup)}>
+          {t('ai:quick.standup')}
         </Button>
       </Box>
       {activeSprint === null ? (
         <Typography id={hintId} variant="caption" color="text.secondary">
           <AutoAwesomeIcon aria-hidden="true" sx={{ fontSize: '0.875em', verticalAlign: '-0.125em', marginInlineEnd: 0.5 }} />
-          {NO_ACTIVE_SPRINT_HINT}
+          {t('ai:summary.noActiveSprint')}
         </Typography>
       ) : null}
     </Box>

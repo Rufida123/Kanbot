@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ReactNode } from 'react';
 
 type ConfirmDialogProps = {
@@ -30,13 +31,14 @@ export function ConfirmDialog({
   title,
   children,
   confirmLabel,
-  cancelLabel = 'Cancel',
+  cancelLabel,
   isDestructive = false,
   isPending = false,
   errorMessage = null,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const { t } = useTranslation();
   const id = useId();
   const titleId = `${id}-title`;
   const descriptionId = `${id}-description`;
@@ -67,7 +69,7 @@ export function ConfirmDialog({
       </DialogContent>
       <DialogActions sx={{ padding: 2, gap: 1 }}>
         <Button color="inherit" onClick={handleClose} disabled={isPending}>
-          {cancelLabel}
+          {cancelLabel ?? t('common:actions.cancel')}
         </Button>
         <Button
           variant="contained"

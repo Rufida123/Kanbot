@@ -1,16 +1,15 @@
+import { t } from '@/shared/i18n';
 import type { ProjectWithStats } from '@/shared/types/api';
-
-const NO_ACTIVE_SPRINT_LABEL = 'No active sprint';
 
 export function hasActiveSprint(project: ProjectWithStats): boolean {
   return project.stats.activeSprint !== null;
 }
 
-/** "Sprint 3" or "No active sprint". */
+/** The active sprint's name, or "No active sprint". */
 export function getActiveSprintLabel(project: ProjectWithStats): string {
-  return project.stats.activeSprint?.name ?? NO_ACTIVE_SPRINT_LABEL;
+  return project.stats.activeSprint?.name ?? t('projects:card.noActiveSprint');
 }
 
 export function getBacklogLabel(project: ProjectWithStats): string {
-  return `${project.stats.backlogCount} in backlog`;
+  return t('projects:card.inBacklog', { count: project.stats.backlogCount });
 }

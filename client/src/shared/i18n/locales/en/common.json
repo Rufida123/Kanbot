@@ -1,0 +1,213 @@
+{
+  "app": {
+    "name": "Kanbot",
+    "projects": "Projects",
+    "kanbotAllProjects": "Kanbot, all projects",
+    "projectNav": "Project",
+    "skipToContent": "Skip to content",
+    "pageNotFound": "Page not found",
+    "pageNotFoundMessage": "This page doesn’t exist or may have been moved.",
+    "goToProjects": "Go to projects",
+    "loading": "Loading…",
+    "checkingSession": "Checking your session…",
+    "titleSuffix": "{{title}} · Kanbot",
+    "sectionTitle": "{{project}} · {{section}}",
+    "projectFallback": "Project",
+    "openNavigation": "Open navigation",
+    "askAi": "Ask AI",
+    "aiAssistant": "AI assistant",
+    "closeAssistant": "Close assistant",
+    "mobileNav": "Main navigation"
+  },
+  "nav": {
+    "backlog": "Backlog",
+    "board": "Board",
+    "sprints": "Sprints",
+    "week": "My week",
+    "ai": "AI",
+    "breadcrumbs": "Breadcrumbs"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "open": "Open",
+    "retry": "Try again",
+    "reload": "Reload",
+    "apply": "Apply",
+    "discard": "Discard",
+    "undo": "Undo",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyLink": "Copy link",
+    "done": "Done",
+    "back": "Back",
+    "next": "Next",
+    "clear": "Clear",
+    "select": "Select",
+    "selectAll": "Select all",
+    "keepEditing": "Keep editing",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "none": "None",
+    "reset": "Reset",
+    "export": "Export",
+    "unsavedLost": "Your unsaved changes will be lost.",
+    "discardTitle": "Discard changes?",
+    "refreshing": "Refreshing…"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Cannot reach the server. Is it running?",
+    "timeout": "The server took too long to respond. Try again."
+  },
+  "status": {
+    "todo": "To Do",
+    "in_progress": "In Progress",
+    "in_review": "In Review",
+    "done": "Done"
+  },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "type": {
+    "task": "Task",
+    "story": "Story",
+    "bug": "Bug"
+  },
+  "sprintStatus": {
+    "planned": "Planned",
+    "active": "Active",
+    "completed": "Completed"
+  },
+  "points": {
+    "notEstimated": "Not estimated",
+    "label": "Story points",
+    "aria_one": "{{count}} story point",
+    "aria_other": "{{count}} story points"
+  },
+  "labels": {
+    "prefix": "Labels:"
+  },
+  "count": {
+    "todo_one": "{{count}} todo",
+    "todo_other": "{{count}} todos",
+    "matchingTodo_one": "{{count}} matching todo",
+    "matchingTodo_other": "{{count}} matching todos",
+    "unfinishedTodo_one": "{{count}} unfinished todo",
+    "unfinishedTodo_other": "{{count}} unfinished todos",
+    "point_one": "{{count}} point",
+    "point_other": "{{count}} points",
+    "day_one": "{{count}} day",
+    "day_other": "{{count}} days",
+    "selected_one": "{{count}} selected",
+    "selected_other": "{{count}} selected",
+    "label_one": "{{count}} label",
+    "label_other": "{{count}} labels"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "ar": "العربية",
+    "switchTo": "Switch language"
+  },
+  "density": {
+    "label": "Density",
+    "comfortable": "Comfortable",
+    "compact": "Compact"
+  },
+  "settings": {
+    "label": "Display settings"
+  },
+  "dates": {
+    "noDates": "No dates",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "yesterday": "Yesterday",
+    "createdOn": "created {{date}}",
+    "dueOverdue": "Overdue · {{date}}",
+    "dueToday": "Due today",
+    "dueOn": "Due {{date}}",
+    "exact": "Exact time: {{time}}"
+  },
+  "undo": {
+    "label": "Undo",
+    "undone": "Undone",
+    "failed": "Could not undo. Please try again.",
+    "pendingDelete": "Deleting {{key}}…"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "hint": "Shortcuts are ignored while you type in a field.",
+    "createTodo": "Create todo",
+    "focusSearch": "Focus search",
+    "help": "Show this help",
+    "goBoard": "Go to board",
+    "goBacklog": "Go to backlog",
+    "goSprints": "Go to sprints",
+    "palette": "Open command palette",
+    "closeEsc": "Close dialog or menu",
+    "then": "then",
+    "openHelp": "Keyboard shortcuts",
+    "enableSingleKey": "Enable single-key shortcuts"
+  },
+  "palette": {
+    "title": "Command palette",
+    "placeholder": "Search projects, todos, sprints and actions…",
+    "noResults": "No results",
+    "recent": "Recent",
+    "actions": "Actions",
+    "projects": "Projects",
+    "todos": "Todos",
+    "sprints": "Sprints",
+    "pages": "Pages",
+    "createTodo": "Create todo",
+    "generateAi": "Generate todos with AI",
+    "planSprint": "Plan a sprint with AI",
+    "newProject": "New project",
+    "theme": "Theme: {{mode}}",
+    "languageTo": "Language: {{language}}",
+    "openHint": "Ctrl/⌘ + K",
+    "open": "Search and commands",
+    "navHint": "↑ ↓ to move · Enter to open · Esc to close"
+  },
+  "crash": {
+    "title": "Something broke on this page",
+    "message": "The rest of the app is fine. Reload the page or go back to your projects.",
+    "globalTitle": "Kanbot ran into a problem",
+    "details": "Technical details"
+  },
+  "offline": {
+    "banner": "You are offline. Changes will fail until the connection is back."
+  },
+  "pwa": {
+    "updateAvailable": "A new version of Kanbot is available.",
+    "update": "Update",
+    "offlineReady": "Kanbot is ready to open offline (app shell only)."
+  },
+  "misc": {
+    "noDescription": "No description",
+    "sprint": "Sprint",
+    "loadingLabel": "Loading {{what}}",
+    "dropHere": "Drop here",
+    "noTodos": "No todos",
+    "truncated": "{{text}}"
+  },
+  "unit": {
+    "points": "points",
+    "todos": "todos"
+  }
+}

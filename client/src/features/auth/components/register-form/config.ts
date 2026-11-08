@@ -1,38 +1,35 @@
+import type { TFunction } from 'i18next';
 import { z } from 'zod';
 import { AUTH_LIMITS } from '@/features/auth/config/limits';
 
-export const registerSchema = z
-  .object({
-    name: z
-      .string()
-      .trim()
-      .min(1, 'Name is required')
-      .max(AUTH_LIMITS.nameMax, `Name must be at most ${AUTH_LIMITS.nameMax} characters`),
-    email: z
-      .string()
-      .trim()
-      .min(1, 'Email is required')
-      .max(AUTH_LIMITS.emailMax, `Email must be at most ${AUTH_LIMITS.emailMax} characters`)
-      .pipe(z.email('Enter a valid email address')),
-    password: z
-      .string()
-      .min(1, 'Password is required')
-      .min(
-        AUTH_LIMITS.passwordMin,
-        `Password must be at least ${AUTH_LIMITS.passwordMin} characters`,
-      )
-      .max(
-        AUTH_LIMITS.passwordMax,
-        `Password must be at most ${AUTH_LIMITS.passwordMax} characters`,
-      ),
-    confirmPassword: z.string().min(1, 'Confirm your password'),
-  })
-  .refine((values) => values.password === values.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-  });
+export function createRegisterSchema(t: TFunction) {
+  return z
+    .object({
+      name: z
+        .string()
+        .trim()
+        .min(1, t('auth:validation.nameRequired'))
+        .max(AUTH_LIMITS.nameMax, t('auth:validation.nameMax', { max: AUTH_LIMITS.nameMax })),
+      email: z
+        .string()
+        .trim()
+        .min(1, t('auth:validation.emailRequired'))
+        .max(AUTH_LIMITS.emailMax, t('auth:validation.emailMax', { max: AUTH_LIMITS.emailMax }))
+        .pipe(z.email(t('auth:validation.emailInvalid'))),
+      password: z
+        .string()
+        .min(1, t('auth:validation.passwordRequired'))
+        .min(AUTH_LIMITS.passwordMin, t('auth:validation.passwordMin', { min: AUTH_LIMITS.passwordMin }))
+        .max(AUTH_LIMITS.passwordMax, t('auth:validation.passwordMax', { max: AUTH_LIMITS.passwordMax })),
+      confirmPassword: z.string().min(1, t('auth:validation.confirmRequired')),
+    })
+    .refine((values) => values.password === values.confirmPassword, {
+      message: t('auth:validation.passwordsMismatch'),
+      path: ['confirmPassword'],
+    });
+}
 
-export type RegisterFormValues = z.infer<typeof registerSchema>;
+export type RegisterFormValues = z.infer<ReturnType<typeof createRegisterSchema>>;
 
 export const registerDefaultValues: RegisterFormValues = {
   name: '',
@@ -47,5 +44,3 @@ export const registerServerFields = [
   'email',
   'password',
 ] as const satisfies readonly (keyof RegisterFormValues)[];
-
-export const EMAIL_TAKEN_MESSAGE = 'An account with this email already exists';

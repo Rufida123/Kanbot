@@ -3,14 +3,16 @@ import type { AxiosRequestConfig } from 'axios';
 import { AUTH_LOGIN_PATH, REQUEST_TIMEOUT_MS } from '@/shared/config/api';
 import { env } from '@/shared/config/env';
 import { useSessionStore } from '@/shared/stores/sessionStore';
+import { t } from '@/shared/i18n';
 import type { ApiErrorBody, ErrorCode } from '@/shared/types/api';
 
 export type ApiErrorCode = ErrorCode | 'NETWORK_ERROR' | 'TIMEOUT' | 'UNEXPECTED_RESPONSE';
 export type ApiErrorDetail = { path: string; message: string };
 
-const NETWORK_MESSAGE = 'Cannot reach the server. Is it running?';
-const TIMEOUT_MESSAGE = 'The server took too long to respond. Try again.';
-const GENERIC_MESSAGE = 'Something went wrong. Please try again.';
+/** Client-side messages are translated when the error is created (server messages arrive as sent). */
+const NETWORK_MESSAGE = () => t('common:errors.network');
+const TIMEOUT_MESSAGE = () => t('common:errors.timeout');
+const GENERIC_MESSAGE = () => t('common:errors.generic');
 
 export class ApiError extends Error {
   readonly status: number | null;
@@ -76,13 +78,13 @@ function isApiErrorBody(data: unknown): data is ApiErrorBody {
 function toApiError(error: unknown): ApiError {
   if (error instanceof ApiError) return error;
   if (!isAxiosError(error)) {
-    return new ApiError({ status: null, code: 'UNEXPECTED_RESPONSE', message: GENERIC_MESSAGE });
+    return new ApiError({ status: null, code: 'UNEXPECTED_RESPONSE', message: GENERIC_MESSAGE() });
   }
   if (error.code === 'ECONNABORTED' || error.code === 'ETIMEDOUT') {
-    return new ApiError({ status: null, code: 'TIMEOUT', message: TIMEOUT_MESSAGE });
+    return new ApiError({ status: null, code: 'TIMEOUT', message: TIMEOUT_MESSAGE() });
   }
   if (!error.response) {
-    return new ApiError({ status: null, code: 'NETWORK_ERROR', message: NETWORK_MESSAGE });
+    return new ApiError({ status: null, code: 'NETWORK_ERROR', message: NETWORK_MESSAGE() });
   }
   const { status, data } = error.response;
   if (isApiErrorBody(data)) {
@@ -97,7 +99,7 @@ function toApiError(error: unknown): ApiError {
   return new ApiError({
     status,
     code: status >= 500 ? 'INTERNAL_ERROR' : 'UNEXPECTED_RESPONSE',
-    message: GENERIC_MESSAGE,
+    message: GENERIC_MESSAGE(),
   });
 }
 

@@ -12,7 +12,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
 import { TodoCard } from '@/features/board/components/TodoCard';
-import { BOARD_DRAG_INSTRUCTIONS } from '@/features/board/config/copy';
+import { getBoardDragInstructions } from '@/features/board/config/copy';
 import { BOARD_STATUSES } from '@/features/board/config/layout';
 import { BoardPreviewContext } from '@/features/board/context/BoardPreviewContext';
 import { isBoardSortableData, isColumnId, parseColumnId } from '@/features/board/utils/boardContainers';
@@ -169,7 +169,7 @@ export function BoardDndProvider({ projectId, columns, children }: BoardDndProvi
       collisionDetection={collisionDetection}
       accessibility={{
         announcements: createDragAnnouncements({ getKey, describe }),
-        screenReaderInstructions: { draggable: BOARD_DRAG_INSTRUCTIONS },
+        screenReaderInstructions: { draggable: getBoardDragInstructions() },
       }}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}

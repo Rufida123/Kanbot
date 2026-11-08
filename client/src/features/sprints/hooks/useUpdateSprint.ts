@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateSprint } from '@/features/sprints/api/sprints';
 import { sprintKeys } from '@/features/sprints/api/keys';
@@ -12,7 +13,7 @@ export function useUpdateSprint(projectId: string) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: sprintKeys.all(projectId) });
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
-      showToast('Sprint updated');
+      showToast(t('sprints:toast.updated'));
     },
   });
 }

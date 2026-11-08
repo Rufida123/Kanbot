@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -19,6 +20,7 @@ import { useUiStore } from '@/shared/stores/uiStore';
  * MUI returns focus to the "Ask AI" button.
  */
 export function AssistantDrawer() {
+  const { t } = useTranslation();
   const projectId = useParams()[PROJECT_ID_PARAM];
   const isOpen = useUiStore((state) => state.assistantOpen);
   const setAssistantOpen = useUiStore((state) => state.setAssistantOpen);
@@ -37,7 +39,7 @@ export function AssistantDrawer() {
         root: { keepMounted: true },
         paper: {
           'aria-labelledby': titleId,
-          sx: { width: `min(100vw, ${ASSISTANT_DRAWER_WIDTH_REM}rem)`, display: 'flex' },
+          sx: { width: `min(100vw, ${ASSISTANT_DRAWER_WIDTH_REM}rem)`, display: 'flex', paddingBottom: 'env(safe-area-inset-bottom)' },
         },
       }}
     >
@@ -54,10 +56,10 @@ export function AssistantDrawer() {
         }}
       >
         <Typography id={titleId} component="h2" variant="h4">
-          AI assistant
+          {t('common:app.aiAssistant')}
         </Typography>
-        <Tooltip title="Close assistant">
-          <IconButton aria-label="Close assistant" onClick={() => setAssistantOpen(false)}>
+        <Tooltip title={t('common:app.closeAssistant')}>
+          <IconButton aria-label={t('common:app.closeAssistant')} onClick={() => setAssistantOpen(false)}>
             <CloseIcon aria-hidden="true" />
           </IconButton>
         </Tooltip>

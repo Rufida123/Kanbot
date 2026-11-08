@@ -2,6 +2,7 @@ import { getListLength, useMoveTodo, useUpdateTodo } from '@/features/todos';
 import type { TodoMenuAction } from '@/features/todos';
 import { buildMoveEntries } from '@/features/backlog/utils/buildMoveEntries';
 import type { MoveEntry } from '@/features/backlog/utils/buildMoveEntries';
+import { t } from '@/shared/i18n';
 import { showToast } from '@/shared/stores/toastStore';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
 import type { Sprint, Todo } from '@/shared/types/api';
@@ -35,18 +36,21 @@ export function useTodoMoveActions({ projectId, sprints, fullBacklog, sprintTodo
         sprintId: todo.sprintId,
         status: undefined,
         position,
-        successMessage: `${todo.key} moved to the ${target.kind}`,
+        undo: { position: Math.max((ownList ?? []).findIndex((item) => item.id === todo.id), 0) },
+        successMessage: t(target.kind === 'top' ? 'todos:move.movedTop' : 'todos:move.movedBottom', { key: todo.key }),
       });
       return;
     }
     const sprintId = target.kind === 'sprint' ? target.sprint.id : null;
-    const destination = target.kind === 'sprint' ? target.sprint.name : 'the backlog';
+    const destination = target.kind === 'sprint' ? target.sprint.name : t('todos:move.theBacklog');
     updateMutation.mutate(
       {
         todoId: todo.id,
         changes: { sprintId },
         previous: { projectId: todo.projectId, sprintId: todo.sprintId },
-        successMessage: `${todo.key} moved to ${destination}`,
+        successMessage: t('todos:move.movedTo', { key: todo.key, destination }),
+        // "Undo" on the toast moves it back to where it was (enhancement 4).
+        undoChanges: { sprintId: todo.sprintId },
       },
       { onError: (error) => showToast(getErrorMessage(error), 'error') },
     );

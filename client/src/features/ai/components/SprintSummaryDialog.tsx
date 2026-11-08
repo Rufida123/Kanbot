@@ -5,6 +5,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useIsMutating } from '@tanstack/react-query';
 import { useId } from 'react';
+import { useTranslation } from 'react-i18next';
 import { aiMutationKeys } from '@/features/ai/api/keys';
 import { SprintSummaryContent } from '@/features/ai/components/SprintSummaryContent';
 import { useIsSmallScreen } from '@/shared/hooks/useIsSmallScreen';
@@ -21,6 +22,7 @@ type SprintSummaryDialogProps = {
  * board's column height). It cannot be dismissed while a summary is being generated.
  */
 export function SprintSummaryDialog({ projectId, sprint, onClose }: SprintSummaryDialogProps) {
+  const { t } = useTranslation();
   const titleId = useId();
   const isSmallScreen = useIsSmallScreen();
   const isPending = useIsMutating({ mutationKey: aiMutationKeys.sprintSummary }) > 0;
@@ -37,14 +39,14 @@ export function SprintSummaryDialog({ projectId, sprint, onClose }: SprintSummar
       fullScreen={isSmallScreen}
     >
       <DialogTitle id={titleId} sx={{ overflowWrap: 'anywhere' }}>
-        AI summary · {sprint.name}
+        {t('ai:summary.dialogTitle', { name: sprint.name })}
       </DialogTitle>
       <DialogContent>
         <SprintSummaryContent projectId={projectId} sprint={sprint} />
       </DialogContent>
       <DialogActions sx={{ padding: 2 }}>
         <Button color="inherit" onClick={onClose} disabled={isPending}>
-          Close
+          {t('common:actions.close')}
         </Button>
       </DialogActions>
     </Dialog>

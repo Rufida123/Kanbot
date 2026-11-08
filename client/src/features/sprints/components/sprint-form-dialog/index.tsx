@@ -8,7 +8,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Typography from '@mui/material/Typography';
-import { useId, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FormEvent } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { applyFieldErrors } from '@/features/auth';
@@ -26,15 +27,10 @@ import { ApiError } from '@/shared/api/client';
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 import { FormTextField } from '@/shared/components/FormTextField';
 import type { Sprint } from '@/shared/types/api';
-import {
-  createSprintSchema,
-  DATES_HINT,
-  editSprintSchema,
-  NAME_CREATE_HINT,
-  sprintFormFields,
-} from './config';
+import { createSprintSchemas, sprintFormFields } from './config';
+import { getDefaultSprintDates } from '@/features/sprints/utils/getDefaultSprintDates';
+import { getSavedSprintTemplate } from '@/features/sprints/utils/sprintTemplate';
 
-const GENERIC_ERROR = 'Something went wrong. Please try again.';
 const FORM_FIELDS_GAP = 0.5;
 const EMPTY_VALUES: SprintFormValues = { name: '', goal: '', startDate: '', endDate: '' };
 
@@ -51,6 +47,10 @@ type SprintFormDialogProps = {
  * confirmed discard. Edit sends only the changed fields.
  */
 export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialogProps) {
+  const { t } = useTranslation();
+  const schemas = useMemo(() => createSprintSchemas(t), [t]);
+  // A saved sprint template (enhancement 14) pre-fills the dates of a NEW sprint.
+  const isPrefilled = sprint === undefined && getSavedSprintTemplate() !== null;
   const isEdit = sprint !== undefined;
   const id = useId();
   const titleId = `${id}-title`;
@@ -68,9 +68,9 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
     control,
     formState: { errors, isDirty },
   } = useForm<SprintFormValues>({
-    resolver: zodResolver(isEdit ? editSprintSchema : createSprintSchema),
+    resolver: zodResolver(isEdit ? schemas.edit : schemas.create),
     mode: 'onTouched',
-    defaultValues: sprint ? toSprintFormValues(sprint) : EMPTY_VALUES,
+    defaultValues: sprint ? toSprintFormValues(sprint) : isPrefilled ? { ...EMPTY_VALUES, ...getDefaultSprintDates() } : EMPTY_VALUES,
   });
 
   const values = useWatch({ control });
@@ -110,7 +110,7 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
       onClose();
     } catch (error) {
       if (!applyFieldErrors(error, setError, sprintFormFields)) {
-        setFormError(error instanceof ApiError ? error.message : GENERIC_ERROR);
+        setFormError(error instanceof ApiError ? error.message : t('common:errors.generic'));
       }
     } finally {
       isSubmittingRef.current = false;
@@ -126,24 +126,24 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
     <>
       <Dialog open onClose={requestClose} aria-labelledby={titleId} fullWidth maxWidth="sm">
         <Box component="form" noValidate onSubmit={onSubmit}>
-          <DialogTitle id={titleId}>{isEdit ? 'Edit sprint' : 'New sprint'}</DialogTitle>
+          <DialogTitle id={titleId}>{isEdit ? t('sprints:form.editTitle') : t('sprints:form.newTitle')}</DialogTitle>
           <DialogContent
             sx={{ display: 'flex', flexDirection: 'column', gap: FORM_FIELDS_GAP, paddingTop: 1 }}
           >
             {formError ? <Alert severity="error">{formError}</Alert> : null}
             <FormTextField
-              label="Name"
+              label={t('sprints:form.name')}
               isRequired={isEdit}
               autoFocus
               autoComplete="off"
               maxLength={SPRINT_LIMITS.nameMax}
               registration={register('name')}
               error={errors.name}
-              hint={isEdit ? undefined : NAME_CREATE_HINT}
-              placeholder={isEdit ? undefined : 'Sprint name'}
+              hint={isEdit ? undefined : t('sprints:form.nameHint')}
+              placeholder={isEdit ? undefined : t('sprints:form.namePlaceholder')}
             />
             <FormTextField
-              label="Goal"
+              label={t('sprints:form.goal')}
               isMultiline
               minRows={2}
               autoComplete="off"
@@ -155,7 +155,7 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
               <Box sx={{ flex: '1 1 12rem' }}>
                 <FormTextField
-                  label="Start date"
+                  label={t('sprints:form.startDate')}
                   type="date"
                   registration={register('startDate', { deps: ['endDate'] })}
                   error={errors.startDate}
@@ -163,7 +163,7 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
               </Box>
               <Box sx={{ flex: '1 1 12rem' }}>
                 <FormTextField
-                  label="End date"
+                  label={t('sprints:form.endDate')}
                   type="date"
                   registration={register('endDate')}
                   error={errors.endDate}
@@ -171,12 +171,12 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
               </Box>
             </Box>
             <Typography variant="caption" color="text.secondary">
-              {DATES_HINT}
+              {isPrefilled ? t('sprints:form.prefilled') : t('sprints:form.datesHint')}
             </Typography>
           </DialogContent>
           <DialogActions sx={{ padding: 2, gap: 1 }}>
             <Button color="inherit" onClick={requestClose} disabled={isPending}>
-              Cancel
+              {t('common:actions.cancel')}
             </Button>
             <Button
               type="submit"
@@ -186,21 +186,21 @@ export function SprintFormDialog({ projectId, sprint, onClose }: SprintFormDialo
                 isPending ? <CircularProgress size={16} color="inherit" aria-hidden="true" /> : undefined
               }
             >
-              {isEdit ? 'Save' : 'Create sprint'}
+              {isEdit ? t('common:actions.save') : t('sprints:form.create')}
             </Button>
           </DialogActions>
         </Box>
       </Dialog>
       <ConfirmDialog
         open={isDiscardOpen}
-        title="Discard changes?"
-        confirmLabel="Discard"
-        cancelLabel="Keep editing"
+        title={t('common:actions.discardTitle')}
+        confirmLabel={t('common:actions.discard')}
+        cancelLabel={t('common:actions.keepEditing')}
         isDestructive
         onConfirm={onClose}
         onCancel={() => setIsDiscardOpen(false)}
       >
-        Your unsaved changes will be lost.
+        {t('common:actions.unsavedLost')}
       </ConfirmDialog>
     </>
   );

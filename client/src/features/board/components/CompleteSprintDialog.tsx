@@ -20,9 +20,11 @@ import { useCompleteSprint } from '@/features/board/hooks/useCompleteSprint';
 import { getUnfinishedCount } from '@/features/board/utils/progress';
 import type { BoardColumns } from '@/features/board/utils/progress';
 import { getPlannedSprints, useSprints } from '@/features/sprints';
-import { BACKLOG_LABEL } from '@/features/todos';
+import { backlogLabel } from '@/features/todos';
 import { ApiError } from '@/shared/api/client';
+import { t } from '@/shared/i18n';
 import { showToast } from '@/shared/stores/toastStore';
+import { useTranslation } from 'react-i18next';
 import type { Sprint } from '@/shared/types/api';
 import { formatCount } from '@/shared/utils/formatCount';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
@@ -43,8 +45,8 @@ type DialogError = { message: string; isAlreadyCompleted: boolean };
 type SubmitPhase = 'completing' | 'summarizing';
 
 function getSubmitLabel(phase: SubmitPhase | null): string {
-  if (phase === 'completing') return 'Completing…';
-  return phase === 'summarizing' ? 'Generating summary…' : 'Complete sprint';
+  if (phase === 'completing') return t('board:complete.completing');
+  return phase === 'summarizing' ? t('board:complete.summarizing') : t('board:complete.confirm');
 }
 
 function toDialogError(error: unknown): DialogError {
@@ -61,6 +63,7 @@ function toDialogError(error: unknown): DialogError {
  * page; a destination that is no longer planned keeps the dialog open with the sprints refreshed.
  */
 export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: CompleteSprintDialogProps) {
+  useTranslation();
   const id = useId();
   const titleId = `${id}-title`;
   const groupLabelId = `${id}-destination`;
@@ -80,7 +83,7 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
   // A destination that disappeared (started or deleted elsewhere) falls back to the backlog.
   const destinationSprint = plannedSprints.find((item) => item.id === choice);
   const moveUnfinishedTo = destinationSprint?.id ?? BACKLOG_VALUE;
-  const destinationLabel = destinationSprint?.name ?? BACKLOG_LABEL;
+  const destinationLabel = destinationSprint?.name ?? backlogLabel();
   const isPending = phase !== null;
   const detailsPath = paths.project(projectId).sprint(sprint.id);
 
@@ -97,7 +100,7 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
           await summaryMutation.mutateAsync(sprint.id);
         } catch (summaryError) {
           // The sprint is completed either way: go on to its page, where "Summarize" is a click away.
-          showToast(`Sprint completed, but the summary failed: ${getErrorMessage(summaryError)}`, 'error');
+          showToast(t('board:complete.summaryFailed', { message: getErrorMessage(summaryError) }), 'error');
         }
       }
       onClose();
@@ -124,49 +127,49 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
       fullWidth
       maxWidth="xs"
     >
-      <DialogTitle id={titleId}>Complete {sprint.name}</DialogTitle>
+      <DialogTitle id={titleId}>{t('board:complete.title', { name: sprint.name })}</DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, paddingTop: 1 }}>
         {error === null ? null : <Alert severity="error">{error.message}</Alert>}
         <Box component="p" role="status">
-          {formatCount(doneCount, 'todo')} done, {unfinishedCount} not done.
+          {t('board:complete.counts', { done: doneCount, unfinished: unfinishedCount })}
         </Box>
         {unfinishedCount === 0 ? (
-          <Alert severity="success">All todos are done.</Alert>
+          <Alert severity="success">{t('board:complete.allDoneAlert')}</Alert>
         ) : (
           <>
             <FormControl disabled={isPending}>
-              <FormLabel id={groupLabelId}>Move unfinished todos to</FormLabel>
+              <FormLabel id={groupLabelId}>{t('board:complete.moveTo')}</FormLabel>
               <RadioGroup
                 aria-labelledby={groupLabelId}
                 value={moveUnfinishedTo}
                 onChange={(event) => setChoice(event.target.value)}
               >
-                <FormControlLabel value={BACKLOG_VALUE} control={<Radio />} label={BACKLOG_LABEL} />
+                <FormControlLabel value={BACKLOG_VALUE} control={<Radio />} label={backlogLabel()} />
                 {plannedSprints.map((item) => (
                   <FormControlLabel
                     key={item.id}
                     value={item.id}
                     control={<Radio />}
-                    label={`${item.name} · ${formatCount(item.stats.totalTodos, 'todo')}`}
+                    label={t('board:complete.destinationOption', { name: item.name, todos: formatCount(item.stats.totalTodos, 'todo') })}
                   />
                 ))}
               </RadioGroup>
             </FormControl>
-            {sprintsQuery.isPending ? <Box role="status" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>Loading planned sprints…</Box> : null}
+            {sprintsQuery.isPending ? <Box role="status" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>{t('board:complete.loadingPlanned')}</Box> : null}
             {sprintsQuery.isError ? (
               <Alert
                 severity="warning"
                 action={
                   <Button color="inherit" size="small" onClick={() => void sprintsQuery.refetch()}>
-                    Try again
+                    {t('common:actions.retry')}
                   </Button>
                 }
               >
-                Planned sprints could not be loaded. You can still move the todos to the backlog.
+                {t('board:complete.plannedError')}
               </Alert>
             ) : null}
             <Box component="p" role="status">
-              {formatCount(unfinishedCount, 'unfinished todo')} will move to {destinationLabel}. This cannot be undone.
+              {t('board:complete.willMove', { todos: formatCount(unfinishedCount, 'unfinishedTodo'), destination: destinationLabel })}
             </Box>
           </>
         )}
@@ -174,7 +177,7 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
           <FormControlLabel
             disabled={isPending}
             control={<Checkbox checked={shouldSummarize} onChange={(event) => setShouldSummarize(event.target.checked)} />}
-            label="Generate AI summary"
+            label={t('board:complete.generateSummary')}
           />
           <Box sx={{ paddingInlineStart: 4 }}>
             <AiDisclaimer />
@@ -183,11 +186,11 @@ export function CompleteSprintDialog({ projectId, sprint, columns, onClose }: Co
       </DialogContent>
       <DialogActions sx={{ padding: 2, gap: 1 }}>
         <Button color="inherit" onClick={onClose} disabled={isPending}>
-          Cancel
+          {t('common:actions.cancel')}
         </Button>
         {error?.isAlreadyCompleted ? (
           <Button variant="contained" onClick={showDetails}>
-            View sprint
+            {t('board:complete.viewSprint')}
           </Button>
         ) : (
           <Button

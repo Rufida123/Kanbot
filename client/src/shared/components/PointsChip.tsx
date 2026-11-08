@@ -1,16 +1,18 @@
 import Box from '@mui/material/Box';
+import { useTranslation } from 'react-i18next';
 import type { StoryPoints } from '@/shared/types/api';
 
 type PointsChipProps = { points: StoryPoints | null };
 
 /** Story points in a small round badge; "–" when the todo is not estimated. Safe inside a button. */
 export function PointsChip({ points }: PointsChipProps) {
+  const { t } = useTranslation();
   const isEstimated = points !== null;
   return (
     <Box
       component="span"
       role="img"
-      aria-label={isEstimated ? `${points} story ${points === 1 ? 'point' : 'points'}` : 'Not estimated'}
+      aria-label={isEstimated ? t('common:points.aria', { count: points }) : t('common:points.notEstimated')}
       sx={{
         display: 'inline-flex',
         alignItems: 'center',

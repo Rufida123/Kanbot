@@ -3,12 +3,15 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 
 type ErrorStateProps = {
   title: string;
   message: string;
   onRetry?: () => void;
   retryLabel?: string;
+  /** Extra content under the actions (technical details in development). */
+  details?: ReactNode;
   /** Extra actions next to the retry button (for example a link home). */
   actions?: ReactNode;
   /** Centre the state in the whole viewport instead of its container. */
@@ -20,10 +23,12 @@ export function ErrorState({
   title,
   message,
   onRetry,
-  retryLabel = 'Try again',
+  retryLabel,
   actions,
+  details,
   isFullPage = false,
 }: ErrorStateProps) {
+  const { t } = useTranslation();
   return (
     <Box
       role="alert"
@@ -51,12 +56,13 @@ export function ErrorState({
         <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
           {onRetry ? (
             <Button variant="contained" onClick={onRetry}>
-              {retryLabel}
+              {retryLabel ?? t('common:actions.retry')}
             </Button>
           ) : null}
           {actions}
         </Box>
       ) : null}
+      {details}
     </Box>
   );
 }

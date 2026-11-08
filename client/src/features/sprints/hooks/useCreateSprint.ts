@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createSprint } from '@/features/sprints/api/sprints';
 import { sprintKeys } from '@/features/sprints/api/keys';
@@ -16,7 +17,7 @@ export function useCreateSprint(projectId: string) {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: sprintKeys.all(projectId) });
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
-      showToast('Sprint created');
+      showToast(t('sprints:toast.created'));
     },
   });
 }

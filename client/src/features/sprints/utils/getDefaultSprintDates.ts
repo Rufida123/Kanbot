@@ -1,18 +1,18 @@
-import { DEFAULT_SPRINT_LENGTH_DAYS } from '@/features/sprints/config/limits';
+import { getSprintTemplate } from '@/features/sprints/utils/sprintTemplate';
 import { addDaysToDateOnly, getTodayDateOnly, isDateOnly } from '@/shared/utils/formatDate';
 import type { Sprint } from '@/shared/types/api';
 
 export type SprintDates = { startDate: string; endDate: string };
 
-/** Start today, end two weeks later (local time). */
+/** Start today, end after the template length (two weeks by default), in local time. */
 export function getDefaultSprintDates(): SprintDates {
   const startDate = getTodayDateOnly();
-  return { startDate, endDate: addDaysToDateOnly(startDate, DEFAULT_SPRINT_LENGTH_DAYS) };
+  return { startDate, endDate: addDaysToDateOnly(startDate, getSprintTemplate().lengthDays) };
 }
 
 /** End date that follows a start date when the user has not chosen one. */
 export function getDefaultEndDate(startDate: string): string {
-  return addDaysToDateOnly(startDate, DEFAULT_SPRINT_LENGTH_DAYS);
+  return addDaysToDateOnly(startDate, getSprintTemplate().lengthDays);
 }
 
 /**

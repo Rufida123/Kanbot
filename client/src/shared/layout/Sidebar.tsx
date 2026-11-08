@@ -1,4 +1,6 @@
+import { useTranslation } from 'react-i18next';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import DateRangeIcon from '@mui/icons-material/DateRange';
 import SpeedIcon from '@mui/icons-material/Speed';
 import ViewKanbanOutlinedIcon from '@mui/icons-material/ViewKanbanOutlined';
 import Box from '@mui/material/Box';
@@ -14,29 +16,31 @@ import { ProjectSwitcher } from '@/features/projects';
 import { Logo } from '@/shared/components/Logo';
 import type { ReactNode } from 'react';
 
-type NavItem = { label: string; icon: ReactNode; getPath: (projectId: string) => string };
+type NavItem = { labelKey: string; icon: ReactNode; getPath: (projectId: string) => string };
 
 const NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Backlog', icon: <ListAltIcon />, getPath: (id) => paths.project(id).backlog },
-  { label: 'Board', icon: <ViewKanbanOutlinedIcon />, getPath: (id) => paths.project(id).board },
-  { label: 'Sprints', icon: <SpeedIcon />, getPath: (id) => paths.project(id).sprints },
+  { labelKey: 'common:nav.backlog', icon: <ListAltIcon />, getPath: (id) => paths.project(id).backlog },
+  { labelKey: 'common:nav.board', icon: <ViewKanbanOutlinedIcon />, getPath: (id) => paths.project(id).board },
+  { labelKey: 'common:nav.sprints', icon: <SpeedIcon />, getPath: (id) => paths.project(id).sprints },
+  { labelKey: 'common:nav.week', icon: <DateRangeIcon />, getPath: (id) => paths.project(id).week },
 ];
 
 /** Logo, project switcher, project navigation and the user menu. */
 export function Sidebar() {
+  const { t } = useTranslation();
   const projectId = useParams()[PROJECT_ID_PARAM];
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2, padding: 2 }}>
-      <Box component={RouterLink} to={paths.projects} aria-label="Kanbot, all projects" sx={{ display: 'flex' }}>
+      <Box component={RouterLink} to={paths.projects} aria-label={t('common:app.kanbotAllProjects')} sx={{ display: 'flex' }}>
         <Logo heightRem={2.75} />
       </Box>
       <ProjectSwitcher />
-      <Box component="nav" aria-label="Project" sx={{ flex: 1, overflow: 'auto' }}>
+      <Box component="nav" aria-label={t('common:app.projectNav')} sx={{ flex: 1, overflow: 'auto' }}>
         {projectId ? (
           <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
             {NAV_ITEMS.map((item) => (
               <ListItemButton
-                key={item.label}
+                key={item.labelKey}
                 component={NavLink}
                 to={item.getPath(projectId)}
                 sx={{
@@ -61,7 +65,7 @@ export function Sidebar() {
                 }}
               >
                 <ListItemIcon sx={{ minWidth: '2.5rem' }}>{item.icon}</ListItemIcon>
-                <ListItemText primary={item.label} />
+                <ListItemText primary={t(item.labelKey)} />
               </ListItemButton>
             ))}
           </List>

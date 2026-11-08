@@ -1,0 +1,39 @@
+{
+  "form": {
+    "newTitle": "New sprint",
+    "editTitle": "Edit sprint",
+    "name": "Name",
+    "goal": "Goal",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "namePlaceholder": "Sprint name",
+    "nameHint": "Leave empty to name it automatically (for example “Sprint 3”).",
+    "datesHint": "Optional. You choose the final dates when you start the sprint.",
+    "create": "Create sprint",
+    "prefilled": "Dates were filled from your sprint defaults."
+  },
+  "validation": {
+    "dateInvalid": "Enter a valid date",
+    "endBeforeStart": "End date must be on or after the start date",
+    "nameMax": "Name must be at most {{max}} characters",
+    "goalMax": "Goal must be at most {{max}} characters",
+    "nameRequired": "Name is required"
+  },
+  "toast": {
+    "created": "Sprint created",
+    "updated": "Sprint updated",
+    "deleted": "Sprint deleted",
+    "started": "{{name}} started"
+  },
+  "template": {
+    "title": "Sprint defaults",
+    "description": "Used to prefill the dates when you create a sprint and the length and capacity when you plan with AI. Saved in this browser.",
+    "length": "Default length (days)",
+    "capacity": "Default capacity (story points)",
+    "save": "Save defaults",
+    "saved": "Sprint defaults saved",
+    "reset": "Reset to built-in",
+    "lengthInvalid": "Enter a whole number from 1 to 60",
+    "capacityInvalid": "Enter a whole number from 1 to 500"
+  }
+}

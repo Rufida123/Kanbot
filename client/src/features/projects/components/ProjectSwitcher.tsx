@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -25,6 +26,7 @@ const ELLIPSIS_SX = { overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 
  * from state, so a reload keeps it. Choosing a project opens its backlog.
  */
 export function ProjectSwitcher() {
+  const { t } = useTranslation();
   const { data: projects, isPending, isError, refetch } = useProjects();
   const currentProjectId = useParams()[PROJECT_ID_PARAM];
   const navigate = useNavigate();
@@ -40,10 +42,10 @@ export function ProjectSwitcher() {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
         <Typography variant="body2" color="text.secondary">
-          Projects unavailable
+          {t('projects:switcher.unavailable')}
         </Typography>
         <Button size="small" onClick={() => void refetch()}>
-          Retry
+          {t('projects:switcher.retry')}
         </Button>
       </Box>
     );
@@ -56,7 +58,7 @@ export function ProjectSwitcher() {
         startIcon={<AddIcon aria-hidden="true" />}
         onClick={(event) => openCreate(event.currentTarget)}
       >
-        Create project
+        {t('projects:switcher.create')}
       </Button>
     );
   }
@@ -79,14 +81,14 @@ export function ProjectSwitcher() {
         aria-haspopup="menu"
         aria-controls={isOpen ? menuId : undefined}
         aria-expanded={isOpen}
-        aria-label={`Switch project. Current: ${current?.name ?? 'none selected'}`}
+        aria-label={t('projects:switcher.switchCurrent', { name: current?.name ?? t('projects:switcher.noneSelected') })}
         onClick={(event) => setAnchor(event.currentTarget)}
         startIcon={<FolderOutlinedIcon aria-hidden="true" />}
         endIcon={<ExpandMoreIcon aria-hidden="true" />}
         sx={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', borderColor: 'divider' }}
       >
         <Box component="span" sx={{ ...ELLIPSIS_SX, flex: 1, textAlign: 'start' }}>
-          {current?.name ?? 'Select project'}
+          {current?.name ?? t('projects:switcher.select')}
         </Box>
       </Button>
       {current ? <ProjectActionsMenu project={current} size="small" /> : null}
@@ -120,7 +122,7 @@ export function ProjectSwitcher() {
           <ListItemIcon>
             <GridViewIcon fontSize="small" aria-hidden="true" />
           </ListItemIcon>
-          All projects
+          {t('projects:switcher.all')}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -131,7 +133,7 @@ export function ProjectSwitcher() {
           <ListItemIcon>
             <AddIcon fontSize="small" aria-hidden="true" />
           </ListItemIcon>
-          New project
+          {t('projects:switcher.new')}
         </MenuItem>
       </Menu>
     </Box>

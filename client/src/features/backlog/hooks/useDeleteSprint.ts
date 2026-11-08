@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteSprint } from '@/features/sprints/api/sprints';
 import { sprintKeys } from '@/features/sprints/api/keys';
@@ -18,14 +19,14 @@ export function useDeleteSprint(projectId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ sprintId }: DeleteSprintVariables) => deleteSprint(sprintId),
-    onSuccess: (_data, { sprintId, name }) => {
+    onSuccess: (_data, { sprintId }) => {
       queryClient.setQueryData<Sprint[]>(sprintKeys.all(projectId), (current) =>
         current?.filter((sprint) => sprint.id !== sprintId),
       );
       invalidateTodoListsExceptSprint(queryClient, projectId, sprintId);
       void queryClient.invalidateQueries({ queryKey: sprintKeys.all(projectId) });
       queryClient.removeQueries({ queryKey: boardKeys.detail(sprintId) });
-      showToast(`${name} deleted`);
+      showToast(t('sprints:toast.deleted'));
     },
   });
 }

@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { api, ApiError } from '@/shared/api/client';
 import { AUTH_LOGIN_PATH, AUTH_ME_PATH, AUTH_REGISTER_PATH } from '@/shared/config/api';
 import type {
@@ -16,7 +17,7 @@ function unexpectedResponse(): ApiError {
   return new ApiError({
     status: null,
     code: 'UNEXPECTED_RESPONSE',
-    message: 'Something went wrong. Please try again.',
+    message: t('common:errors.generic'),
   });
 }
 

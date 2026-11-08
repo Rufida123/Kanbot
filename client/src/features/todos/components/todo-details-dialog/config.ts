@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { z } from 'zod';
 import { TODO_LIMITS } from '@/features/todos/config/limits';
 import { STORY_POINT_VALUES } from '@/shared/config/constants';
@@ -6,46 +7,38 @@ import { isDateOnly } from '@/shared/utils/formatDate';
 
 const STORY_POINT_CHOICES: readonly string[] = ['', ...STORY_POINT_VALUES.map(String)];
 
-const titleSchema = z
-  .string()
-  .trim()
-  .min(1, 'Title is required')
-  .max(TODO_LIMITS.titleMax, `Title must be at most ${TODO_LIMITS.titleMax} characters`);
+export function createTodoFormSchema(t: TFunction) {
+  const titleSchema = z
+    .string()
+    .trim()
+    .min(1, t('todos:validation.titleRequired'))
+    .max(TODO_LIMITS.titleMax, t('todos:validation.titleMax', { max: TODO_LIMITS.titleMax }));
+  const descriptionSchema = z
+    .string()
+    .max(TODO_LIMITS.descriptionMax, t('todos:validation.descriptionMax', { max: TODO_LIMITS.descriptionMax }));
+  const labelsSchema = z
+    .array(
+      z
+        .string()
+        .trim()
+        .min(1, t('todos:validation.labelEmpty'))
+        .max(TODO_LIMITS.labelMax, t('todos:validation.labelMax', { max: TODO_LIMITS.labelMax })),
+    )
+    .max(TODO_LIMITS.labelsMax, t('todos:validation.labelsMax', { max: TODO_LIMITS.labelsMax }));
+  return z.object({
+    title: titleSchema,
+    description: descriptionSchema,
+    type: z.enum(TODO_TYPES),
+    status: z.enum(TODO_STATUSES),
+    priority: z.enum(TODO_PRIORITIES),
+    storyPoints: z.string().refine((value) => STORY_POINT_CHOICES.includes(value), t('todos:validation.invalidValue')),
+    labels: labelsSchema,
+    dueDate: z.string().refine((value) => value === '' || isDateOnly(value), t('todos:validation.invalidDate')),
+    sprintId: z.string(),
+  });
+}
 
-const descriptionSchema = z
-  .string()
-  .max(
-    TODO_LIMITS.descriptionMax,
-    `Description must be at most ${TODO_LIMITS.descriptionMax} characters`,
-  );
-
-const labelsSchema = z
-  .array(
-    z
-      .string()
-      .trim()
-      .min(1, 'A label cannot be empty')
-      .max(TODO_LIMITS.labelMax, `A label must be at most ${TODO_LIMITS.labelMax} characters`),
-  )
-  .max(TODO_LIMITS.labelsMax, `At most ${TODO_LIMITS.labelsMax} labels`);
-
-/**
- * Form values are all strings or arrays so inputs stay controlled: story points `''` = not
- * estimated, due date `''` = none, sprint `''` = backlog. `getTodoChanges` converts them back.
- */
-export const todoFormSchema = z.object({
-  title: titleSchema,
-  description: descriptionSchema,
-  type: z.enum(TODO_TYPES),
-  status: z.enum(TODO_STATUSES),
-  priority: z.enum(TODO_PRIORITIES),
-  storyPoints: z.string().refine((value) => STORY_POINT_CHOICES.includes(value), 'Choose a valid value'),
-  labels: labelsSchema,
-  dueDate: z.string().refine((value) => value === '' || isDateOnly(value), 'Enter a valid date'),
-  sprintId: z.string(),
-});
-
-export type TodoFormValues = z.infer<typeof todoFormSchema>;
+export type TodoFormValues = z.infer<ReturnType<typeof createTodoFormSchema>>;
 
 /** Fields that can receive a server validation error (`details[].path`). */
 export const todoFormFields = [

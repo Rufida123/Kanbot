@@ -15,7 +15,7 @@ import type { ReactNode } from 'react';
 import { DragPreviewContext } from '@/features/backlog/context/DragPreviewContext';
 import { isContainerId, isSortableData } from '@/features/backlog/utils/containerIds';
 import type { ContainerId } from '@/features/backlog/utils/containerIds';
-import { BACKLOG_DRAG_INSTRUCTIONS } from '@/features/backlog/config/dnd';
+import { getBacklogDragInstructions } from '@/features/backlog/config/dnd';
 import {
   findContainer,
   moveBetweenLists,
@@ -179,7 +179,7 @@ export function BacklogDndProvider({ projectId, lists, getListLabel, children }:
       collisionDetection={collisionDetection}
       accessibility={{
         announcements: createDragAnnouncements({ getKey, describe }),
-        screenReaderInstructions: { draggable: BACKLOG_DRAG_INSTRUCTIONS },
+        screenReaderInstructions: { draggable: getBacklogDragInstructions() },
       }}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}

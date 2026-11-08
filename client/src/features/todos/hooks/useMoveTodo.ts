@@ -15,6 +15,7 @@ import {
 import type { BoardSnapshot } from '@/features/todos/utils/boardCache';
 import { boardKeys } from '@/features/board/api/keys';
 import { sprintKeys } from '@/features/sprints/api/keys';
+import { t } from '@/shared/i18n';
 import { showToast } from '@/shared/stores/toastStore';
 import { getErrorMessage } from '@/shared/utils/getErrorMessage';
 import type { MoveTodoRequest, Todo } from '@/shared/types/api';
@@ -22,6 +23,8 @@ import type { MoveTodoRequest, Todo } from '@/shared/types/api';
 export type MoveTodoVariables = TodoMove & {
   /** Toast text on success, for example "KAN-12 moved to Sprint 2". */
   successMessage: string;
+  /** The way back. When set, the success toast offers "Undo" (enhancement 4). */
+  undo?: MoveTodoRequest;
 };
 
 type MoveContext = { snapshot: TodoListSnapshot; boardSnapshot: BoardSnapshot };
@@ -63,9 +66,28 @@ export function useMoveTodo(projectId: string) {
       }
       showToast(getErrorMessage(error), 'error');
     },
-    onSuccess: (todo, { successMessage }) => {
+    onSuccess: (todo, { successMessage, undo }) => {
       queryClient.setQueryData(todoKeys.detail(todo.id), todo);
-      showToast(successMessage);
+      if (undo === undefined) {
+        showToast(successMessage);
+        return;
+      }
+      showToast(successMessage, 'success', {
+        action: {
+          label: t('common:undo.label'),
+          onClick: () => {
+            moveTodo({ todoId: todo.id, request: undo })
+              .then(() => {
+                invalidateTodoCounters(queryClient, projectId);
+                void queryClient.invalidateQueries({ queryKey: todoKeys.all(projectId) });
+                void queryClient.invalidateQueries({ queryKey: boardKeys.all });
+                void queryClient.invalidateQueries({ queryKey: sprintKeys.all(projectId) });
+                showToast(t('common:undo.undone'), 'info');
+              })
+              .catch(() => showToast(t('common:undo.failed'), 'error'));
+          },
+        },
+      });
     },
     onSettled: (_data, _error, { todo, sprintId }) => {
       if (queryClient.isMutating({ mutationKey: todoMutationKeys.move }) !== 1) return;

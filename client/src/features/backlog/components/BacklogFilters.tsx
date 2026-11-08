@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import FilterListOffIcon from '@mui/icons-material/FilterListOff';
 import SearchIcon from '@mui/icons-material/Search';
@@ -42,6 +43,7 @@ export function BacklogFilters({
   hasActiveFilters,
   onClear,
 }: BacklogFiltersProps) {
+  const { t } = useTranslation();
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (event.key === 'Escape' && searchInput !== '') {
       event.preventDefault();
@@ -52,16 +54,17 @@ export function BacklogFilters({
   return (
     <Box
       component="search"
-      aria-label="Filter backlog"
+      data-backlog-search
+      aria-label={t('backlog:filters.label')}
       sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1.5 }}
     >
       <OutlinedInput
         value={searchInput}
         onChange={(event) => onSearchChange(event.target.value)}
         onKeyDown={handleSearchKeyDown}
-        placeholder="Search todos…"
+        placeholder={t('backlog:filters.searchPlaceholder')}
         autoComplete="off"
-        inputProps={{ 'aria-label': 'Search todos', maxLength: TODO_LIMITS.searchMax }}
+        inputProps={{ dir: 'auto', 'aria-keyshortcuts': '/', 'aria-label': t('backlog:filters.search'), maxLength: TODO_LIMITS.searchMax }}
         startAdornment={
           <InputAdornment position="start">
             <SearchIcon fontSize="small" aria-hidden="true" />
@@ -70,8 +73,8 @@ export function BacklogFilters({
         endAdornment={
           searchInput === '' ? null : (
             <InputAdornment position="end">
-              <Tooltip title="Clear search">
-                <IconButton size="small" edge="end" aria-label="Clear search" onClick={() => onSearchChange('')}>
+              <Tooltip title={t('backlog:filters.clearSearch')}>
+                <IconButton size="small" edge="end" aria-label={t('backlog:filters.clearSearch')} onClick={() => onSearchChange('')}>
                   <CloseIcon fontSize="small" aria-hidden="true" />
                 </IconButton>
               </Tooltip>
@@ -87,10 +90,10 @@ export function BacklogFilters({
           const { value } = event.target;
           onPriorityChange(isOneOf(TODO_PRIORITIES, value) ? value : null);
         }}
-        inputProps={{ 'aria-label': 'Filter by priority' }}
+        inputProps={{ 'aria-label': t('backlog:filters.byPriority') }}
         sx={{ minWidth: '10.5rem' }}
       >
-        <MenuItem value={ALL}>All priorities</MenuItem>
+        <MenuItem value={ALL}>{t('backlog:filters.allPriorities')}</MenuItem>
         {PRIORITY_OPTIONS.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             <PriorityBadge priority={option.value} />
@@ -104,10 +107,10 @@ export function BacklogFilters({
           const { value } = event.target;
           onTypeChange(isOneOf(TODO_TYPES, value) ? value : null);
         }}
-        inputProps={{ 'aria-label': 'Filter by type' }}
+        inputProps={{ 'aria-label': t('backlog:filters.byType') }}
         sx={{ minWidth: '9.5rem' }}
       >
-        <MenuItem value={ALL}>All types</MenuItem>
+        <MenuItem value={ALL}>{t('backlog:filters.allTypes')}</MenuItem>
         {TYPE_OPTIONS.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             <Box component="span" sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
@@ -119,7 +122,7 @@ export function BacklogFilters({
       </Select>
       {hasActiveFilters ? (
         <Button color="inherit" startIcon={<FilterListOffIcon aria-hidden="true" />} onClick={onClear}>
-          Clear filters
+          {t('backlog:filters.clear')}
         </Button>
       ) : null}
     </Box>

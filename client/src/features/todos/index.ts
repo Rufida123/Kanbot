@@ -7,6 +7,10 @@ export { useBulkCreateTodos } from './hooks/useBulkCreateTodos';
 export { hasTodoFilters } from './utils/buildTodoFilters';
 export { sumStoryPoints } from './utils/sumStoryPoints';
 export { TodoRow } from './components/TodoRow';
+export { ExportMenu } from './components/ExportMenu';
+export { LabelFilterSelect } from './components/LabelFilterSelect';
+export { LabelManagerDialog } from './components/LabelManagerDialog';
+export { sprintNameResolver } from './utils/exportTodos';
 export { TodoRowSkeleton } from './components/TodoRowSkeleton';
 export type { TodoMenuAction } from './components/TodoActionsMenu';
 export { useSprintTodoLists } from './hooks/useSprintTodoLists';
@@ -15,6 +19,9 @@ export { useUpdateTodo } from './hooks/useUpdateTodo';
 export { useTodoDialogParam } from './hooks/useTodoDialogParam';
 export { useTodoDeleteStore } from './store/todoDeleteStore';
 export { todoKeys, todoMutationKeys } from './api/keys';
+export { useFlushDeletes } from './hooks/useFlushDeletes';
+export { useBulkUpdate } from './hooks/useBulkUpdate';
+export { softDeleteTodos } from './utils/pendingDeletes';
 export { invalidateTodoCounters, invalidateTodoListsExceptSprint } from './utils/todoCache';
 export { TODO_LIMITS } from './config/limits';
 export {
@@ -23,4 +30,4 @@ export {
   BACKLOG_SPRINT_ID,
 } from './utils/buildTodoFilters';
 export { getListLength, getTodoPosition, insertTodoAtPosition, sortByStatus } from './utils/todoOrder';
-export { BACKLOG_LABEL, NOT_ESTIMATED_LABEL } from './config/copy';
+export { backlogLabel, notEstimatedLabel } from './config/copy';

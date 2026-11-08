@@ -6,6 +6,7 @@ import { DragHandle } from '@/shared/dnd/DragHandle';
 import { SortableTodoRow } from '@/features/backlog/components/SortableTodoRow';
 import { useMoveActions } from '@/features/backlog/context/MoveActionsContext';
 import { usePreviewedTodos } from '@/features/backlog/context/DragPreviewContext';
+import { useSelection } from '@/features/backlog/context/SelectionContext';
 import type { ContainerId } from '@/features/backlog/utils/containerIds';
 import { TodoList, TodoRow } from '@/features/todos';
 import type { Todo } from '@/shared/types/api';
@@ -29,9 +30,12 @@ type DropListProps = {
 export function DropList({ containerId, todos, label, isSortable, lockedReason = null, emptyContent }: DropListProps) {
   const getMoveActions = useMoveActions();
   const shownTodos = usePreviewedTodos(containerId, todos);
-  const { setNodeRef, isOver } = useDroppable({ id: containerId, disabled: !isSortable });
+  const selection = useSelection();
+  // Selection mode pauses drag and drop: rows get checkboxes instead of drag handles.
+  const isDragEnabled = isSortable && !selection.isActive;
+  const { setNodeRef, isOver } = useDroppable({ id: containerId, disabled: !isDragEnabled });
 
-  if (!isSortable) {
+  if (!isDragEnabled) {
     if (shownTodos.length === 0) return <>{emptyContent}</>;
     return (
       <TodoList
@@ -45,8 +49,13 @@ export function DropList({ containerId, todos, label, isSortable, lockedReason =
             onOpen={onOpen}
             onDelete={onDelete}
             menuActions={getMoveActions(todo)}
+            selection={
+              selection.isActive
+                ? { isSelected: selection.selectedIds.has(todo.id), onToggle: selection.toggle }
+                : undefined
+            }
             dragHandle={
-              lockedReason === null ? undefined : (
+              lockedReason === null || selection.isActive ? undefined : (
                 <DragHandle todoKey={todo.key} disabledReason={lockedReason} />
               )
             }

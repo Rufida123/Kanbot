@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Chip from '@mui/material/Chip';
@@ -39,6 +40,7 @@ function getLabelsErrorMessage(error: LabelsError): string | undefined {
  * de-duplicated and capped at 10, each at most 30 characters.
  */
 export function LabelsField({ control, error, isDisabled = false }: LabelsFieldProps) {
+  const { t } = useTranslation();
   const id = useId();
   const helperId = `${id}-helper`;
 
@@ -47,12 +49,12 @@ export function LabelsField({ control, error, isDisabled = false }: LabelsFieldP
       name="labels"
       control={control}
       render={({ field }) => {
-        const hint = `${field.value.length}/${TODO_LIMITS.labelsMax} labels. Press Enter to add.`;
+        const hint = t('todos:labels.hint', { count: field.value.length, max: TODO_LIMITS.labelsMax });
         const helperText = getLabelsErrorMessage(error) ?? hint;
         return (
           <FormControl fullWidth error={Boolean(error)} disabled={isDisabled}>
             <FormLabel htmlFor={id} sx={{ marginBottom: 0.75 }}>
-              Labels
+              {t('todos:labels.label')}
             </FormLabel>
             <Autocomplete
               multiple
@@ -74,7 +76,7 @@ export function LabelsField({ control, error, isDisabled = false }: LabelsFieldP
                 <TextField
                   {...params}
                   inputRef={field.ref}
-                  placeholder={field.value.length === 0 ? 'Add a label' : undefined}
+                  placeholder={field.value.length === 0 ? t('todos:labels.add') : undefined}
                   error={Boolean(error)}
                   slotProps={{
                     ...params.slotProps,

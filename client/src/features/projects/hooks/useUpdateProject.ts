@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateProject } from '@/features/projects/api/projects';
 import { projectKeys } from '@/features/projects/api/keys';
@@ -11,7 +12,7 @@ export function useUpdateProject() {
       queryClient.setQueryData(projectKeys.detail(project.id), project);
       // The server re-sorts the list by `updatedAt`, so the list is refetched, not patched.
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
-      showToast('Project updated');
+      showToast(t('projects:toast.updated'));
     },
   });
 }

@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { boardKeys } from '@/features/board/api/keys';
 import { projectKeys } from '@/features/projects';
@@ -37,7 +38,7 @@ export function useCompleteSprint(projectId: string) {
       );
       queryClient.setQueryData(sprintKeys.detail(sprint.id), sprint);
       refreshProjectData(sprint.id);
-      showToast(`${sprint.name} completed`);
+      showToast(t('board:complete.completedToast', { name: sprint.name }));
     },
     onError: (_error, { sprintId }) => refreshProjectData(sprintId),
   });

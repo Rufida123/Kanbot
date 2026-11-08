@@ -28,6 +28,7 @@ export function useChat(projectId: string) {
       useAiChatStore.getState().addMessage(projectId, {
         role: 'assistant',
         content: response.message.content,
+        isNew: true,
       });
     },
     onSettled: (_response, _error, { signal }) => {

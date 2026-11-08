@@ -1,10 +1,11 @@
-import { BACKLOG_LABEL } from '@/features/todos/config/copy';
+import { backlogLabel } from '@/features/todos/config/copy';
+import { t } from '@/shared/i18n';
 import { SPRINT_STATUS_LABELS } from '@/shared/config/constants';
 import type { SelectOption } from '@/shared/config/constants';
 import type { Sprint, Todo } from '@/shared/types/api';
 
 function getSprintLabel(sprint: Pick<Sprint, 'name' | 'status'>): string {
-  return `${sprint.name} (${SPRINT_STATUS_LABELS[sprint.status].toLowerCase()})`;
+  return t('todos:form.sprintOption', { name: sprint.name, status: SPRINT_STATUS_LABELS[sprint.status].toLowerCase() });
 }
 
 /**
@@ -16,14 +17,14 @@ export function getSprintOptions(
   sprints: readonly Sprint[] | undefined,
   currentSprintId: Todo['sprintId'],
 ): SelectOption[] {
-  const options: SelectOption[] = [{ value: '', label: BACKLOG_LABEL }];
+  const options: SelectOption[] = [{ value: '', label: backlogLabel() }];
   for (const sprint of sprints ?? []) {
     if (sprint.status === 'completed' && sprint.id !== currentSprintId) continue;
     options.push({ value: sprint.id, label: getSprintLabel(sprint) });
   }
   const isCurrentListed = options.some((option) => option.value === (currentSprintId ?? ''));
   if (currentSprintId !== null && !isCurrentListed) {
-    options.push({ value: currentSprintId, label: 'Current sprint' });
+    options.push({ value: currentSprintId, label: t('todos:form.currentSprint') });
   }
   return options;
 }

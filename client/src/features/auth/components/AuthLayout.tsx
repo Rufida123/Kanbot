@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import type { ReactNode } from 'react';
+import { LanguageSwitcher } from '@/shared/components/LanguageSwitcher';
 import { Logo } from '@/shared/components/Logo';
 
 type AuthLayoutProps = {
@@ -22,9 +23,13 @@ export function AuthLayout({ title, documentTitle, children, footer }: AuthLayou
         display: 'grid',
         placeItems: 'center',
         padding: { xs: 2, sm: 3 },
+        position: 'relative',
       }}
     >
       <title>{`${documentTitle} · Kanbot`}</title>
+      <Box sx={{ position: 'absolute', insetBlockStart: 12, insetInlineEnd: 12 }}>
+        <LanguageSwitcher />
+      </Box>
       <Paper
         variant="outlined"
         sx={{

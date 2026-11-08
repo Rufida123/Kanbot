@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { startSprint } from '@/features/sprints/api/sprints';
 import { sprintKeys } from '@/features/sprints/api/keys';
@@ -21,7 +22,7 @@ export function useStartSprint(projectId: string) {
       void queryClient.invalidateQueries({ queryKey: projectKeys.all });
       void queryClient.invalidateQueries({ queryKey: todoKeys.all(projectId) });
       void queryClient.invalidateQueries({ queryKey: boardKeys.detail(sprint.id) });
-      showToast(`${sprint.name} started`);
+      showToast(t('sprints:toast.started', { name: sprint.name }));
     },
   });
 }

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import Box from '@mui/material/Box';
@@ -29,6 +30,7 @@ type BoardColumnProps = {
  * that does. The whole body is the droppable area, so an empty column accepts drops too.
  */
 export function BoardColumn({ status, todos, getMenuActions, onOpen }: BoardColumnProps) {
+  const { t } = useTranslation();
   const headingId = useId();
   const columnId = toColumnId(status);
   const { isDragging } = useBoardPreview();
@@ -40,7 +42,9 @@ export function BoardColumn({ status, todos, getMenuActions, onOpen }: BoardColu
       component="section"
       aria-labelledby={headingId}
       sx={{
-        flex: `1 0 ${BOARD_COLUMN_MIN_WIDTH_REM}rem`,
+        // Phones: one column almost fills the screen and snaps into place (swipe).
+        flex: { xs: '0 0 85%', md: `1 0 ${BOARD_COLUMN_MIN_WIDTH_REM}rem` },
+        scrollSnapAlign: 'start',
         minWidth: 0,
         display: 'flex',
         flexDirection: 'column',
@@ -50,12 +54,12 @@ export function BoardColumn({ status, todos, getMenuActions, onOpen }: BoardColu
         backgroundColor: 'action.hover',
       }}
     >
-      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, paddingInline: 0.5 }}>
+      <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, paddingInline: 0.5 }} data-column-status={status}>
         <Typography id={headingId} component="h2" variant="subtitle2" sx={{ color: `status.${status}` }}>
           {STATUS_LABELS[status]}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontVariantNumeric: 'tabular-nums' }}>
-          {formatCount(todos.length, 'todo')} · {getColumnPoints(todos)} pts
+          {t('board:column.points', { todos: formatCount(todos.length, 'todo'), points: formatCount(getColumnPoints(todos), 'point') })}
         </Typography>
       </Box>
       <Box
@@ -73,7 +77,7 @@ export function BoardColumn({ status, todos, getMenuActions, onOpen }: BoardColu
         <SortableContext items={shownTodos.map((todo) => todo.id)} strategy={verticalListSortingStrategy}>
           <Box
             component="ul"
-            aria-label={`${STATUS_LABELS[status]} todos`}
+            aria-label={t('board:column.todosAria', { status: STATUS_LABELS[status] })}
             sx={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 1, minHeight: '3rem' }}
           >
             {shownTodos.map((todo) => (
@@ -89,7 +93,7 @@ export function BoardColumn({ status, todos, getMenuActions, onOpen }: BoardColu
         </SortableContext>
         {shownTodos.length === 0 ? (
           <Typography variant="body2" color="text.secondary" sx={{ padding: 1.5, textAlign: 'center' }}>
-            {isDragging ? 'Drop here' : 'No todos'}
+            {isDragging ? t('common:misc.dropHere') : t('common:misc.noTodos')}
           </Typography>
         ) : null}
       </Box>

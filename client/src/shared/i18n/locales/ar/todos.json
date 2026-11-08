@@ -1,0 +1,159 @@
+{
+  "backlog": "سجل المهام",
+  "form": {
+    "title": "العنوان",
+    "description": "الوصف",
+    "status": "الحالة",
+    "priority": "الأولوية",
+    "type": "النوع",
+    "storyPoints": "نقاط القصة",
+    "sprint": "السبرنت",
+    "dueDate": "تاريخ الاستحقاق",
+    "subtitle": "{{type}} · أُنشئت {{date}}",
+    "detailsTitle": "تفاصيل المهمة",
+    "loading": "جارٍ تحميل المهمة",
+    "notFound": "المهمة غير موجودة",
+    "notFoundMessage": "ربما حُذفت، أو أن الرابط غير صحيح.",
+    "loadError": "تعذّر تحميل هذه المهمة",
+    "completedHint": "تنتمي هذه المهمة إلى سبرنت مكتمل ولا يمكن نقلها.",
+    "completedReadOnly": "هذا السبرنت مكتمل. مهامه للقراءة فقط.",
+    "sprintsLoading": "جارٍ تحميل السبرنتات…",
+    "sprintsError": "تعذّر تحميل السبرنتات. حاول لاحقاً.",
+    "currentSprint": "السبرنت الحالي",
+    "sprintOption": "{{name}} ({{status}})"
+  },
+  "labels": {
+    "label": "التصنيفات",
+    "add": "أضف تصنيفاً",
+    "hint": "{{count}}/{{max}} تصنيفات. اضغط Enter للإضافة."
+  },
+  "validation": {
+    "titleRequired": "العنوان مطلوب",
+    "titleMax": "يجب ألا يتجاوز العنوان {{max}} حرفاً",
+    "descriptionMax": "يجب ألا يتجاوز الوصف {{max}} حرفاً",
+    "labelEmpty": "لا يمكن أن يكون التصنيف فارغاً",
+    "labelMax": "يجب ألا يتجاوز التصنيف {{max}} حرفاً",
+    "labelsMax": "بحد أقصى {{max}} تصنيفات",
+    "invalidValue": "اختر قيمة صالحة",
+    "invalidDate": "أدخل تاريخاً صالحاً"
+  },
+  "quick": {
+    "placeholder": "إنشاء مهمة: اكتب عنواناً واضغط Enter",
+    "label": "إنشاء مهمة",
+    "hint": "Enter للإضافة · Esc للمسح",
+    "created": "تم إنشاء {{key}}"
+  },
+  "menu": {
+    "actions": "إجراءات المهمة",
+    "actionsFor": "إجراءات {{key}} {{title}}"
+  },
+  "list": {
+    "loadingBacklog": "جارٍ تحميل سجل المهام"
+  },
+  "toast": {
+    "saved": "تم حفظ المهمة"
+  },
+  "delete": {
+    "deleted": "تم حذف {{key}}",
+    "deletedMany_zero": "لم تُحذف مهام",
+    "deletedMany_one": "تم حذف مهمة واحدة",
+    "deletedMany_two": "تم حذف مهمتين",
+    "deletedMany_few": "تم حذف {{count}} مهام",
+    "deletedMany_many": "تم حذف {{count}} مهمة",
+    "deletedMany_other": "تم حذف {{count}} مهمة"
+  },
+  "inline": {
+    "editHint": "انقر نقراً مزدوجاً أو استخدم «إعادة تسمية» للتعديل",
+    "rename": "إعادة تسمية",
+    "changePriority": "تغيير أولوية {{key}}",
+    "changePoints": "تغيير نقاط القصة لـ {{key}}",
+    "statusMoved": "تم نقل {{key}} إلى {{status}}"
+  },
+  "move": {
+    "top": "نقل إلى الأعلى",
+    "bottom": "نقل إلى الأسفل",
+    "backlog": "نقل إلى سجل المهام",
+    "toSprint": "نقل إلى {{name}}",
+    "toActiveSprint": "نقل إلى {{name}} (نشط)",
+    "filtered": "أزل عوامل التصفية للنقل داخل سجل المهام",
+    "loading": "لا تزال القائمة قيد التحميل",
+    "atTop": "في الأعلى بالفعل",
+    "atBottom": "في الأسفل بالفعل",
+    "movedTop": "تم نقل {{key}} إلى الأعلى",
+    "movedBottom": "تم نقل {{key}} إلى الأسفل",
+    "movedTo": "تم نقل {{key}} إلى {{destination}}",
+    "theBacklog": "سجل المهام"
+  },
+  "week": {
+    "title": "أسبوعي",
+    "subtitle": "المهام المستحقة هذا الأسبوع مجمّعة حسب اليوم.",
+    "overdue": "متأخرة",
+    "noTodos": "لا شيء مستحق",
+    "emptyTitle": "لا مهام مستحقة هذا الأسبوع",
+    "emptyMessage": "حدّد تاريخ استحقاق لمهمة لتظهر هنا.",
+    "openBacklog": "الانتقال إلى سجل المهام",
+    "loadError": "تعذّر تحميل أسبوعك"
+  },
+  "labelManager": {
+    "title": "إدارة التصنيفات",
+    "open": "التصنيفات",
+    "empty": "لا تصنيفات في هذا المشروع بعد. أضف تصنيفاً إلى مهمة لإدارته هنا.",
+    "create": "إنشاء تصنيف",
+    "newName": "اسم التصنيف الجديد",
+    "rename": "إعادة تسمية {{name}}",
+    "colour": "لون {{name}}",
+    "delete": "حذف {{name}}",
+    "uses": "مستخدم في {{count}} مهمة",
+    "noColour": "بلا لون",
+    "createdHint": "تُحفظ الألوان في هذا المتصفح فقط.",
+    "renamed": "تمت إعادة تسمية التصنيف",
+    "deleted": "أُزيل التصنيف من {{count}} مهمة",
+    "exists": "هذا التصنيف موجود بالفعل"
+  },
+  "labelFilter": {
+    "label": "التصفية حسب التصنيف",
+    "all": "كل التصنيفات"
+  },
+  "bulk": {
+    "select": "تحديد",
+    "done": "إنهاء التحديد",
+    "selectTodo": "تحديد {{key}}",
+    "selectAll": "تحديد الكل",
+    "selectNone": "مسح التحديد",
+    "bar": "إجراءات جماعية",
+    "moveToSprint": "نقل إلى سبرنت",
+    "changePriority": "الأولوية",
+    "changeType": "النوع",
+    "delete": "حذف",
+    "progress": "جارٍ تحديث {{done}} من {{total}}…",
+    "updated_zero": "لم تُحدَّث مهام",
+    "updated_one": "تم تحديث مهمة واحدة",
+    "updated_two": "تم تحديث مهمتين",
+    "updated_few": "تم تحديث {{count}} مهام",
+    "updated_many": "تم تحديث {{count}} مهمة",
+    "updated_other": "تم تحديث {{count}} مهمة",
+    "partial": "تم تحديث {{done}} وفشل {{failed}}",
+    "partialDetail": "فشل: {{keys}}",
+    "reorderOff": "وضع التحديد مفعّل. السحب والإفلات متوقف مؤقتاً.",
+    "noSprints": "لا يوجد سبرنت مخطط أو نشط للنقل إليه"
+  },
+  "export": {
+    "button": "تصدير",
+    "markdown": "Markdown (.md)",
+    "csv": "CSV (.csv)",
+    "done": "تم تصدير {{name}}",
+    "csvHeaders": {
+      "key": "المفتاح",
+      "title": "العنوان",
+      "type": "النوع",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "points": "نقاط القصة",
+      "labels": "التصنيفات",
+      "dueDate": "تاريخ الاستحقاق",
+      "sprint": "السبرنت"
+    },
+    "mdTitleBacklog": "{{project}} · سجل المهام",
+    "mdTotals": "الإجمالي: {{todos}} · {{points}}"
+  }
+}

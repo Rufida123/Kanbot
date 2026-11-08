@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Navigate, Outlet, useSearchParams } from 'react-router';
 import { REDIRECT_PARAM } from '@/app/navigation';
 import { safeRedirect } from '@/features/auth/utils/redirect';
@@ -10,10 +11,11 @@ import { useSessionStore } from '@/shared/stores/sessionStore';
  * performs the navigation after a successful login or registration.
  */
 export function GuestOnly() {
+  const { t } = useTranslation();
   const status = useSessionStore((state) => state.status);
   const [searchParams] = useSearchParams();
 
-  if (status === 'checking') return <LoadingScreen label="Checking your session…" />;
+  if (status === 'checking') return <LoadingScreen label={t('common:app.checkingSession')} />;
   if (status === 'authenticated') {
     return <Navigate to={safeRedirect(searchParams.get(REDIRECT_PARAM))} replace />;
   }

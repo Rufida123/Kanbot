@@ -8,10 +8,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Tooltip from '@mui/material/Tooltip';
-import { useId, useRef, useState } from 'react';
+import { useId, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ChangeEvent, FormEvent } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
+import type { TFunction } from 'i18next';
 import { z } from 'zod';
 import { paths } from '@/app/navigation';
 import { applyFieldErrors } from '@/features/auth';
@@ -23,19 +25,20 @@ import type { Sprint } from '@/shared/types/api';
 import { formatCount } from '@/shared/utils/formatCount';
 import { isDateOnly } from '@/shared/utils/formatDate';
 
-const GENERIC_ERROR = 'Something went wrong. Please try again.';
+function createStartSprintSchema(t: TFunction) {
+  return z
+    .object({
+      startDate: z.string().refine(isDateOnly, t('backlog:start.invalidStart')),
+      endDate: z.string().refine(isDateOnly, t('backlog:start.invalidEnd')),
+    })
+    .refine((values) => values.endDate >= values.startDate, {
+      message: t('backlog:start.endBeforeStart'),
+      path: ['endDate'],
+    });
+}
 
-const startSprintSchema = z
-  .object({
-    startDate: z.string().refine(isDateOnly, 'Enter a valid start date'),
-    endDate: z.string().refine(isDateOnly, 'Enter a valid end date'),
-  })
-  .refine((values) => values.endDate >= values.startDate, {
-    message: 'End date must be on or after the start date',
-    path: ['endDate'],
-  });
+type StartSprintValues = z.infer<ReturnType<typeof createStartSprintSchema>>;
 
-type StartSprintValues = z.infer<typeof startSprintSchema>;
 const startFields = ['startDate', 'endDate'] as const;
 
 type StartSprintDialogProps = {
@@ -54,6 +57,8 @@ type StartSprintDialogProps = {
  * comes back from the server is shown as well. Success goes to the board.
  */
 export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClose }: StartSprintDialogProps) {
+  const { t } = useTranslation();
+  const schema = useMemo(() => createStartSprintSchema(t), [t]);
   const id = useId();
   const titleId = `${id}-title`;
   const navigate = useNavigate();
@@ -72,7 +77,7 @@ export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClo
     setValue,
     formState: { errors },
   } = useForm<StartSprintValues>({
-    resolver: zodResolver(startSprintSchema),
+    resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: getStartDialogDates(sprint),
   });
@@ -96,7 +101,7 @@ export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClo
       void navigate(paths.project(projectId).board);
     } catch (error) {
       if (!applyFieldErrors(error, setError, startFields)) {
-        setFormError(error instanceof ApiError ? error.message : GENERIC_ERROR);
+        setFormError(error instanceof ApiError ? error.message : t('common:errors.generic'));
       }
     } finally {
       isSubmittingRef.current = false;
@@ -110,8 +115,8 @@ export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClo
   const disabledReason = isStartable
     ? null
     : activeSprint === undefined
-      ? 'Only planned sprints can be started.'
-      : `“${activeSprint.name}” is still active. Complete it before starting another sprint.`;
+      ? t('backlog:start.onlyPlanned')
+      : t('backlog:start.stillActive', { name: activeSprint.name });
 
   return (
     <Dialog
@@ -122,20 +127,20 @@ export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClo
       maxWidth="xs"
     >
       <Box component="form" noValidate onSubmit={onSubmit}>
-        <DialogTitle id={titleId}>Start {sprint.name}</DialogTitle>
+        <DialogTitle id={titleId}>{t('backlog:start.title', { name: sprint.name })}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, paddingTop: 1 }}>
           {disabledReason === null ? null : <Alert severity="info">{disabledReason}</Alert>}
-          {todoCount === 0 ? <Alert severity="warning">This sprint has no todos.</Alert> : null}
+          {todoCount === 0 ? <Alert severity="warning">{t('backlog:start.noTodos')}</Alert> : null}
           {formError ? <Alert severity="error">{formError}</Alert> : null}
-          <FormTextField label="Start date" type="date" isRequired registration={startRegistration} error={errors.startDate} />
-          <FormTextField label="End date" type="date" isRequired registration={endRegistration} error={errors.endDate} />
+          <FormTextField label={t('backlog:start.startDate')} type="date" isRequired registration={startRegistration} error={errors.startDate} />
+          <FormTextField label={t('backlog:start.endDate')} type="date" isRequired registration={endRegistration} error={errors.endDate} />
           <Box component="p" sx={{ color: 'text.secondary', fontSize: '0.875rem' }}>
-            {formatCount(todoCount, 'todo')} will move to the board.
+            {t('backlog:start.willMove', { todos: formatCount(todoCount, 'todo') })}
           </Box>
         </DialogContent>
         <DialogActions sx={{ padding: 2, gap: 1 }}>
           <Button color="inherit" onClick={onClose} disabled={startMutation.isPending}>
-            Cancel
+            {t('common:actions.cancel')}
           </Button>
           <Tooltip title={disabledReason ?? ''}>
             <span>
@@ -149,7 +154,7 @@ export function StartSprintDialog({ projectId, sprint, sprints, todoCount, onClo
                   ) : undefined
                 }
               >
-                Start sprint
+                {t('backlog:sprint.start')}
               </Button>
             </span>
           </Tooltip>

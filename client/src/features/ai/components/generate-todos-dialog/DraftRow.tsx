@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -10,7 +11,7 @@ import Typography from '@mui/material/Typography';
 import { useId } from 'react';
 import { isDraftTitleMissing } from '@/features/ai/utils/draftSelectors';
 import type { TodoDraft } from '@/features/ai/utils/toDrafts';
-import { NOT_ESTIMATED_LABEL, TODO_LIMITS } from '@/features/todos';
+import { notEstimatedLabel, TODO_LIMITS } from '@/features/todos';
 import { PRIORITY_OPTIONS, STORY_POINT_VALUES, TYPE_OPTIONS } from '@/shared/config/constants';
 import { TODO_PRIORITIES, TODO_TYPES } from '@/shared/types/api';
 import { isOneOf } from '@/shared/utils/isOneOf';
@@ -30,6 +31,7 @@ type DraftRowProps = {
 
 /** One suggested todo: a checkbox, an editable title, type, priority and points. Nothing is saved from here. */
 export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProps) {
+  const { t } = useTranslation();
   const id = useId();
   const isTitleMissing = draft.checked && isDraftTitleMissing(draft);
 
@@ -39,7 +41,7 @@ export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProp
         checked={draft.checked}
         disabled={isDisabled}
         onChange={(event) => onChange(draft.id, { checked: event.target.checked })}
-        slotProps={{ input: { 'aria-label': `Add todo ${position} to the backlog` } }}
+        slotProps={{ input: { 'aria-label': t('ai:draft.add', { position }) } }}
         sx={{ alignSelf: 'flex-start', marginTop: 0.25 }}
       />
       <Box sx={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 1 }}>
@@ -48,12 +50,12 @@ export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProp
           fullWidth
           value={draft.title}
           disabled={isDisabled}
-          placeholder="Title"
+          placeholder={t('ai:draft.title')}
           error={isTitleMissing}
-          helperText={isTitleMissing ? 'Title is required' : undefined}
+          helperText={isTitleMissing ? t('ai:draft.titleRequired') : undefined}
           onChange={(event) => onChange(draft.id, { title: event.target.value })}
           slotProps={{
-            htmlInput: { 'aria-label': `Title of todo ${position}`, maxLength: TODO_LIMITS.titleMax, dir: 'auto' },
+            htmlInput: { 'aria-label': t('ai:draft.titleOf', { position }), maxLength: TODO_LIMITS.titleMax, dir: 'auto' },
           }}
         />
         {draft.description === '' ? null : (
@@ -74,10 +76,10 @@ export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProp
         )}
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
           <FormControl size="small" disabled={isDisabled} sx={{ minWidth: SELECT_MIN_WIDTH }}>
-            <InputLabel id={`${id}-type`}>Type</InputLabel>
+            <InputLabel id={`${id}-type`}>{t('ai:draft.type')}</InputLabel>
             <Select
               labelId={`${id}-type`}
-              label="Type"
+              label={t('ai:draft.type')}
               value={draft.type}
               onChange={(event) => {
                 if (isOneOf(TODO_TYPES, event.target.value)) onChange(draft.id, { type: event.target.value });
@@ -91,10 +93,10 @@ export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProp
             </Select>
           </FormControl>
           <FormControl size="small" disabled={isDisabled} sx={{ minWidth: SELECT_MIN_WIDTH }}>
-            <InputLabel id={`${id}-priority`}>Priority</InputLabel>
+            <InputLabel id={`${id}-priority`}>{t('ai:draft.priority')}</InputLabel>
             <Select
               labelId={`${id}-priority`}
-              label="Priority"
+              label={t('ai:draft.priority')}
               value={draft.priority}
               onChange={(event) => {
                 if (isOneOf(TODO_PRIORITIES, event.target.value)) {
@@ -110,17 +112,17 @@ export function DraftRow({ draft, position, isDisabled, onChange }: DraftRowProp
             </Select>
           </FormControl>
           <FormControl size="small" disabled={isDisabled} sx={{ minWidth: SELECT_MIN_WIDTH }}>
-            <InputLabel id={`${id}-points`}>Points</InputLabel>
+            <InputLabel id={`${id}-points`}>{t('ai:draft.points')}</InputLabel>
             <Select
               labelId={`${id}-points`}
-              label="Points"
+              label={t('ai:draft.points')}
               value={draft.storyPoints === null ? NO_POINTS_VALUE : String(draft.storyPoints)}
               onChange={(event) => {
                 const points = STORY_POINT_VALUES.find((value) => String(value) === event.target.value);
                 onChange(draft.id, { storyPoints: points ?? null });
               }}
             >
-              <MenuItem value={NO_POINTS_VALUE}>{NOT_ESTIMATED_LABEL}</MenuItem>
+              <MenuItem value={NO_POINTS_VALUE}>{notEstimatedLabel()}</MenuItem>
               {STORY_POINT_VALUES.map((value) => (
                 <MenuItem key={value} value={String(value)}>
                   {value}

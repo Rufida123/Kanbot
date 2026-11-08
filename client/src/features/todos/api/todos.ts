@@ -1,3 +1,4 @@
+import { t } from '@/shared/i18n';
 import { api, ApiError } from '@/shared/api/client';
 import { isOneOf } from '@/shared/utils/isOneOf';
 import { STORY_POINTS, TODO_PRIORITIES, TODO_STATUSES, TODO_TYPES } from '@/shared/types/api';
@@ -14,7 +15,7 @@ function unexpectedResponse(): ApiError {
   return new ApiError({
     status: null,
     code: 'UNEXPECTED_RESPONSE',
-    message: 'Something went wrong. Please try again.',
+    message: t('common:errors.generic'),
   });
 }
 

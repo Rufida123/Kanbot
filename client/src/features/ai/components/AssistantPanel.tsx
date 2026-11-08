@@ -2,13 +2,20 @@ import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useLocation, useSearchParams } from 'react-router';
+import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
+import Typography from '@mui/material/Typography';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
+import { CHAT_HISTORY_MAX } from '@/features/ai/store/aiChatStore';
+import { getAssistantPage, SUGGESTED_PROMPTS } from '@/features/ai/config/suggestedPrompts';
+import { TODO_PARAM } from '@/app/navigation';
 import { AiDisclaimer } from '@/features/ai/components/AiDisclaimer';
 import { AiErrorAlert } from '@/features/ai/components/AiErrorAlert';
 import { ChatInput } from '@/features/ai/components/ChatInput';
 import { ChatMessageList } from '@/features/ai/components/ChatMessageList';
 import { QuickActions } from '@/features/ai/components/QuickActions';
-import { AI_MOCK_HINT, AI_MOCK_LABEL, AI_SUMMARIZING_LABEL, AI_THINKING_LABEL } from '@/features/ai/config/copy';
 import { useAiStatus } from '@/features/ai/hooks/useAiStatus';
 import { useChat } from '@/features/ai/hooks/useChat';
 import { useSprintSummary } from '@/features/ai/hooks/useSprintSummary';
@@ -23,6 +30,11 @@ type AssistantPanelProps = { projectId: string };
  * and a request in flight survive closing and reopening it. It is mounted only on project pages.
  */
 export function AssistantPanel({ projectId }: AssistantPanelProps) {
+  const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
+  const [confirm, setConfirm] = useState<'new' | 'clear' | null>(null);
+  const page = getAssistantPage(pathname, searchParams.has(TODO_PARAM));
   const { data: status } = useAiStatus();
   const isOpen = useUiStore((state) => state.assistantOpen);
   const setAssistantOpen = useUiStore((state) => state.setAssistantOpen);
@@ -49,8 +61,8 @@ export function AssistantPanel({ projectId }: AssistantPanelProps) {
 
   const isBusy = chat.isPending || summary.isPending;
   const pendingLabel = (() => {
-    if (chat.isPending) return AI_THINKING_LABEL;
-    return summary.isPending ? AI_SUMMARIZING_LABEL : null;
+    if (chat.isPending) return t('ai:status.thinking');
+    return summary.isPending ? t('ai:status.summarizing') : null;
   })();
 
   const handleNewChat = () => {
@@ -88,16 +100,25 @@ export function AssistantPanel({ projectId }: AssistantPanelProps) {
         }}
       >
         {status?.mode === 'mock' ? (
-          <Chip size="small" variant="outlined" label={AI_MOCK_LABEL} title={AI_MOCK_HINT} />
+          <Chip size="small" variant="outlined" label={t('ai:mock.label')} title={t('ai:mock.hint')} />
         ) : null}
         <Box sx={{ flex: 1 }} />
         <Button
           size="small"
           startIcon={<AddCommentOutlinedIcon aria-hidden="true" />}
           disabled={messages.length === 0 && !isBusy && chat.error === null && !summary.isError}
-          onClick={handleNewChat}
+          onClick={() => (messages.length > 0 ? setConfirm('new') : handleNewChat())}
         >
-          New chat
+          {t('ai:chat.newChat')}
+        </Button>
+        <Button
+          size="small"
+          color="inherit"
+          startIcon={<DeleteSweepOutlinedIcon aria-hidden="true" />}
+          disabled={messages.length === 0}
+          onClick={() => setConfirm('clear')}
+        >
+          {t('ai:chat.clearHistory')}
         </Button>
       </Box>
       <Box sx={{ padding: 2, paddingBottom: 0 }}>
@@ -106,6 +127,11 @@ export function AssistantPanel({ projectId }: AssistantPanelProps) {
           isBusy={isBusy}
           onSummarize={(sprintId) => void handleSummarize(sprintId)}
         />
+        <Box role="group" aria-label={t('ai:suggested.group')} sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, marginTop: 1 }}>
+          {SUGGESTED_PROMPTS[page].map((key) => (
+            <Chip key={key} size="small" variant="outlined" label={t(key)} disabled={isBusy} onClick={() => chat.sendMessage(t(key))} sx={{ height: 'auto', '& .MuiChip-label': { whiteSpace: 'normal', paddingBlock: 0.5 } }} />
+          ))}
+        </Box>
       </Box>
       <ChatMessageList
         projectId={projectId}
@@ -130,7 +156,28 @@ export function AssistantPanel({ projectId }: AssistantPanelProps) {
       >
         <ChatInput isDisabled={isBusy} inputRef={inputRef} onSend={chat.sendMessage} />
         <AiDisclaimer />
+        <Typography variant="caption" color="text.secondary">{t('ai:chat.historyNote', { count: CHAT_HISTORY_MAX })}</Typography>
       </Box>
+      <ConfirmDialog
+        open={confirm === 'new'}
+        title={t('ai:chat.newChatTitle')}
+        confirmLabel={t('ai:chat.newChat')}
+        isDestructive
+        onConfirm={() => { setConfirm(null); handleNewChat(); }}
+        onCancel={() => setConfirm(null)}
+      >
+        {t('ai:chat.newChatBody')}
+      </ConfirmDialog>
+      <ConfirmDialog
+        open={confirm === 'clear'}
+        title={t('ai:chat.clearHistoryTitle')}
+        confirmLabel={t('ai:chat.clearHistory')}
+        isDestructive
+        onConfirm={() => { setConfirm(null); chat.reset(); useAiChatStore.getState().clearAllHistory(); }}
+        onCancel={() => setConfirm(null)}
+      >
+        {t('ai:chat.clearHistoryBody')}
+      </ConfirmDialog>
     </Box>
   );
 }

@@ -1,5 +1,14 @@
 import Box from '@mui/material/Box';
 import ButtonBase from '@mui/material/ButtonBase';
+import { useTranslation } from 'react-i18next';
+import { useBoardLabelFilter } from '@/features/board/context/BoardFilterContext';
+import { TODO_LIMITS } from '@/features/todos/config/limits';
+import { useInlineTodoEdit } from '@/features/todos/hooks/useInlineTodoEdit';
+import { DueBadge } from '@/shared/components/DueBadge';
+import { useDensityScale } from '@/shared/components/DensityToggle';
+import { InlinePoints, InlinePriority, InlineText } from '@/shared/components/InlineEdit';
+import { LabelChips } from '@/shared/components/LabelChips';
+import { useState } from 'react';
 import { TodoActionsMenu } from '@/features/todos/components/TodoActionsMenu';
 import type { TodoMenuAction } from '@/features/todos/components/TodoActionsMenu';
 import { PointsChip } from '@/shared/components/PointsChip';
@@ -48,6 +57,17 @@ export function TodoCard({
   isDragging = false,
   isOverlay = false,
 }: TodoCardProps) {
+  const { t } = useTranslation();
+  const density = useDensityScale();
+  const labelFilter = useBoardLabelFilter();
+  const edit = useInlineTodoEdit(todo);
+  const [renameSignal, setRenameSignal] = useState(0);
+  const isReadOnly = isOverlay;
+  const isDimmed = labelFilter !== null && !todo.labels.includes(labelFilter);
+  const actions: readonly TodoMenuAction[] = [
+    { id: 'rename', label: t('todos:inline.rename'), disabledReason: null, onSelect: () => setRenameSignal((n) => n + 1) },
+    ...menuActions,
+  ];
   return (
     <Box
       component="li"
@@ -55,13 +75,17 @@ export function TodoCard({
       style={rootStyle}
       sx={{
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'flex-start',
         border: 1,
         borderColor: 'divider',
         borderRadius: 1,
         backgroundColor: 'background.paper',
-        opacity: isDragging ? 0.4 : 1,
+        opacity: isDragging ? 0.4 : isDimmed ? 0.35 : 1,
         boxShadow: isOverlay ? 8 : 0,
+        // A small lift while dragging; the base `transition` is switched off by reduced motion in the theme.
+        transform: isOverlay ? 'scale(1.03)' : 'none',
+        transition: (theme) => theme.transitions.create(['opacity', 'box-shadow', 'transform']),
         listStyle: 'none',
       }}
     >
@@ -76,7 +100,7 @@ export function TodoCard({
           flexDirection: 'column',
           alignItems: 'stretch',
           gap: 1,
-          padding: 1.25,
+          padding: 1.25 * density,
           paddingInlineStart: dragHandle === undefined ? 1.25 : 0.5,
           textAlign: 'start',
           borderRadius: 1,
@@ -92,17 +116,25 @@ export function TodoCard({
             {todo.key}
           </Box>
         </Box>
-        <Box component="span" sx={TITLE_SX}>
-          {todo.title}
-        </Box>
-        <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-          <PriorityBadge priority={todo.priority} />
-          <PointsChip points={todo.storyPoints} />
-        </Box>
+        <InlineText value={todo.title} maxLength={TODO_LIMITS.titleMax} onCommit={edit.saveTitle} ariaLabel={t('todos:form.title')} isDisabled={isReadOnly} startSignal={renameSignal}>
+          <Box component="span" dir="auto" title={todo.title} sx={TITLE_SX}>
+            {todo.title}
+          </Box>
+        </InlineText>
+        <LabelChips labels={todo.labels} projectId={todo.projectId} />
+        <DueBadge dueDate={todo.dueDate} isDone={todo.status === 'done'} />
       </ButtonBase>
+      <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', paddingInline: 1.25, paddingBlockEnd: 1.25 * density, width: '100%', order: 3 }}>
+        <InlinePriority value={todo.priority} onChange={edit.savePriority} isDisabled={isReadOnly} ariaLabel={t('todos:inline.changePriority', { key: todo.key })}>
+          <PriorityBadge priority={todo.priority} />
+        </InlinePriority>
+        <InlinePoints value={todo.storyPoints} onChange={edit.savePoints} isDisabled={isReadOnly} ariaLabel={t('todos:inline.changePoints', { key: todo.key })} notEstimatedLabel={t('common:points.notEstimated')}>
+          <PointsChip points={todo.storyPoints} />
+        </InlinePoints>
+      </Box>
       {isOverlay ? null : (
         <Box sx={{ display: 'flex', paddingBlockStart: 0.5, paddingInlineEnd: 0.5 }}>
-          <TodoActionsMenu todo={todo} onOpen={onOpen} extraActions={menuActions} />
+          <TodoActionsMenu todo={todo} onOpen={onOpen} extraActions={actions} />
         </Box>
       )}
     </Box>

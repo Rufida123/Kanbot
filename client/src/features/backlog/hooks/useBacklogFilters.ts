@@ -22,6 +22,8 @@ export function useBacklogFilters() {
   const priority = parseEnumParam<TodoPriority>(TODO_PRIORITIES, searchParams.get(FILTER_PARAMS.priority));
   const type = parseEnumParam<TodoType>(TODO_TYPES, searchParams.get(FILTER_PARAMS.type));
 
+  const rawLabel = searchParams.get(FILTER_PARAMS.label);
+  const label = rawLabel === null || rawLabel === '' ? null : rawLabel.slice(0, TODO_LIMITS.labelMax);
   const [searchInput, setSearchInput] = useState(urlSearch);
   const [lastWrittenSearch, setLastWrittenSearch] = useState(urlSearch);
   const [previousUrlSearch, setPreviousUrlSearch] = useState(urlSearch);
@@ -68,6 +70,7 @@ export function useBacklogFilters() {
     updateParams({ [FILTER_PARAMS.priority]: value ?? '' });
   const setType = (value: TodoType | null) => updateParams({ [FILTER_PARAMS.type]: value ?? '' });
 
+  const setLabel = (value: string | null) => updateParams({ [FILTER_PARAMS.label]: value ?? '' });
   const clearFilters = () => {
     setSearchInput('');
     setLastWrittenSearch('');
@@ -75,6 +78,7 @@ export function useBacklogFilters() {
       [FILTER_PARAMS.search]: '',
       [FILTER_PARAMS.priority]: '',
       [FILTER_PARAMS.type]: '',
+      [FILTER_PARAMS.label]: '',
     });
   };
 
@@ -85,10 +89,12 @@ export function useBacklogFilters() {
     setPriority,
     type,
     setType,
+    label,
+    setLabel,
     clearFilters,
     /** The filters the list is loaded with: the search is the debounced (URL) value. */
     appliedFilters: buildTodoListFilters({ search: urlSearch, priority, type }),
     /** Anything is typed or selected, so "Clear filters" has something to clear. */
-    hasActiveFilters: searchInput.trim() !== '' || priority !== null || type !== null,
+    hasActiveFilters: searchInput.trim() !== '' || priority !== null || type !== null || label !== null,
   };
 }

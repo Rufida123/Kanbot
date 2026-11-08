@@ -1,3 +1,5 @@
+import { useEndOrigin } from '@/shared/hooks/useMenuOrigin';
+import { useTranslation } from 'react-i18next';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Alert from '@mui/material/Alert';
@@ -53,6 +55,8 @@ export function SprintSection({
   onStart,
   onDelete,
 }: SprintSectionProps) {
+  const { t } = useTranslation();
+  const origin = useEndOrigin();
   const id = useId();
   const headingId = `${id}-heading`;
   const regionId = `${id}-region`;
@@ -75,7 +79,7 @@ export function SprintSection({
           severity="error"
           action={
             <Button color="inherit" size="small" onClick={onRetry}>
-              Try again
+              {t('common:actions.retry')}
             </Button>
           }
         >
@@ -84,7 +88,7 @@ export function SprintSection({
       );
     }
     if (isPending || todos === undefined) {
-      return <TodoRowSkeleton label={`Loading ${sprint.name}`} count={2} />;
+      return <TodoRowSkeleton label={t('backlog:sprint.loadingSprint', { name: sprint.name })} count={2} />;
     }
     return (
       <DropList
@@ -94,8 +98,7 @@ export function SprintSection({
         isSortable={isExpanded}
         emptyContent={
           <Typography variant="body2" color="text.secondary" sx={{ padding: 2 }}>
-            No todos in this sprint yet. Drag todos here, or use a todo’s menu and choose “Move to{' '}
-            {sprint.name}”.
+            {t('backlog:sprint.empty', { name: sprint.name })}
           </Typography>
         }
       />
@@ -133,12 +136,12 @@ export function SprintSection({
                 transition: (theme) => theme.transitions.create('transform'),
               }}
             />
-            <Box component="span" sx={{ overflowWrap: 'anywhere' }}>
+            <Box component="span" dir="auto" sx={{ overflowWrap: 'anywhere' }}>
               {sprint.name}
             </Box>
             <Chip size="small" variant="outlined" label={SPRINT_STATUS_LABELS[sprint.status]} />
             <Typography component="span" variant="body2" color="text.secondary">
-              {[dateRange, `${formatCount(todoCount, 'todo')} · ${formatCount(points, 'point')}`]
+              {[dateRange, t('backlog:sprint.summaryLine', { todos: formatCount(todoCount, 'todo'), points: formatCount(points, 'point') })]
                 .filter((part) => part !== '')
                 .join(' · ')}
             </Typography>
@@ -149,19 +152,19 @@ export function SprintSection({
                 color="text.secondary"
                 sx={{ flexBasis: '100%', overflowWrap: 'anywhere', fontWeight: 'fontWeightRegular' }}
               >
-                Goal: {sprint.goal}
+                {t('backlog:sprint.goal', { goal: sprint.goal })}
               </Typography>
             )}
           </ButtonBase>
         </Typography>
         <Button variant="outlined" size="small" onClick={onStart} sx={{ whiteSpace: 'nowrap' }}>
-          Start sprint
+          {t('backlog:sprint.start')}
         </Button>
-        <Tooltip title="Sprint actions">
+        <Tooltip title={t('backlog:sprint.actions')}>
           <IconButton
             id={menuButtonId}
             size="small"
-            aria-label={`Actions for ${sprint.name}`}
+            aria-label={t('backlog:sprint.actionsFor', { name: sprint.name })}
             aria-haspopup="menu"
             aria-controls={menuAnchor === null ? undefined : menuId}
             aria-expanded={menuAnchor !== null}
@@ -176,12 +179,12 @@ export function SprintSection({
           open={menuAnchor !== null}
           onClose={() => setMenuAnchor(null)}
           slotProps={{ list: { 'aria-labelledby': menuButtonId } }}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          anchorOrigin={origin.anchorOrigin}
+          transformOrigin={origin.transformOrigin}
         >
-          <MenuItem onClick={() => runMenuAction(onEdit)}>Edit sprint</MenuItem>
-          <MenuItem onClick={() => runMenuAction(onStart)}>Start sprint</MenuItem>
-          <MenuItem onClick={() => runMenuAction(onDelete)}>Delete sprint</MenuItem>
+          <MenuItem onClick={() => runMenuAction(onEdit)}>{t('backlog:sprint.edit')}</MenuItem>
+          <MenuItem onClick={() => runMenuAction(onStart)}>{t('backlog:sprint.start')}</MenuItem>
+          <MenuItem onClick={() => runMenuAction(onDelete)}>{t('backlog:sprint.delete')}</MenuItem>
         </Menu>
       </Box>
       <Collapse in={isExpanded} unmountOnExit id={regionId}>
